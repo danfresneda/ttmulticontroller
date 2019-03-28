@@ -1,0 +1,69 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TTMulti.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="sendDeleteToRightOnly" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="lastLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="onTopWhenInactive" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="compactUI" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="numberOfGroups" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="disableKeepAlive" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="modeKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">192</Value>
+    </Setting>
+    <Setting Name="leftJumpKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">16</Value>
+    </Setting>
+    <Setting Name="leftThrowKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">46</Value>
+    </Setting>
+    <Setting Name="leftEscapeKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">27</Value>
+    </Setting>
+    <Setting Name="leftForwardKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">87</Value>
+    </Setting>
+    <Setting Name="leftLeftKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">65</Value>
+    </Setting>
+    <Setting Name="leftBackKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">83</Value>
+    </Setting>
+    <Setting Name="leftRightKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">68</Value>
+    </Setting>
+    <Setting Name="rightJumpKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">17</Value>
+    </Setting>
+    <Setting Name="rightThrowKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">46</Value>
+    </Setting>
+    <Setting Name="rightEscapeKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">27</Value>
+    </Setting>
+    <Setting Name="rightForwardKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">38</Value>
+    </Setting>
+    <Setting Name="rightLeftKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">37</Value>
+    </Setting>
+    <Setting Name="rightBackKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">40</Value>
+    </Setting>
+    <Setting Name="rightRightKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">39</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
