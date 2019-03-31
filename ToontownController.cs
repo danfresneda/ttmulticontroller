@@ -160,11 +160,14 @@ namespace TTMulti
                             }
                         }
 
-                        if (!Properties.Settings.Default.disableKeepAlive && (DateTime.Now - lastWake).TotalMinutes >= 1 && TTWindowHandle != IntPtr.Zero)
+                        if (!Properties.Settings.Default.disableKeepAlive 
+                        && (DateTime.Now - lastWake).TotalMinutes >= 1 
+                        && TTWindowHandle != IntPtr.Zero
+                        && Properties.Settings.Default.keepAliveKeyCode != (int)Keys.None)
                         {
-                            PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Keys.Home, IntPtr.Zero);
-                            Thread.Sleep(10);
-                            PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Keys.Home, IntPtr.Zero);
+                            PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
+                            Thread.Sleep(50);
+                            PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
 
                             lastWake = DateTime.Now;
                         }

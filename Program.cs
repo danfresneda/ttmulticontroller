@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using TTMulti.Forms;
+using TTMulti.Controls;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace TTMulti
 {
@@ -23,7 +26,7 @@ namespace TTMulti
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            
             Application.Run(new MulticontrollerWnd());
         }
 

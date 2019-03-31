@@ -25,10 +25,23 @@ namespace TTMulti.Forms
             {
                 checkUpdateBtn.Visible = false;
             }
+            
+            foreach (var item in Properties.SerializedSettings.Default.LeftKeys)
+            {
+                leftKeyChooser.AddKey(item.Title, item.UserKey, item.SendKey, item.ReadOnly);
+            }
+                
+            foreach (var item in Properties.SerializedSettings.Default.RightKeys)
+            {
+                rightKeyChooser.AddKey(item.Title, item.UserKey, item.SendKey, item.ReadOnly);
+            }
         }
 
         private void okBtn_Click(object sender, EventArgs e)
         {
+            Properties.SerializedSettings.Default.LeftKeys = leftKeyChooser.Keys;
+            Properties.SerializedSettings.Default.RightKeys = rightKeyChooser.Keys;
+            
             Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
             this.Close();

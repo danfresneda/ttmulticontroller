@@ -65,5 +65,17 @@
     <Setting Name="rightRightKeyCode" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">39</Value>
     </Setting>
+    <Setting Name="leftKeys" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="rightKeys" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="keepAliveKeyCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">36</Value>
+    </Setting>
+    <Setting Name="keyBindings" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

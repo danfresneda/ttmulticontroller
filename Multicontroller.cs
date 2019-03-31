@@ -150,25 +150,19 @@ namespace TTMulti
 
         internal void UpdateKeys()
         {
-            var s = Properties.Settings.Default;
-            
             leftKeys.Clear();
-            leftKeys.Add(Keys.Up, (Keys)s.leftForwardKeyCode);
-            leftKeys.Add(Keys.Left, (Keys)s.leftLeftKeyCode);
-            leftKeys.Add(Keys.Right, (Keys)s.leftRightKeyCode);
-            leftKeys.Add(Keys.Down, (Keys)s.leftBackKeyCode);
-            leftKeys.Add(Keys.ControlKey, (Keys)s.leftJumpKeyCode);
-            leftKeys.Add(Keys.Escape, (Keys)s.leftEscapeKeyCode);
-            leftKeys.Add(Keys.Delete, (Keys)s.leftThrowKeyCode);
 
+            foreach (var item in Properties.SerializedSettings.Default.LeftKeys)
+            {
+                leftKeys.Add(item.SendKey, item.UserKey);
+            }
+            
             rightKeys.Clear();
-            rightKeys.Add(Keys.Up, (Keys)s.rightForwardKeyCode);
-            rightKeys.Add(Keys.Left, (Keys)s.rightLeftKeyCode);
-            rightKeys.Add(Keys.Right, (Keys)s.rightRightKeyCode);
-            rightKeys.Add(Keys.Down, (Keys)s.rightBackKeyCode);
-            rightKeys.Add(Keys.ControlKey, (Keys)s.rightJumpKeyCode);
-            rightKeys.Add(Keys.Escape, (Keys)s.rightEscapeKeyCode);
-            rightKeys.Add(Keys.Delete, (Keys)s.rightThrowKeyCode);
+
+            foreach (var item in Properties.SerializedSettings.Default.RightKeys)
+            {
+                rightKeys.Add(item.SendKey, item.UserKey);
+            }
         }
 
         internal void Init()

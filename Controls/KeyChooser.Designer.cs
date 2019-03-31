@@ -35,19 +35,22 @@
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Location = new System.Drawing.Point(0, 0);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(62, 20);
+            this.textBox1.Size = new System.Drawing.Size(50, 22);
             this.textBox1.TabIndex = 2;
             this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // KeyChooser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.textBox1);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(50, 22);
             this.Name = "KeyChooser";
-            this.Size = new System.Drawing.Size(62, 20);
+            this.Size = new System.Drawing.Size(50, 22);
             this.ResumeLayout(false);
             this.PerformLayout();
 
