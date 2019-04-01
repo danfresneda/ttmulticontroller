@@ -11,7 +11,7 @@ namespace TTMulti.Controls
 {
     public partial class KeyChooser : UserControl
     {
-        public delegate void KeyChosenHandler(Keys keyChosen);
+        public delegate void KeyChosenHandler(KeyChooser chooser, Keys keyChosen);
 
         public event KeyChosenHandler KeyChosen;
 
@@ -42,7 +42,13 @@ namespace TTMulti.Controls
             {Keys.D7, "7"},
             {Keys.D8, "8"},
             {Keys.D9, "9"},
-            {Keys.D0, "0"}
+            {Keys.D0, "0"},
+            {Keys.Left, "LeftArrow"},
+            {Keys.Right, "RightArrow"},
+            {Keys.Down, "DownArrow"},
+            {Keys.Up, "UpArrow"},
+            {Keys.Back, "Backspace"},
+            {Keys.None, "Disabled - click here and press a key"}
         };
 
         static KeyChooser()
@@ -71,6 +77,15 @@ namespace TTMulti.Controls
                     }
 
                     textBox1.Text = text;
+
+                    if (_key == Keys.None)
+                    {
+                        textBox1.Font = new Font(textBox1.Font, FontStyle.Italic);
+                    }
+                    else
+                    {
+                        textBox1.Font = new Font(textBox1.Font, FontStyle.Regular);
+                    }
                 });
             }
         }
@@ -111,19 +126,13 @@ namespace TTMulti.Controls
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
             keyDown(e.KeyCode);
-
             e.SuppressKeyPress = true;
         }
 
         private void keyDown(Keys key)
         {
             ChosenKey = key;
-
-            var evt = KeyChosen;
-            if (evt != null)
-            {
-                evt(ChosenKey);
-            }
+            KeyChosen?.Invoke(this, ChosenKey);
         }
 
         private void textBox1_DoubleClick(object sender, EventArgs e)

@@ -8,11 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Deployment;
 using System.Deployment.Application;
+using TTMulti.Controls;
 
 namespace TTMulti.Forms
 {
     public partial class OptionsDlg : Form
     {
+        private bool loaded = false;
+
         public OptionsDlg()
         {
             InitializeComponent();
@@ -25,22 +28,13 @@ namespace TTMulti.Forms
             {
                 checkUpdateBtn.Visible = false;
             }
-            
-            foreach (var item in Properties.SerializedSettings.Default.LeftKeys)
-            {
-                leftKeyChooser.AddKey(item.Title, item.UserKey, item.SendKey, item.ReadOnly);
-            }
-                
-            foreach (var item in Properties.SerializedSettings.Default.RightKeys)
-            {
-                rightKeyChooser.AddKey(item.Title, item.UserKey, item.SendKey, item.ReadOnly);
-            }
         }
 
         private void okBtn_Click(object sender, EventArgs e)
         {
-            Properties.SerializedSettings.Default.LeftKeys = leftKeyChooser.Keys;
-            Properties.SerializedSettings.Default.RightKeys = rightKeyChooser.Keys;
+            Properties.SerializedSettings.Default.Bindings = bindingsChooser.KeyMappings;
+            Properties.SerializedSettings.Default.LeftKeys = leftKeyChooser.KeyMappings;
+            Properties.SerializedSettings.Default.RightKeys = rightKeyChooser.KeyMappings;
             
             Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
@@ -137,6 +131,64 @@ namespace TTMulti.Forms
             {
                 MessageBox.Show("This application can't be updated. Try re-installing it from the homepage.", "Cannot Be Updated", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void OptionsDlg_Load(object sender, EventArgs e)
+        {
+            bindingsChooser.KeyMappings = Properties.SerializedSettings.Default.Bindings;
+            leftKeyChooser.KeyMappings = Properties.SerializedSettings.Default.LeftKeys;
+            rightKeyChooser.KeyMappings = Properties.SerializedSettings.Default.RightKeys;
+
+            loaded = true;
+        }
+
+        private void addBindingBtn_Click(object sender, EventArgs e)
+        {
+            bindingsChooser.AddMapping("Custom", Keys.None, false);
+        }
+
+        private void bindingsChooser_KeyMappingAdded(object sender, KeyMapping e)
+        {
+            if (loaded)
+            {
+                leftKeyChooser.AddMapping(e.Title, Keys.None, true);
+                rightKeyChooser.AddMapping(e.Title, Keys.None, true);
+            }
+        }
+
+        private void bindingsChooser_KeyMappingRemoved(object sender, int rowNum)
+        {
+            leftKeyChooser.RemoveMapping(rowNum);
+            rightKeyChooser.RemoveMapping(rowNum);
+        }
+
+        private void bindingsChooser_KeyMappingsChanged(object sender, EventArgs e)
+        {
+            leftKeyChooser.KeyMappingTitles = bindingsChooser.KeyMappingTitles;
+            rightKeyChooser.KeyMappingTitles = bindingsChooser.KeyMappingTitles;
+
+            /*var bindings = bindingsChooser.KeyMappings;
+            var leftKeys = Properties.SerializedSettings.Default.LeftKeys;
+            var rightKeys = Properties.SerializedSettings.Default.RightKeys;
+
+            leftKeys = leftKeys.GetRange(0, Math.Min(leftKeys.Count, bindings.Count));
+            rightKeys = rightKeys.GetRange(0, Math.Min(rightKeys.Count, bindings.Count));
+
+            for (int i = 0; i < bindings.Count; i++)
+            {
+                if (leftKeys.Count <= i)
+                {
+                    leftKeys.Add(new KeyMapping(bindings[i].Title, Keys.None, true));
+                }
+
+                if (rightKeys.Count <= i)
+                {
+                    rightKeys.Add(new KeyMapping(bindings[i].Title, Keys.None, true));
+                }
+            }
+
+            leftKeyChooser.KeyMappings = leftKeys;
+            rightKeyChooser.KeyMappings = rightKeys;*/
         }
     }
 }

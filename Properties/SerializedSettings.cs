@@ -14,8 +14,44 @@ namespace TTMulti.Properties
         public static SerializedSettings Default { get; } = new SerializedSettings();
 
         XmlSerializer keyMappingSerializer = new XmlSerializer(typeof(List<KeyMapping>));
-        
-        public List<KeyMapping> LeftKeys {
+
+        public List<KeyMapping> Bindings
+        {
+            get
+            {
+                using (StringReader sr = new StringReader(Properties.Settings.Default.keyBindings))
+                {
+                    try
+                    {
+                        return keyMappingSerializer.Deserialize(sr) as List<KeyMapping>;
+                    }
+                    catch
+                    {
+                        return new List<KeyMapping>()
+                        {
+                            new KeyMapping("Left", Keys.Left, true),
+                            new KeyMapping("Right", Keys.Right, true),
+                            new KeyMapping("Forward", Keys.Up, true),
+                            new KeyMapping("Backward", Keys.Down, true),
+                            new KeyMapping("Jump", Keys.ControlKey, true),
+                            new KeyMapping("Throw", Keys.Delete, true),
+                            new KeyMapping("Open Book", Keys.Escape, true)
+                        };
+                    }
+                }
+            }
+            set
+            {
+                using (StringWriter sw = new StringWriter())
+                {
+                    keyMappingSerializer.Serialize(sw, value);
+                    Properties.Settings.Default.keyBindings = sw.ToString();
+                }
+            }
+        }
+
+        public List<KeyMapping> LeftKeys
+        {
             get
             {
                 using (StringReader sr = new StringReader(Properties.Settings.Default.leftKeys))
@@ -28,13 +64,13 @@ namespace TTMulti.Properties
                     {
                         return new List<KeyMapping>()
                         {
-                            new KeyMapping("Left", (Keys)Properties.Settings.Default.leftLeftKeyCode, Keys.Left, true),
-                            new KeyMapping("Right", (Keys)Properties.Settings.Default.leftRightKeyCode, Keys.Right, true),
-                            new KeyMapping("Up", (Keys)Properties.Settings.Default.leftForwardKeyCode, Keys.Up, true),
-                            new KeyMapping("Down", (Keys)Properties.Settings.Default.leftBackKeyCode, Keys.Down, true),
-                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.leftJumpKeyCode, Keys.ControlKey, true),
-                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.leftThrowKeyCode, Keys.Delete, true),
-                            new KeyMapping("Book", (Keys)Properties.Settings.Default.leftEscapeKeyCode, Keys.Escape, true)
+                            new KeyMapping("Left", (Keys)Properties.Settings.Default.leftLeftKeyCode, true),
+                            new KeyMapping("Right", (Keys)Properties.Settings.Default.leftRightKeyCode, true),
+                            new KeyMapping("Forward", (Keys)Properties.Settings.Default.leftForwardKeyCode, true),
+                            new KeyMapping("Backward", (Keys)Properties.Settings.Default.leftBackKeyCode, true),
+                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.leftJumpKeyCode, true),
+                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.leftThrowKeyCode, true),
+                            new KeyMapping("Open Book", (Keys)Properties.Settings.Default.leftEscapeKeyCode, true)
                         };
                     }
                 }
@@ -63,13 +99,13 @@ namespace TTMulti.Properties
                     {
                         return new List<KeyMapping>()
                         {
-                            new KeyMapping("Left", (Keys)Properties.Settings.Default.rightLeftKeyCode, Keys.Left, true),
-                            new KeyMapping("Right", (Keys)Properties.Settings.Default.rightRightKeyCode, Keys.Right, true),
-                            new KeyMapping("Up", (Keys)Properties.Settings.Default.rightForwardKeyCode, Keys.Up, true),
-                            new KeyMapping("Down", (Keys)Properties.Settings.Default.rightBackKeyCode, Keys.Down, true),
-                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.rightJumpKeyCode, Keys.ControlKey, true),
-                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.rightThrowKeyCode, Keys.Delete, true),
-                            new KeyMapping("Book", (Keys)Properties.Settings.Default.rightEscapeKeyCode, Keys.Escape, true)
+                            new KeyMapping("Left", (Keys)Properties.Settings.Default.rightLeftKeyCode, true),
+                            new KeyMapping("Right", (Keys)Properties.Settings.Default.rightRightKeyCode, true),
+                            new KeyMapping("Forward", (Keys)Properties.Settings.Default.rightForwardKeyCode, true),
+                            new KeyMapping("Backward", (Keys)Properties.Settings.Default.rightBackKeyCode, true),
+                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.rightJumpKeyCode, true),
+                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.rightThrowKeyCode, true),
+                            new KeyMapping("Open Book", (Keys)Properties.Settings.Default.rightEscapeKeyCode, true)
                         };
                     }
                 }

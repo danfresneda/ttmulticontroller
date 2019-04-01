@@ -151,17 +151,23 @@ namespace TTMulti
         internal void UpdateKeys()
         {
             leftKeys.Clear();
-
-            foreach (var item in Properties.SerializedSettings.Default.LeftKeys)
-            {
-                leftKeys.Add(item.SendKey, item.UserKey);
-            }
-            
             rightKeys.Clear();
 
-            foreach (var item in Properties.SerializedSettings.Default.RightKeys)
+            var ttBindings = Properties.SerializedSettings.Default.Bindings;
+            var leftBindings = Properties.SerializedSettings.Default.LeftKeys;
+            var rightBindings = Properties.SerializedSettings.Default.RightKeys;
+
+            for (int i = 0; i < ttBindings.Count; i++)
             {
-                rightKeys.Add(item.SendKey, item.UserKey);
+                if (ttBindings[i].Key != Keys.None && leftBindings[i].Key != Keys.None)
+                {
+                    leftKeys.Add(ttBindings[i].Key, leftBindings[i].Key);
+                }
+
+                if (ttBindings[i].Key != Keys.None && rightBindings[i].Key != Keys.None)
+                {
+                    rightKeys.Add(ttBindings[i].Key, rightBindings[i].Key);
+                }
             }
         }
 
