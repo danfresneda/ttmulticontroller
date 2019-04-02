@@ -91,11 +91,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\MultiKeyChooser.cs">
+    <Compile Include="Controls\MultiKeyPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\MultiKeyChooser.Designer.cs">
-      <DependentUpon>MultiKeyChooser.cs</DependentUpon>
+    <Compile Include="Controls\MultiKeyPicker.Designer.cs">
+      <DependentUpon>MultiKeyPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AboutWnd.cs">
       <SubType>Form</SubType>
@@ -110,11 +110,11 @@
       <DependentUpon>BorderWnd.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="Controls\KeyChooser.cs">
+    <Compile Include="Controls\KeyPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\KeyChooser.Designer.cs">
-      <DependentUpon>KeyChooser.cs</DependentUpon>
+    <Compile Include="Controls\KeyPicker.Designer.cs">
+      <DependentUpon>KeyPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MulticontrollerWnd.cs">
       <SubType>Form</SubType>
@@ -151,8 +151,8 @@
     </Compile>
     <Compile Include="ToontownController.cs" />
     <Compile Include="Win32.cs" />
-    <EmbeddedResource Include="Controls\MultiKeyChooser.resx">
-      <DependentUpon>MultiKeyChooser.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MultiKeyPicker.resx">
+      <DependentUpon>MultiKeyPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutWnd.resx">
       <DependentUpon>AboutWnd.cs</DependentUpon>
@@ -160,8 +160,8 @@
     <EmbeddedResource Include="Forms\BorderWnd.resx">
       <DependentUpon>BorderWnd.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\KeyChooser.resx">
-      <DependentUpon>KeyChooser.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\KeyPicker.resx">
+      <DependentUpon>KeyPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MulticontrollerWnd.resx">
       <DependentUpon>MulticontrollerWnd.cs</DependentUpon>

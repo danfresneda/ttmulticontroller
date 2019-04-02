@@ -14,18 +14,14 @@ namespace TTMulti
     {
         internal static readonly Multicontroller Instance = new Multicontroller();
 
-        internal MulticontrollerWnd mainWnd;
-        IntPtr mainWndHandle = IntPtr.Zero;
+        public event EventHandler ModeChanged;
+        public event EventHandler GroupsChanged;
+        public event EventHandler ShouldActivate;
 
-        List<ControllerGroup> controllerGroups = new List<ControllerGroup>()
+        internal List<ControllerGroup> ControllerGroups { get; } = new List<ControllerGroup>()
         {
             new ControllerGroup()
         };
-
-        internal List<ControllerGroup> ControllerGroups
-        {
-            get { return controllerGroups; }
-        }
 
         int currentGroupIndex = 0;
 
@@ -33,7 +29,7 @@ namespace TTMulti
         {
             get
             {
-                if (currentGroupIndex >= controllerGroups.Count)
+                if (currentGroupIndex >= ControllerGroups.Count)
                 {
                     currentGroupIndex = 0;
                     updateControllerBorders();
@@ -53,7 +49,7 @@ namespace TTMulti
         {
             get
             {
-                return controllerGroups[CurrentGroupIndex].LeftController;
+                return ControllerGroups[CurrentGroupIndex].LeftController;
             }
         }
 
@@ -61,7 +57,7 @@ namespace TTMulti
         {
             get
             {
-                return controllerGroups[CurrentGroupIndex].RightController;
+                return ControllerGroups[CurrentGroupIndex].RightController;
             }
         }
 
@@ -71,14 +67,13 @@ namespace TTMulti
             Mirror
         }
 
-        bool isActive = true;
-        bool IsActive
+        private bool isActive = true;
+        internal bool IsActive
         {
             get { return isActive; }
             set
             {
                 isActive = value;
-
                 updateControllerBorders();
             }
         }
@@ -89,16 +84,10 @@ namespace TTMulti
             get { return currentMode; }
             set
             {
-                currentMode = value;
-
-                switch (currentMode)
+                if (currentMode != value)
                 {
-                    case ControllerMode.Multi:
-                        mainWnd.InvokeIfRequired(() => mainWnd.multiModeRadio.Checked = true);
-                        break;
-                    case ControllerMode.Mirror:
-                        mainWnd.InvokeIfRequired(() => mainWnd.mirrorModeRadio.Checked = true);
-                        break;
+                    currentMode = value;
+                    ModeChanged?.Invoke(this, EventArgs.Empty);
                 }
 
                 updateControllerBorders();
@@ -110,6 +99,7 @@ namespace TTMulti
 
         internal Multicontroller()
         {
+            // TODO: add this back in?
             //LeftController.TTWindowClosed += () =>
             //{
             //    mainWnd.LeftWindowClosed();
@@ -121,31 +111,6 @@ namespace TTMulti
             //};
 
             UpdateKeys();
-
-            new Thread(() =>
-            {
-                while (true)
-                {
-                    if (mainWndHandle != IntPtr.Zero && !Win32.IsWindow(mainWndHandle))
-                    {
-                        mainWndHandle = IntPtr.Zero;
-                    }
-
-                    if (mainWndHandle != IntPtr.Zero)
-                    {
-                        IntPtr activeWnd = Win32.GetForegroundWindow();
-
-                        bool active = (activeWnd == mainWndHandle || Win32.GetWindow(activeWnd, Win32.GetWindow_Cmd.GW_OWNER) == mainWndHandle);
-
-                        if (isActive != active)
-                        {
-                            IsActive = active;
-                        }
-                    }
-
-                    Thread.Sleep(10);
-                }
-            }) { IsBackground = true }.Start();
         }
 
         internal void UpdateKeys()
@@ -175,59 +140,60 @@ namespace TTMulti
         {
             UpdateKeys();
 
-            for (int i = controllerGroups.Count; i < Properties.Settings.Default.numberOfGroups; i++)
+            for (int i = ControllerGroups.Count; i < Properties.Settings.Default.numberOfGroups; i++)
             {
-                controllerGroups.Add(CreateControllerGroup());
+                AddControllerGroup();
             }
 
             updateControllerBorders();
-            mainWnd.UpdateCrosshairs();
-
-            mainWnd.InvokeIfRequired(() => mainWndHandle = mainWnd.Handle);
-
-            mainWnd.multiModeRadio.Click += (sender, e) => CurrentMode = ControllerMode.Multi;
-            mainWnd.mirrorModeRadio.Click += (sender, e) => CurrentMode = ControllerMode.Mirror;
         }
 
-        internal ControllerGroup CreateControllerGroup()
+        internal ControllerGroup AddControllerGroup()
         {
             ControllerGroup group = new ControllerGroup();
 
             group.LeftController.TTWindowClosed += Controller_TTWindowClosed;
             group.RightController.TTWindowClosed += Controller_TTWindowClosed;
+            ControllerGroups.Add(group);
+            GroupsChanged?.Invoke(this, EventArgs.Empty);
 
             return group;
         }
 
-        void Controller_TTWindowClosed(object sender)
+        internal void RemoveControllerGroup(int index)
+        {
+            ControllerGroup controllerGroup = ControllerGroups[index];
+            controllerGroup.LeftController.Shutdown();
+            controllerGroup.RightController.Shutdown();
+            ControllerGroups.Remove(controllerGroup);
+            GroupsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Controller_TTWindowClosed(object sender)
         {
             if (sender == LeftController || sender == RightController)
             {
-                mainWnd.UpdateCrosshairs();
+                GroupsChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        void updateControllerBorders()
+        private void updateControllerBorders()
         {
             if (CurrentMode == ControllerMode.Multi)
             {
                 LeftController.BorderColor = RightController.BorderColor = Color.LimeGreen;
-
                 LeftController.ShowBorder = RightController.ShowBorder = isActive;
 
-                var otherGroups = controllerGroups.Except(new[] { controllerGroups[CurrentGroupIndex] }).ToList();
+                var otherGroups = ControllerGroups.Except(new[] { ControllerGroups[CurrentGroupIndex] }).ToList();
 
                 otherGroups.ForEach(g =>
                 {
-                    //g.LeftController.BorderColor = g.RightController.BorderColor = 
-                    //    (currentMode == ControllerMode.Multi) ? Color.LimeGreen : Color.Violet;
-
                     g.LeftController.ShowBorder = g.RightController.ShowBorder = false;
                 });
             }
             else
             {
-                controllerGroups.ForEach(g =>
+                ControllerGroups.ForEach(g =>
                 {
                     g.LeftController.BorderColor = g.RightController.BorderColor = Color.Violet;
                     g.LeftController.ShowBorder = g.RightController.ShowBorder = isActive;
@@ -235,20 +201,22 @@ namespace TTMulti
             }
         }
 
+        /// <summary>
+        /// The main input processor. All input to the multicontroller window ends up here.
+        /// </summary>
         internal bool ProcessKey(Keys key, uint msg = 0, IntPtr lParam = new IntPtr()) 
         {
-            var ret = false;
-            var settings = Properties.Settings.Default;
+            // The return value determines whether the input is discarded (doesn't reach its intended destination)
+            var shouldDiscardInput = false;
+            
             IntPtr wParam = (IntPtr)key;
 
-            if (key == (Keys)settings.modeKeyCode)
+            if (key == (Keys)Properties.Settings.Default.modeKeyCode)
             {
-                bool interceptKey = false;
-
                 IntPtr activeWnd = Win32.GetForegroundWindow();
-                bool ttWindowActive = controllerGroups.Any(g => g.LeftController.TTWindowHandle == activeWnd || g.RightController.TTWindowHandle == activeWnd);
+                bool isAnyTTWindowActive = ControllerGroups.Any(g => g.LeftController.TTWindowHandle == activeWnd || g.RightController.TTWindowHandle == activeWnd);
 
-                if (msg == (uint)Win32.WM.KEYDOWN && (ttWindowActive || activeWnd == mainWndHandle))
+                if (msg == (uint)Win32.WM.KEYDOWN && (isAnyTTWindowActive || isActive))
                 {
                     if (isActive)
                     {
@@ -262,21 +230,19 @@ namespace TTMulti
                         }
                     }
 
-                    if (ttWindowActive)
+                    if (isAnyTTWindowActive)
                     {
-                        mainWnd.TryActivate();
+                        ShouldActivate?.Invoke(this, EventArgs.Empty);
                     }
 
-                    interceptKey = true;
+                    shouldDiscardInput = true;
                 }
-
-                ret = interceptKey;
             }
-            else
+            else if (isActive)
             {
                 if (currentMode == ControllerMode.Multi)
                 {
-                    if (controllerGroups.Count > 1
+                    if (ControllerGroups.Count > 1
                         && (key >= Keys.D0 && key <= Keys.D9
                         || key >= Keys.NumPad0 && key <= Keys.NumPad9))
                     {
@@ -293,10 +259,10 @@ namespace TTMulti
 
                         index = index == 0 ? 9 : index - 1;
 
-                        if (controllerGroups.Count > index)
+                        if (ControllerGroups.Count > index)
                         {
                             CurrentGroupIndex = index;
-                            mainWnd.UpdateCrosshairs();
+                            GroupsChanged?.Invoke(this, EventArgs.Empty);
                         }
                     }
                     else
@@ -329,7 +295,7 @@ namespace TTMulti
                 {
                     if (currentMode == ControllerMode.Mirror)
                     {
-                        foreach (var group in controllerGroups)
+                        foreach (var group in ControllerGroups)
                         {
                             group.LeftController.PostMessage(msg, wParam, lParam);
                             group.RightController.PostMessage(msg, wParam, lParam);
@@ -337,10 +303,10 @@ namespace TTMulti
                     }
                 }
 
-                ret = true;
+                shouldDiscardInput = true;
             }
 
-            return ret;
+            return shouldDiscardInput;
         }
     }
 

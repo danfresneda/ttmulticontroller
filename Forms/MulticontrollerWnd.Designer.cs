@@ -34,7 +34,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.optionsBtn = new System.Windows.Forms.Button();
-            this.selectWindowsBtn = new System.Windows.Forms.Button();
+            this.windowGroupsBtn = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.leftStatusLbl = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -59,6 +59,7 @@
             this.mirrorModeRadio.Text = "Mirror Mode";
             this.mirrorModeRadio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.mirrorModeRadio.UseVisualStyleBackColor = true;
+            this.mirrorModeRadio.Click += new System.EventHandler(this.mirrorModeRadio_Clicked);
             // 
             // wndGroup
             // 
@@ -90,6 +91,7 @@
             this.multiModeRadio.Text = "Multi-Mode";
             this.multiModeRadio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.multiModeRadio.UseVisualStyleBackColor = true;
+            this.multiModeRadio.Click += new System.EventHandler(this.multiModeRadio_Click);
             // 
             // openFileDialog1
             // 
@@ -114,19 +116,19 @@
             this.optionsBtn.UseVisualStyleBackColor = true;
             this.optionsBtn.Click += new System.EventHandler(this.optionsBtn_Click);
             // 
-            // selectWindowsBtn
+            // windowGroupsBtn
             // 
-            this.selectWindowsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.windowGroupsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectWindowsBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.selectWindowsBtn.Location = new System.Drawing.Point(54, 6);
-            this.selectWindowsBtn.Name = "selectWindowsBtn";
-            this.selectWindowsBtn.Size = new System.Drawing.Size(122, 20);
-            this.selectWindowsBtn.TabIndex = 12;
-            this.selectWindowsBtn.Text = "Window Groups";
-            this.selectWindowsBtn.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.selectWindowsBtn.UseVisualStyleBackColor = true;
-            this.selectWindowsBtn.Click += new System.EventHandler(this.selectWindowsBtn_Click);
+            this.windowGroupsBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.windowGroupsBtn.Location = new System.Drawing.Point(54, 6);
+            this.windowGroupsBtn.Name = "windowGroupsBtn";
+            this.windowGroupsBtn.Size = new System.Drawing.Size(122, 20);
+            this.windowGroupsBtn.TabIndex = 12;
+            this.windowGroupsBtn.Text = "Window Groups";
+            this.windowGroupsBtn.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.windowGroupsBtn.UseVisualStyleBackColor = true;
+            this.windowGroupsBtn.Click += new System.EventHandler(this.windowGroupsBtn_Click);
             // 
             // statusStrip1
             // 
@@ -196,7 +198,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.rightToonCrosshair);
             this.Controls.Add(this.leftToonCrosshair);
-            this.Controls.Add(this.selectWindowsBtn);
+            this.Controls.Add(this.windowGroupsBtn);
             this.Controls.Add(this.optionsBtn);
             this.Controls.Add(this.wndGroup);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -206,8 +208,10 @@
             this.Name = "MulticontrollerWnd";
             this.Padding = new System.Windows.Forms.Padding(6, 6, 3, 26);
             this.Text = "Toontown Multicontroller";
+            this.Activated += new System.EventHandler(this.MulticontrollerWnd_Activated);
+            this.Deactivate += new System.EventHandler(this.MulticontrollerWnd_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWnd_FormClosing);
-            this.Load += new System.EventHandler(this.MainWnd_Load);
+            this.Load += new System.EventHandler(this.MulticontrollerWnd_Load);
             this.wndGroup.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -221,15 +225,15 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button optionsBtn;
-        public System.Windows.Forms.RadioButton mirrorModeRadio;
-        public System.Windows.Forms.RadioButton multiModeRadio;
-        private System.Windows.Forms.Button selectWindowsBtn;
+        private System.Windows.Forms.Button windowGroupsBtn;
         public TTMulti.Controls.SelectWindowCrosshair leftToonCrosshair;
         public TTMulti.Controls.SelectWindowCrosshair rightToonCrosshair;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel leftStatusLbl;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel rightStatusLbl;
+        private System.Windows.Forms.RadioButton mirrorModeRadio;
+        private System.Windows.Forms.RadioButton multiModeRadio;
     }
 }
 

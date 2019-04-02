@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace TTMulti.Controls
 {
-    public partial class MultiKeyChooser : UserControl
+    public partial class MultiKeyPicker : UserControl
     {
         public delegate void KeyMappingAddedHandler(object sender, KeyMapping keyMapping);
         public delegate void KeyMappingRemovedHandler(object sender, int row);
@@ -90,7 +90,7 @@ namespace TTMulti.Controls
             }
         }
 
-        public MultiKeyChooser()
+        public MultiKeyPicker()
         {
             InitializeComponent();
             removeRow(0);
@@ -134,7 +134,7 @@ namespace TTMulti.Controls
                 label = textbox;
             }
             
-            KeyChooser keyChooser1 = new KeyChooser() { Dock = DockStyle.Top, ChosenKey = key };
+            KeyPicker keyChooser1 = new KeyPicker() { Dock = DockStyle.Top, ChosenKey = key };
             Button removeBtn = new Button() { Text = "Remove", AutoSize = true,  Enabled = !readOnly, Visible = showRemoveButtons };
 
             keyChooser1.KeyChosen += KeyChooser_KeyChosen;
@@ -155,7 +155,7 @@ namespace TTMulti.Controls
             return rowNum;
         }
 
-        private void KeyChooser_KeyChosen(KeyChooser keyChooser, Keys keyChosen)
+        private void KeyChooser_KeyChosen(KeyPicker keyChooser, Keys keyChosen)
         {
             int rowNum = tableLayoutPanel1.GetRow(keyChooser);
             keyMappings[rowNum].Key = keyChosen;

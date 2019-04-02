@@ -30,11 +30,20 @@ namespace TTMulti.Forms
             }
         }
 
+        private void OptionsDlg_Load(object sender, EventArgs e)
+        {
+            bindingsMultiPicker.KeyMappings = Properties.SerializedSettings.Default.Bindings;
+            leftMultiPicker.KeyMappings = Properties.SerializedSettings.Default.LeftKeys;
+            rightMultiPicker.KeyMappings = Properties.SerializedSettings.Default.RightKeys;
+
+            loaded = true;
+        }
+
         private void okBtn_Click(object sender, EventArgs e)
         {
-            Properties.SerializedSettings.Default.Bindings = bindingsChooser.KeyMappings;
-            Properties.SerializedSettings.Default.LeftKeys = leftKeyChooser.KeyMappings;
-            Properties.SerializedSettings.Default.RightKeys = rightKeyChooser.KeyMappings;
+            Properties.SerializedSettings.Default.Bindings = bindingsMultiPicker.KeyMappings;
+            Properties.SerializedSettings.Default.LeftKeys = leftMultiPicker.KeyMappings;
+            Properties.SerializedSettings.Default.RightKeys = rightMultiPicker.KeyMappings;
             
             Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
@@ -52,12 +61,8 @@ namespace TTMulti.Forms
             new AboutWnd().ShowDialog(this);
         }
 
+        // https://docs.microsoft.com/en-us/visualstudio/deployment/how-to-check-for-application-updates-programmatically-using-the-clickonce-deployment-api?view=vs-2015
         private void checkUpdateBtn_Click(object sender, EventArgs e)
-        {
-            InstallUpdateSyncWithInfo();
-        }
-
-        private void InstallUpdateSyncWithInfo()
         {
             UpdateCheckInfo info = null;
 
@@ -132,63 +137,40 @@ namespace TTMulti.Forms
                 MessageBox.Show("This application can't be updated. Try re-installing it from the homepage.", "Cannot Be Updated", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void OptionsDlg_Load(object sender, EventArgs e)
-        {
-            bindingsChooser.KeyMappings = Properties.SerializedSettings.Default.Bindings;
-            leftKeyChooser.KeyMappings = Properties.SerializedSettings.Default.LeftKeys;
-            rightKeyChooser.KeyMappings = Properties.SerializedSettings.Default.RightKeys;
-
-            loaded = true;
-        }
-
+        
         private void addBindingBtn_Click(object sender, EventArgs e)
         {
-            bindingsChooser.AddMapping("Custom", Keys.None, false);
+            bindingsMultiPicker.AddMapping("Custom", Keys.None, false);
         }
 
-        private void bindingsChooser_KeyMappingAdded(object sender, KeyMapping e)
+        /**
+         * This is the best way I could think of to keep the multipickers in sync. 
+         * I tried doing a rebuild every time on the left and right multipickers but
+         * that just caused issues with the TableLayoutPanel layouts.
+         */
+
+        private void bindingsMultiPicker_KeyMappingAdded(object sender, KeyMapping e)
         {
+            // Don't do anything if the window hasn't loaded yet. 
+            // Otherwise, events received from the bindings picker will add extra rows
+            // to the other key pickers.
             if (loaded)
             {
-                leftKeyChooser.AddMapping(e.Title, Keys.None, true);
-                rightKeyChooser.AddMapping(e.Title, Keys.None, true);
+                leftMultiPicker.AddMapping(e.Title, Keys.None, true);
+                rightMultiPicker.AddMapping(e.Title, Keys.None, true);
             }
         }
 
-        private void bindingsChooser_KeyMappingRemoved(object sender, int rowNum)
+        private void bindingsMultiPicker_KeyMappingRemoved(object sender, int rowNum)
         {
-            leftKeyChooser.RemoveMapping(rowNum);
-            rightKeyChooser.RemoveMapping(rowNum);
+            leftMultiPicker.RemoveMapping(rowNum);
+            rightMultiPicker.RemoveMapping(rowNum);
         }
 
-        private void bindingsChooser_KeyMappingsChanged(object sender, EventArgs e)
+        private void bindingsMultiPicker_KeyMappingsChanged(object sender, EventArgs e)
         {
-            leftKeyChooser.KeyMappingTitles = bindingsChooser.KeyMappingTitles;
-            rightKeyChooser.KeyMappingTitles = bindingsChooser.KeyMappingTitles;
-
-            /*var bindings = bindingsChooser.KeyMappings;
-            var leftKeys = Properties.SerializedSettings.Default.LeftKeys;
-            var rightKeys = Properties.SerializedSettings.Default.RightKeys;
-
-            leftKeys = leftKeys.GetRange(0, Math.Min(leftKeys.Count, bindings.Count));
-            rightKeys = rightKeys.GetRange(0, Math.Min(rightKeys.Count, bindings.Count));
-
-            for (int i = 0; i < bindings.Count; i++)
-            {
-                if (leftKeys.Count <= i)
-                {
-                    leftKeys.Add(new KeyMapping(bindings[i].Title, Keys.None, true));
-                }
-
-                if (rightKeys.Count <= i)
-                {
-                    rightKeys.Add(new KeyMapping(bindings[i].Title, Keys.None, true));
-                }
-            }
-
-            leftKeyChooser.KeyMappings = leftKeys;
-            rightKeyChooser.KeyMappings = rightKeys;*/
+            leftMultiPicker.KeyMappingTitles = bindingsMultiPicker.KeyMappingTitles;
+            rightMultiPicker.KeyMappingTitles = bindingsMultiPicker.KeyMappingTitles;
         }
     }
 }

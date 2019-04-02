@@ -11,7 +11,11 @@ using System.IO;
 
 namespace TTMulti.Forms
 {
-    public partial class BorderWnd : Form, IWin32Window
+    /// <summary>
+    /// This window is used to display a border around Toontown windows that are controlled 
+    /// by the multicontroller. The border is drawn manually.
+    /// </summary>
+    internal partial class BorderWnd : Form, IWin32Window
     {
         Color _borderColor = Color.Black;
         public Color BorderColor
@@ -26,16 +30,13 @@ namespace TTMulti.Forms
                 this.Invalidate();
             }
         }
-        public int BorderWidth { get; set; }
 
-        public BorderWnd()
-        {
-            InitializeComponent();
+        // TODO: Does this need to be settable? If yes, call Invalidate when setting it.
+        public int BorderWidth { get; set; } = 5;
 
-            this.BorderWidth = 5;
-            this.Cursor = new Cursor(new MemoryStream(Properties.Resources.toonmono));
-        }
-
+        /// <summary>
+        /// Overrides the default style so that the window is transparent and borderless.
+        /// </summary>
         protected override CreateParams CreateParams
         {
             get
@@ -47,11 +48,23 @@ namespace TTMulti.Forms
             }
         }
 
+        /// <summary>
+        /// Allows the window to be shown without activating it. By default, the window is activated
+        /// when show which would disrupt operation of the multicontroller.
+        /// </summary>
         protected override bool ShowWithoutActivation
         {
             get { return true; }
         }
 
+        public BorderWnd()
+        {
+            InitializeComponent();
+            
+            // TODO: Remove this? I don't think it's needed.
+            this.Cursor = new Cursor(new MemoryStream(Properties.Resources.toonmono));
+        }
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);

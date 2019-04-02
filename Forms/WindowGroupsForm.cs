@@ -10,17 +10,16 @@ using TTMulti.Controls;
 
 namespace TTMulti.Forms
 {
+    /// <summary>
+    /// This dialog allows the user to define groups of Toontown windows.
+    /// The number of groups possible is limited to 10 since there are only 10 number keys.
+    /// </summary>
     public partial class WindowGroupsForm : Form
     {
-        //List<SelectWindowCrosshair> crosshairs = new List<SelectWindowCrosshair>();
-
         public WindowGroupsForm()
         {
             InitializeComponent();
             this.Icon = Properties.Resources.icon;
-
-            //crosshairs.Add(leftToonCrosshair);
-            //crosshairs.Add(rightToonCrosshair);
 
             groupBox1.Tag = Multicontroller.Instance.ControllerGroups[0];
 
@@ -33,6 +32,7 @@ namespace TTMulti.Forms
             {
                 var controllerGroup = Multicontroller.Instance.ControllerGroups[i];
 
+                // The TableLayoutPanel only holds GroupBoxes, each of which has two window pickers
                 var crosshairs = tableLayoutPanel1.Controls[i].Controls.OfType<SelectWindowCrosshair>().ToList();
 
                 crosshairs.First(c => (string)c.Tag == "left").SelectedWindowHandle = controllerGroup.LeftController.TTWindowHandle;
@@ -40,15 +40,16 @@ namespace TTMulti.Forms
             }
         }
 
-        private void SelectWindowsForm_Load(object sender, EventArgs e)
+        private void addGroup()
         {
-            //this.StartPosition = FormStartPosition.Manual;
-            //this.Location = new Point(
-            //    this.Owner.Location.X - this.Width,
-            //    this.Owner.Location.Y
-            //    );
-        }
+            GroupBox groupBox = createGroupBox();
 
+            tableLayoutPanel1.Controls.Add(groupBox);
+
+            addGroupBtn.Enabled = tableLayoutPanel1.Controls.Count < 10;
+            removeGroupBtn.Enabled = true;
+        }
+        
         private GroupBox createGroupBox()
         {
             int index = tableLayoutPanel1.Controls.Count;
@@ -61,15 +62,14 @@ namespace TTMulti.Forms
             }
             else
             {
-                controllerGroup = Multicontroller.Instance.CreateControllerGroup();
-                Multicontroller.Instance.ControllerGroups.Add(controllerGroup);
+                controllerGroup = Multicontroller.Instance.AddControllerGroup();
             }
 
             GroupBox groupBox = new GroupBox()
             {
                 Width = groupBox1.Width,
                 Height = groupBox1.Height,
-                Text = "Group " + (tableLayoutPanel1.Controls.Count + 1),
+                Text = "Group " + index,
                 Tag = controllerGroup
             };
 
@@ -102,15 +102,18 @@ namespace TTMulti.Forms
             };
 
             crosshair2.WindowSelected += crosshair_WindowSelected;
-
-            //crosshairs.AddRange(new[] { crosshair1, crosshair2 });
-
+            
             groupBox.Controls.AddRange(new Control[] { label1, label2, crosshair1, crosshair2 });
 
             return groupBox;
         }
 
-        void crosshair_WindowSelected(object sender, IntPtr handle)
+        private void WindowGroupsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
+
+        private void crosshair_WindowSelected(object sender, IntPtr handle)
         {
             SelectWindowCrosshair crosshair = (SelectWindowCrosshair)sender;
             ControllerGroup controllerGroup = (ControllerGroup)crosshair.Parent.Tag;
@@ -119,50 +122,28 @@ namespace TTMulti.Forms
 
             controller.TTWindowHandle = handle;
         }
-
-        private void addGroup()
-        {
-            GroupBox groupBox = createGroupBox();
-
-            tableLayoutPanel1.Controls.Add(groupBox);
-
-            addGroupBtn.Enabled = tableLayoutPanel1.Controls.Count < 10;
-            removeGroupBtn.Enabled = true;
-        }
-
-        private void addSetBtn_Click(object sender, EventArgs e)
+        
+        private void addGroupBtn_Click(object sender, EventArgs e)
         {
             if (tableLayoutPanel1.Controls.Count < 10)
             {
                 addGroup();
-
                 Properties.Settings.Default.numberOfGroups++;
             }
         }
 
-        private void removeSetBtn_Click(object sender, EventArgs e)
+        private void removeGroupBtn_Click(object sender, EventArgs e)
         {
             if (tableLayoutPanel1.Controls.Count > 1)
             {
-                tableLayoutPanel1.Controls.Remove(tableLayoutPanel1.Controls[tableLayoutPanel1.Controls.Count - 1]);
-
-                removeGroupBtn.Enabled = tableLayoutPanel1.Controls.Count > 1;
-
-                ControllerGroup controllerGroup = Multicontroller.Instance.ControllerGroups.Last();
-                controllerGroup.LeftController.Shutdown();
-                controllerGroup.RightController.Shutdown();
-                Multicontroller.Instance.ControllerGroups.Remove(controllerGroup);
-
-                Properties.Settings.Default.numberOfGroups--;
+                tableLayoutPanel1.Controls.RemoveAt(tableLayoutPanel1.Controls.Count - 1);
 
                 addGroupBtn.Enabled = tableLayoutPanel1.Controls.Count < 10;
-                //crosshairs.RemoveRange(crosshairs.Count - 3, 2);
-            }
-        }
+                removeGroupBtn.Enabled = tableLayoutPanel1.Controls.Count > 1;
 
-        private void SelectWindowsForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Properties.Settings.Default.Save();
+                Multicontroller.Instance.RemoveControllerGroup(Multicontroller.Instance.ControllerGroups.Count - 1);
+                Properties.Settings.Default.numberOfGroups--;
+            }
         }
     }
 }

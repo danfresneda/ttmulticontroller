@@ -128,7 +128,7 @@
             this.addGroupBtn.Text = "+";
             this.addGroupBtn.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.addGroupBtn.UseVisualStyleBackColor = true;
-            this.addGroupBtn.Click += new System.EventHandler(this.addSetBtn_Click);
+            this.addGroupBtn.Click += new System.EventHandler(this.addGroupBtn_Click);
             // 
             // removeGroupBtn
             // 
@@ -142,7 +142,7 @@
             this.removeGroupBtn.Text = "-";
             this.removeGroupBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.removeGroupBtn.UseVisualStyleBackColor = true;
-            this.removeGroupBtn.Click += new System.EventHandler(this.removeSetBtn_Click);
+            this.removeGroupBtn.Click += new System.EventHandler(this.removeGroupBtn_Click);
             // 
             // label1
             // 
@@ -173,7 +173,7 @@
             this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 50);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Window Groups";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectWindowsForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowGroupsForm_FormClosing);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

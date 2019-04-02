@@ -1,6 +1,6 @@
 ﻿namespace TTMulti.Controls
 {
-    partial class KeyChooser
+    partial class KeyPicker
     {
         /// <summary> 
         /// Required designer variable.

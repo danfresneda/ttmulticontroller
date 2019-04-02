@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace TTMulti.Controls
 {
-    public partial class KeyChooser : UserControl
+    public partial class KeyPicker : UserControl
     {
-        public delegate void KeyChosenHandler(KeyChooser chooser, Keys keyChosen);
+        public delegate void KeyChosenHandler(KeyPicker chooser, Keys keyChosen);
 
         public event KeyChosenHandler KeyChosen;
 
@@ -51,7 +51,7 @@ namespace TTMulti.Controls
             {Keys.None, "Disabled - click here and press a key"}
         };
 
-        static KeyChooser()
+        static KeyPicker()
         {
             alternateKeyTexts[Keys.Oem5] = alternateKeyTexts[Keys.OemBackslash];
             alternateKeyTexts[Keys.Oem6] = alternateKeyTexts[Keys.OemCloseBrackets];
@@ -103,7 +103,7 @@ namespace TTMulti.Controls
             }
         }
 
-        public KeyChooser()
+        public KeyPicker()
         {
             InitializeComponent();
             textBox1.Text = _key.ToString();
