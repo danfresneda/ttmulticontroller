@@ -29,13 +29,13 @@ namespace TTMulti.Properties
                     {
                         return new List<KeyMapping>()
                         {
-                            new KeyMapping("Left", Keys.Left, true),
-                            new KeyMapping("Right", Keys.Right, true),
-                            new KeyMapping("Forward", Keys.Up, true),
-                            new KeyMapping("Backward", Keys.Down, true),
-                            new KeyMapping("Jump", Keys.ControlKey, true),
-                            new KeyMapping("Throw", Keys.Delete, true),
-                            new KeyMapping("Open Book", Keys.Escape, true)
+                            new KeyMapping("Forward", Keys.Up, (Keys)Properties.Settings.Default.leftForwardKeyCode, (Keys)Properties.Settings.Default.rightForwardKeyCode, true),
+                            new KeyMapping("Left", Keys.Left, (Keys)Properties.Settings.Default.leftLeftKeyCode, (Keys)Properties.Settings.Default.rightLeftKeyCode, true),
+                            new KeyMapping("Backward", Keys.Down, (Keys)Properties.Settings.Default.leftBackKeyCode, (Keys)Properties.Settings.Default.rightBackKeyCode, true),
+                            new KeyMapping("Right", Keys.Right, (Keys)Properties.Settings.Default.leftRightKeyCode, (Keys)Properties.Settings.Default.rightRightKeyCode, true),
+                            new KeyMapping("Jump", Keys.ControlKey, (Keys)Properties.Settings.Default.leftJumpKeyCode, (Keys)Properties.Settings.Default.rightJumpKeyCode, true),
+                            new KeyMapping("Throw", Keys.Delete, (Keys)Properties.Settings.Default.leftThrowKeyCode, (Keys)Properties.Settings.Default.rightThrowKeyCode, true),
+                            new KeyMapping("Open Book", Keys.Escape, (Keys)Properties.Settings.Default.leftEscapeKeyCode, (Keys)Properties.Settings.Default.rightEscapeKeyCode, true)
                         };
                     }
                 }
@@ -46,76 +46,6 @@ namespace TTMulti.Properties
                 {
                     keyMappingSerializer.Serialize(sw, value);
                     Properties.Settings.Default.keyBindings = sw.ToString();
-                }
-            }
-        }
-
-        public List<KeyMapping> LeftKeys
-        {
-            get
-            {
-                using (StringReader sr = new StringReader(Properties.Settings.Default.leftKeys))
-                {
-                    try
-                    {
-                        return keyMappingSerializer.Deserialize(sr) as List<KeyMapping>;
-                    }
-                    catch
-                    {
-                        return new List<KeyMapping>()
-                        {
-                            new KeyMapping("Left", (Keys)Properties.Settings.Default.leftLeftKeyCode, true),
-                            new KeyMapping("Right", (Keys)Properties.Settings.Default.leftRightKeyCode, true),
-                            new KeyMapping("Forward", (Keys)Properties.Settings.Default.leftForwardKeyCode, true),
-                            new KeyMapping("Backward", (Keys)Properties.Settings.Default.leftBackKeyCode, true),
-                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.leftJumpKeyCode, true),
-                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.leftThrowKeyCode, true),
-                            new KeyMapping("Open Book", (Keys)Properties.Settings.Default.leftEscapeKeyCode, true)
-                        };
-                    }
-                }
-            }
-            set
-            {
-                using (StringWriter sw = new StringWriter())
-                {
-                    keyMappingSerializer.Serialize(sw, value);
-                    Properties.Settings.Default.leftKeys = sw.ToString();
-                }
-            }
-        }
-
-        public List<KeyMapping> RightKeys
-        {
-            get
-            {
-                using (StringReader sr = new StringReader(Properties.Settings.Default.rightKeys))
-                {
-                    try
-                    {
-                        return keyMappingSerializer.Deserialize(sr) as List<KeyMapping>;
-                    }
-                    catch
-                    {
-                        return new List<KeyMapping>()
-                        {
-                            new KeyMapping("Left", (Keys)Properties.Settings.Default.rightLeftKeyCode, true),
-                            new KeyMapping("Right", (Keys)Properties.Settings.Default.rightRightKeyCode, true),
-                            new KeyMapping("Forward", (Keys)Properties.Settings.Default.rightForwardKeyCode, true),
-                            new KeyMapping("Backward", (Keys)Properties.Settings.Default.rightBackKeyCode, true),
-                            new KeyMapping("Jump", (Keys)Properties.Settings.Default.rightJumpKeyCode, true),
-                            new KeyMapping("Throw", (Keys)Properties.Settings.Default.rightThrowKeyCode, true),
-                            new KeyMapping("Open Book", (Keys)Properties.Settings.Default.rightEscapeKeyCode, true)
-                        };
-                    }
-                }
-            }
-            set
-            {
-                using (StringWriter sw = new StringWriter())
-                {
-                    keyMappingSerializer.Serialize(sw, value);
-                    Properties.Settings.Default.rightKeys = sw.ToString();
                 }
             }
         }

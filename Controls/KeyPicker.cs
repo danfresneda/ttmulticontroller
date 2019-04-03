@@ -17,6 +17,8 @@ namespace TTMulti.Controls
 
         Keys _key = Keys.None;
 
+        bool isActive = false;
+
         static Dictionary<Keys, string> alternateKeyTexts = new Dictionary<Keys, string>()
         {
             {Keys.Oemcomma, "Comma"},
@@ -48,7 +50,8 @@ namespace TTMulti.Controls
             {Keys.Down, "DownArrow"},
             {Keys.Up, "UpArrow"},
             {Keys.Back, "Backspace"},
-            {Keys.None, "Disabled - click here and press a key"}
+            {Keys.Capital, "CapsLock"},
+            {Keys.Next, "PageDown"}
         };
 
         static KeyPicker()
@@ -74,6 +77,10 @@ namespace TTMulti.Controls
                     if (alternateKeyTexts.ContainsKey(_key))
                     {
                         text = alternateKeyTexts[_key];
+                    }
+                    else if (_key == Keys.None)
+                    {
+                        text = isActive ? "Disabled - press a key" : "Disabled - click here";
                     }
 
                     textBox1.Text = text;
@@ -107,6 +114,28 @@ namespace TTMulti.Controls
         {
             InitializeComponent();
             textBox1.Text = _key.ToString();
+            textBox1.Enter += TextBox1_Enter;
+            textBox1.Leave += TextBox1_Leave;
+        }
+
+        private void TextBox1_Leave(object sender, EventArgs e)
+        {
+            isActive = false;
+
+            if (ChosenKey == Keys.None)
+            {
+                textBox1.Text = "Disabled - click here";
+            }
+        }
+
+        private void TextBox1_Enter(object sender, EventArgs e)
+        {
+            isActive = true;
+
+            if (ChosenKey == Keys.None)
+            {
+                textBox1.Text = "Disabled - press a key";
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

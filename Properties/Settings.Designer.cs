@@ -277,30 +277,6 @@ namespace TTMulti.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string leftKeys {
-            get {
-                return ((string)(this["leftKeys"]));
-            }
-            set {
-                this["leftKeys"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string rightKeys {
-            get {
-                return ((string)(this["rightKeys"]));
-            }
-            set {
-                this["rightKeys"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("36")]
         public int keepAliveKeyCode {
             get {
@@ -320,6 +296,30 @@ namespace TTMulti.Properties {
             }
             set {
                 this["keyBindings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string leftKeys {
+            get {
+                return ((string)(this["leftKeys"]));
+            }
+            set {
+                this["leftKeys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string rightKeys {
+            get {
+                return ((string)(this["rightKeys"]));
+            }
+            set {
+                this["rightKeys"] = value;
             }
         }
     }

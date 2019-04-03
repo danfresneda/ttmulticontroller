@@ -118,20 +118,18 @@ namespace TTMulti
             leftKeys.Clear();
             rightKeys.Clear();
 
-            var ttBindings = Properties.SerializedSettings.Default.Bindings;
-            var leftBindings = Properties.SerializedSettings.Default.LeftKeys;
-            var rightBindings = Properties.SerializedSettings.Default.RightKeys;
+            var keyBindings = Properties.SerializedSettings.Default.Bindings;
 
-            for (int i = 0; i < ttBindings.Count; i++)
+            for (int i = 0; i < keyBindings.Count; i++)
             {
-                if (ttBindings[i].Key != Keys.None && leftBindings[i].Key != Keys.None)
+                if (keyBindings[i].Key != Keys.None && keyBindings[i].LeftToonKey != Keys.None)
                 {
-                    leftKeys.Add(ttBindings[i].Key, leftBindings[i].Key);
+                    leftKeys.Add(keyBindings[i].Key, keyBindings[i].LeftToonKey);
                 }
 
-                if (ttBindings[i].Key != Keys.None && rightBindings[i].Key != Keys.None)
+                if (keyBindings[i].Key != Keys.None && keyBindings[i].RightToonKey != Keys.None)
                 {
-                    rightKeys.Add(ttBindings[i].Key, rightBindings[i].Key);
+                    rightKeys.Add(keyBindings[i].Key, keyBindings[i].RightToonKey);
                 }
             }
         }

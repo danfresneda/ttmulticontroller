@@ -91,17 +91,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\MultiKeyPicker.cs">
+    <Compile Include="Controls\ControlsPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\MultiKeyPicker.Designer.cs">
-      <DependentUpon>MultiKeyPicker.cs</DependentUpon>
+    <Compile Include="Controls\ControlsPicker.Designer.cs">
+      <DependentUpon>ControlsPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AboutWnd.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\AboutWnd.Designer.cs">
       <DependentUpon>AboutWnd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddKeyMappingDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddKeyMappingDlg.Designer.cs">
+      <DependentUpon>AddKeyMappingDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BorderWnd.cs">
       <SubType>Form</SubType>
@@ -151,11 +157,14 @@
     </Compile>
     <Compile Include="ToontownController.cs" />
     <Compile Include="Win32.cs" />
-    <EmbeddedResource Include="Controls\MultiKeyPicker.resx">
-      <DependentUpon>MultiKeyPicker.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ControlsPicker.resx">
+      <DependentUpon>ControlsPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutWnd.resx">
       <DependentUpon>AboutWnd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddKeyMappingDlg.resx">
+      <DependentUpon>AddKeyMappingDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BorderWnd.resx">
       <DependentUpon>BorderWnd.cs</DependentUpon>

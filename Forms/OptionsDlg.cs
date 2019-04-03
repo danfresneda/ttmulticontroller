@@ -32,18 +32,14 @@ namespace TTMulti.Forms
 
         private void OptionsDlg_Load(object sender, EventArgs e)
         {
-            bindingsMultiPicker.KeyMappings = Properties.SerializedSettings.Default.Bindings;
-            leftMultiPicker.KeyMappings = Properties.SerializedSettings.Default.LeftKeys;
-            rightMultiPicker.KeyMappings = Properties.SerializedSettings.Default.RightKeys;
+            controlsPicker.KeyMappings = Properties.SerializedSettings.Default.Bindings;
 
             loaded = true;
         }
 
         private void okBtn_Click(object sender, EventArgs e)
         {
-            Properties.SerializedSettings.Default.Bindings = bindingsMultiPicker.KeyMappings;
-            Properties.SerializedSettings.Default.LeftKeys = leftMultiPicker.KeyMappings;
-            Properties.SerializedSettings.Default.RightKeys = rightMultiPicker.KeyMappings;
+            Properties.SerializedSettings.Default.Bindings = controlsPicker.KeyMappings;
             
             Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
@@ -140,37 +136,38 @@ namespace TTMulti.Forms
         
         private void addBindingBtn_Click(object sender, EventArgs e)
         {
-            bindingsMultiPicker.AddMapping("Custom", Keys.None, false);
-        }
+            AddKeyMappingDlg addKeyMappingDlg = new AddKeyMappingDlg();
 
-        /**
-         * This is the best way I could think of to keep the multipickers in sync. 
-         * I tried doing a rebuild every time on the left and right multipickers but
-         * that just caused issues with the TableLayoutPanel layouts.
-         */
-
-        private void bindingsMultiPicker_KeyMappingAdded(object sender, KeyMapping e)
-        {
-            // Don't do anything if the window hasn't loaded yet. 
-            // Otherwise, events received from the bindings picker will add extra rows
-            // to the other key pickers.
-            if (loaded)
+            while (addKeyMappingDlg.ShowDialog() == DialogResult.OK)
             {
-                leftMultiPicker.AddMapping(e.Title, Keys.None, true);
-                rightMultiPicker.AddMapping(e.Title, Keys.None, true);
+                var keyBindings = controlsPicker.KeyMappings;
+
+                if (string.IsNullOrEmpty(addKeyMappingDlg.BindingName.Trim()))
+                {
+                    MessageBox.Show("Please enter a name for the binding.");
+                }
+                else if (addKeyMappingDlg.LeftToonKey != Keys.None && keyBindings.Any(t => t.LeftToonKey == addKeyMappingDlg.LeftToonKey))
+                {
+                    MessageBox.Show("Sorry, the key you picked for the left toon is already being used for another binding on the left toon.");
+                }
+                else if (addKeyMappingDlg.RightToonKey != Keys.None && keyBindings.Any(t => t.RightToonKey == addKeyMappingDlg.RightToonKey))
+                {
+                    MessageBox.Show("Sorry, the key you picked for the right toon is already being used for another binding on the right toon.");
+                }
+                else
+                {
+                    if (addKeyMappingDlg.LeftToonKey >= Keys.D0 && addKeyMappingDlg.LeftToonKey <= Keys.D9
+                        || addKeyMappingDlg.LeftToonKey >= Keys.NumPad0 && addKeyMappingDlg.LeftToonKey <= Keys.NumPad9
+                        || addKeyMappingDlg.RightToonKey >= Keys.D0 && addKeyMappingDlg.RightToonKey <= Keys.D9
+                        || addKeyMappingDlg.RightToonKey >= Keys.NumPad0 && addKeyMappingDlg.RightToonKey <= Keys.NumPad9)
+                    {
+                        MessageBox.Show("Note: the number keys (0-9) and number pad keys are reserved for switching groups if there is more than 1 group.");
+                    }
+
+                    controlsPicker.AddMapping(new KeyMapping(addKeyMappingDlg.BindingName, addKeyMappingDlg.BindingKey, addKeyMappingDlg.LeftToonKey, addKeyMappingDlg.RightToonKey, false));
+                    break;
+                }
             }
-        }
-
-        private void bindingsMultiPicker_KeyMappingRemoved(object sender, int rowNum)
-        {
-            leftMultiPicker.RemoveMapping(rowNum);
-            rightMultiPicker.RemoveMapping(rowNum);
-        }
-
-        private void bindingsMultiPicker_KeyMappingsChanged(object sender, EventArgs e)
-        {
-            leftMultiPicker.KeyMappingTitles = bindingsMultiPicker.KeyMappingTitles;
-            rightMultiPicker.KeyMappingTitles = bindingsMultiPicker.KeyMappingTitles;
         }
     }
 }
