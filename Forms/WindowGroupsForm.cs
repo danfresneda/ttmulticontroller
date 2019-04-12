@@ -145,5 +145,10 @@ namespace TTMulti.Forms
                 Properties.Settings.Default.numberOfGroups--;
             }
         }
+
+        private void okBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

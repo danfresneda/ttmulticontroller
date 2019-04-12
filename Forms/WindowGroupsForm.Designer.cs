@@ -32,12 +32,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rightToonLbl = new System.Windows.Forms.Label();
             this.leftToonLbl = new System.Windows.Forms.Label();
+            this.rightToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
+            this.leftToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
             this.addGroupBtn = new System.Windows.Forms.Button();
             this.removeGroupBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.okBtn = new System.Windows.Forms.Button();
-            this.rightToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
-            this.leftToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -53,7 +53,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 4);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -71,9 +71,9 @@
             this.groupBox1.Controls.Add(this.rightToonCrosshair);
             this.groupBox1.Controls.Add(this.leftToonCrosshair);
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(230, 101);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
@@ -100,12 +100,37 @@
             this.leftToonLbl.TabIndex = 2;
             this.leftToonLbl.Text = "Left Toon";
             // 
+            // rightToonCrosshair
+            // 
+            this.rightToonCrosshair.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rightToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
+            this.rightToonCrosshair.Location = new System.Drawing.Point(155, 42);
+            this.rightToonCrosshair.Margin = new System.Windows.Forms.Padding(4);
+            this.rightToonCrosshair.Name = "rightToonCrosshair";
+// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
+            this.rightToonCrosshair.Size = new System.Drawing.Size(48, 44);
+            this.rightToonCrosshair.TabIndex = 1;
+            this.rightToonCrosshair.Tag = "right";
+            this.rightToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.crosshair_WindowSelected);
+            // 
+            // leftToonCrosshair
+            // 
+            this.leftToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
+            this.leftToonCrosshair.Location = new System.Drawing.Point(24, 42);
+            this.leftToonCrosshair.Margin = new System.Windows.Forms.Padding(4);
+            this.leftToonCrosshair.Name = "leftToonCrosshair";
+// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
+            this.leftToonCrosshair.Size = new System.Drawing.Size(48, 44);
+            this.leftToonCrosshair.TabIndex = 0;
+            this.leftToonCrosshair.Tag = "left";
+            this.leftToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.crosshair_WindowSelected);
+            // 
             // addGroupBtn
             // 
             this.addGroupBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.addGroupBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.addGroupBtn.Location = new System.Drawing.Point(250, 15);
-            this.addGroupBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addGroupBtn.Margin = new System.Windows.Forms.Padding(4);
             this.addGroupBtn.Name = "addGroupBtn";
             this.addGroupBtn.Size = new System.Drawing.Size(42, 39);
             this.addGroupBtn.TabIndex = 1;
@@ -119,7 +144,7 @@
             this.removeGroupBtn.Enabled = false;
             this.removeGroupBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.removeGroupBtn.Location = new System.Drawing.Point(250, 62);
-            this.removeGroupBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.removeGroupBtn.Margin = new System.Windows.Forms.Padding(4);
             this.removeGroupBtn.Name = "removeGroupBtn";
             this.removeGroupBtn.Size = new System.Drawing.Size(42, 39);
             this.removeGroupBtn.TabIndex = 2;
@@ -149,31 +174,7 @@
             this.okBtn.TabIndex = 4;
             this.okBtn.Text = "OK";
             this.okBtn.UseVisualStyleBackColor = true;
-            // 
-            // rightToonCrosshair
-            // 
-            this.rightToonCrosshair.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rightToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
-            this.rightToonCrosshair.Location = new System.Drawing.Point(155, 42);
-            this.rightToonCrosshair.Margin = new System.Windows.Forms.Padding(4);
-            this.rightToonCrosshair.Name = "rightToonCrosshair";
-// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.rightToonCrosshair.Size = new System.Drawing.Size(48, 44);
-            this.rightToonCrosshair.TabIndex = 1;
-            this.rightToonCrosshair.Tag = "right";
-            this.rightToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.crosshair_WindowSelected);
-            // 
-            // leftToonCrosshair
-            // 
-            this.leftToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
-            this.leftToonCrosshair.Location = new System.Drawing.Point(24, 42);
-            this.leftToonCrosshair.Margin = new System.Windows.Forms.Padding(4);
-            this.leftToonCrosshair.Name = "leftToonCrosshair";
-// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.leftToonCrosshair.Size = new System.Drawing.Size(48, 44);
-            this.leftToonCrosshair.TabIndex = 0;
-            this.leftToonCrosshair.Tag = "left";
-            this.leftToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.crosshair_WindowSelected);
+            this.okBtn.Click += new System.EventHandler(this.okBtn_Click);
             // 
             // WindowGroupsForm
             // 
@@ -189,7 +190,7 @@
             this.Controls.Add(this.addGroupBtn);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "WindowGroupsForm";
