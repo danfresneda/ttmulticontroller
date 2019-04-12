@@ -21,10 +21,6 @@ namespace TTMulti.Forms
     /// </summary>
     internal partial class MulticontrollerWnd : Form, IMessageFilter
     {
-        // Low-level keyboard hook related fields
-        IntPtr _llHookID = IntPtr.Zero;
-        Win32.HookProc llKeyboardProc = null;
-
         /// <summary>
         /// This flag is used to ignore input while a dialog is open.
         /// </summary>
@@ -37,35 +33,12 @@ namespace TTMulti.Forms
 
         Multicontroller controller;
 
+        bool hotkeyRegistered = false;
+
         internal MulticontrollerWnd()
         {
             InitializeComponent();
             this.Icon = Properties.Resources.icon;
-        }
-        
-        IntPtr LLKeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (nCode >= 0)
-            {
-                Win32.WM msg = (Win32.WM)wParam;
-
-                if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP) 
-                {
-                    Keys vkCode = (Keys)Marshal.ReadInt32(lParam);
-
-                    if (vkCode == (Keys)Properties.Settings.Default.modeKeyCode)
-                    {
-                        bool ret = controller.ProcessKey(vkCode, (uint)msg);
-
-                        if (ret)
-                        {
-                            return (IntPtr)1;
-                        }
-                    }
-                }
-            }
-
-            return Win32.CallNextHookEx(_llHookID, nCode, wParam, lParam);
         }
 
         /// <summary>
@@ -235,17 +208,25 @@ namespace TTMulti.Forms
             
             var msg = (Win32.WM)m.Msg;
             
-            if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP || msg == Win32.WM.SYSKEYDOWN || msg == Win32.WM.SYSKEYUP || msg == Win32.WM.SYSCOMMAND)
+            if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP || msg == Win32.WM.SYSKEYDOWN || msg == Win32.WM.SYSKEYUP || msg == Win32.WM.SYSCOMMAND || msg == Win32.WM.HOTKEY)
             {
                 var key = (Keys)m.WParam.ToInt32();
-                var settings = Properties.Settings.Default;
-
                 ret = controller.ProcessKey(key, (uint)m.Msg, m.LParam);
             }
 
             return ret;
         }
-        
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == (int)Win32.WM.HOTKEY)
+            {
+                controller.ProcessKey((Keys)Properties.Settings.Default.modeKeyCode, (uint)m.Msg);
+            }
+
+            base.WndProc(ref m);
+        }
+
         internal void SaveWindowPosition()
         {
             Properties.Settings.Default.lastLocation = this.Location;
@@ -257,16 +238,35 @@ namespace TTMulti.Forms
             this.TopMost = Properties.Settings.Default.onTopWhenInactive;
             wndGroup.Visible = !Properties.Settings.Default.compactUI;
             controller.UpdateKeys();
+            UnregisterHotkey();
+        }
+
+        private bool RegisterHotkey()
+        {
+            if (!hotkeyRegistered)
+            {
+                hotkeyRegistered = Win32.RegisterHotKey(this.Handle, 0, Win32.KeyModifiers.None, (Keys)Properties.Settings.Default.modeKeyCode);
+            }
+
+            return hotkeyRegistered;
+        }
+
+        private void UnregisterHotkey()
+        {
+            Win32.UnregisterHotKey(this.Handle, 0);
+
+            hotkeyRegistered = false;
         }
 
         private void MulticontrollerWnd_Load(object sender, EventArgs e)
         {
             controller = Multicontroller.Instance;
-            controller.Init();
 
             controller.ModeChanged += Controller_ModeChanged;
             controller.GroupsChanged += Controller_GroupsChanged;
             controller.ShouldActivate += Controller_ShouldActivate;
+            controller.TTWindowActivated += Controller_TTWindowActivated;
+            controller.AllTTWindowsInactive += Controller_AllTTWindowsInactive;
 
             // Removes the extra padding on the right side of the status strip.
             // Apparently this is "not relevant for this class" but still has an effect.
@@ -274,17 +274,7 @@ namespace TTMulti.Forms
 
             // Set up the IMessageFilter so we receive all messages for child controls
             Application.AddMessageFilter(this);
-
-            // Set up the low-level keyboard hook used for activating the multicontroller 
-            // from any selected Toontown window.
-            llKeyboardProc = new Win32.HookProc(LLKeyboardHookCallback);
-
-            using (Process curProcess = Process.GetCurrentProcess())
-            using (ProcessModule curModule = curProcess.MainModule)
-            {
-                _llHookID = Win32.SetWindowsHookEx(Win32.WH_KEYBOARD_LL, llKeyboardProc, Win32.GetModuleHandle(curModule.ModuleName), 0);
-            }
-
+            
             // Restore the saved position of the window, making sure that it's not offscreen
             if (Properties.Settings.Default.lastLocation != Point.Empty)
             {
@@ -311,7 +301,22 @@ namespace TTMulti.Forms
             // Multicontroller could have loaded groups
             UpdateWindowStatus();
         }
-        
+
+        // There's probably a race condition somewhere in here since the activate/deactivate events
+        // are potentially fired by different threads at the same time
+        private void Controller_AllTTWindowsInactive(object sender, EventArgs e)
+        {
+            if (!this.IsDisposed && !this.Disposing)
+            {
+                this.InvokeIfRequired(() => UnregisterHotkey());
+            }
+        }
+
+        private void Controller_TTWindowActivated(object sender, EventArgs e)
+        {
+            this.InvokeIfRequired(() => RegisterHotkey());
+        }
+
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -319,8 +324,7 @@ namespace TTMulti.Forms
                 activationThread.Abort();
             }
             catch { }
-
-            Win32.UnhookWindowsHookEx(_llHookID);
+            
             SaveWindowPosition();
         }
 

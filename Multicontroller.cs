@@ -17,11 +17,10 @@ namespace TTMulti
         public event EventHandler ModeChanged;
         public event EventHandler GroupsChanged;
         public event EventHandler ShouldActivate;
+        public event EventHandler TTWindowActivated;
+        public event EventHandler AllTTWindowsInactive;
 
-        internal List<ControllerGroup> ControllerGroups { get; } = new List<ControllerGroup>()
-        {
-            new ControllerGroup()
-        };
+        internal List<ControllerGroup> ControllerGroups { get; } = new List<ControllerGroup>();
 
         int currentGroupIndex = 0;
 
@@ -99,18 +98,15 @@ namespace TTMulti
 
         internal Multicontroller()
         {
-            // TODO: add this back in?
-            //LeftController.TTWindowClosed += () =>
-            //{
-            //    mainWnd.LeftWindowClosed();
-            //};
-
-            //RightController.TTWindowClosed += () =>
-            //{
-            //    mainWnd.RightWindowClosed();
-            //};
 
             UpdateKeys();
+
+            for (int i = ControllerGroups.Count; i < Properties.Settings.Default.numberOfGroups; i++)
+            {
+                AddControllerGroup();
+            }
+
+            updateControllerBorders();
         }
 
         internal void UpdateKeys()
@@ -134,22 +130,14 @@ namespace TTMulti
             }
         }
 
-        internal void Init()
-        {
-            UpdateKeys();
-
-            for (int i = ControllerGroups.Count; i < Properties.Settings.Default.numberOfGroups; i++)
-            {
-                AddControllerGroup();
-            }
-
-            updateControllerBorders();
-        }
-
         internal ControllerGroup AddControllerGroup()
         {
             ControllerGroup group = new ControllerGroup();
 
+            group.LeftController.TTWindowActivated += Controller_TTWindowActivated;
+            group.RightController.TTWindowActivated += Controller_TTWindowActivated;
+            group.LeftController.TTWindowDeactivated += Controller_TTWindowDeactivated;
+            group.RightController.TTWindowDeactivated += Controller_TTWindowDeactivated;
             group.LeftController.TTWindowClosed += Controller_TTWindowClosed;
             group.RightController.TTWindowClosed += Controller_TTWindowClosed;
             ControllerGroups.Add(group);
@@ -157,7 +145,7 @@ namespace TTMulti
 
             return group;
         }
-
+        
         internal void RemoveControllerGroup(int index)
         {
             ControllerGroup controllerGroup = ControllerGroups[index];
@@ -166,15 +154,7 @@ namespace TTMulti
             ControllerGroups.Remove(controllerGroup);
             GroupsChanged?.Invoke(this, EventArgs.Empty);
         }
-
-        private void Controller_TTWindowClosed(object sender)
-        {
-            if (sender == LeftController || sender == RightController)
-            {
-                GroupsChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
+        
         private void updateControllerBorders()
         {
             if (CurrentMode == ControllerMode.Multi)
@@ -211,10 +191,7 @@ namespace TTMulti
 
             if (key == (Keys)Properties.Settings.Default.modeKeyCode)
             {
-                IntPtr activeWnd = Win32.GetForegroundWindow();
-                bool isAnyTTWindowActive = ControllerGroups.Any(g => g.LeftController.TTWindowHandle == activeWnd || g.RightController.TTWindowHandle == activeWnd);
-
-                if (msg == (uint)Win32.WM.KEYDOWN && (isAnyTTWindowActive || isActive))
+                if (msg == (uint)Win32.WM.HOTKEY || msg == (uint)Win32.WM.KEYDOWN)
                 {
                     if (isActive)
                     {
@@ -227,8 +204,7 @@ namespace TTMulti
                             CurrentMode = ControllerMode.Multi;
                         }
                     }
-
-                    if (isAnyTTWindowActive)
+                    else
                     {
                         ShouldActivate?.Invoke(this, EventArgs.Empty);
                     }
@@ -305,6 +281,29 @@ namespace TTMulti
             }
 
             return shouldDiscardInput;
+        }
+
+        private void Controller_TTWindowClosed(object sender)
+        {
+            if (sender == LeftController || sender == RightController)
+            {
+                GroupsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void Controller_TTWindowActivated(object sender, IntPtr hWnd)
+        {
+            TTWindowActivated?.Invoke(this, EventArgs.Empty);
+            Console.WriteLine("multicontroller - {0} activate", hWnd);
+        }
+
+        private void Controller_TTWindowDeactivated(object sender, IntPtr hWnd)
+        {
+            Console.WriteLine("multicontroller - {0} deactivate", hWnd);
+            if (ControllerGroups.All(g => !g.LeftController.TTWindowActive && !g.RightController.TTWindowActive))
+            {
+                AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 

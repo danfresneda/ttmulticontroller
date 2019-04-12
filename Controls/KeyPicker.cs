@@ -11,6 +11,9 @@ namespace TTMulti.Controls
 {
     public partial class KeyPicker : UserControl
     {
+        private const string DISABLED_FOCUSED_TEXT = "Disabled - press a key";
+        private const string DISABLED_UNFOCUSED_TEXT = "Disabled - click here";
+
         public delegate void KeyChosenHandler(KeyPicker chooser, Keys keyChosen);
 
         public event KeyChosenHandler KeyChosen;
@@ -80,7 +83,7 @@ namespace TTMulti.Controls
                     }
                     else if (_key == Keys.None)
                     {
-                        text = isActive ? "Disabled - press a key" : "Disabled - click here";
+                        text = isActive ? DISABLED_FOCUSED_TEXT : DISABLED_UNFOCUSED_TEXT;
                     }
 
                     textBox1.Text = text;
@@ -124,7 +127,7 @@ namespace TTMulti.Controls
 
             if (ChosenKey == Keys.None)
             {
-                textBox1.Text = "Disabled - click here";
+                textBox1.Text = DISABLED_UNFOCUSED_TEXT;
             }
         }
 
@@ -134,7 +137,7 @@ namespace TTMulti.Controls
 
             if (ChosenKey == Keys.None)
             {
-                textBox1.Text = "Disabled - press a key";
+                textBox1.Text = DISABLED_FOCUSED_TEXT;
             }
         }
 

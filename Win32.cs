@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace TTMulti
 {
@@ -104,6 +105,27 @@ namespace TTMulti
             uint nInputs,
             [MarshalAs(UnmanagedType.LPArray), In] INPUT[] pInputs,
             int cbSize);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [Flags]
+        public enum KeyModifiers
+        {
+            None = 0,
+            Alt = 1,
+            Control = 2,
+            Shift = 4,
+            // Either WINDOWS key was held down. These keys are labeled with the Windows logo.
+            // Keyboard shortcuts that involve the WINDOWS key are reserved for use by the 
+            // operating system.
+            Windows = 8,
+            NoRepeat = 0x4000
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct INPUT

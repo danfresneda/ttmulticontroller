@@ -69,7 +69,7 @@ namespace TTMulti.Forms
             {
                 Width = groupBox1.Width,
                 Height = groupBox1.Height,
-                Text = "Group " + index,
+                Text = "Group " + (index + 1),
                 Tag = controllerGroup
             };
 

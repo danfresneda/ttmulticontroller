@@ -16,6 +16,7 @@ namespace TTMulti
     class ToontownController : IMessageFilter
     {
         public event TTWindowActivatedHandler TTWindowActivated;
+        public event TTWindowActivatedHandler TTWindowDeactivated;
         public event TTWindowClosedHandler TTWindowClosed;
 
         IntPtr _ttWindowHandle;
@@ -46,12 +47,26 @@ namespace TTMulti
             }
         }
 
+        private bool ttWindowActive = false;
+        public bool TTWindowActive
+        {
+            get => ttWindowActive;
+            private set
+            { 
+                if (ttWindowActive != value)
+                {
+                    ttWindowActive = value;
+
+                    if (ttWindowActive) { Console.WriteLine("{0} activate", _ttWindowHandle); TTWindowActivated?.Invoke(this, _ttWindowHandle); }
+                    else { Console.WriteLine("{0} deactivate", _ttWindowHandle); TTWindowDeactivated?.Invoke(this, _ttWindowHandle); }
+                }
+            }
+        }
+
         BorderWnd _borderWnd;
 
         Thread bgThread;
-
-        bool ttWindowActive = false;
-
+        
         public ToontownController()
         {
             bgThread = new Thread(() =>
@@ -73,11 +88,7 @@ namespace TTMulti
                         if (TTWindowHandle != IntPtr.Zero && !Win32.IsWindow(TTWindowHandle))
                         {
                             TTWindowHandle = IntPtr.Zero;
-                            var evt = TTWindowClosed;
-                            if (evt != null)
-                            {
-                                evt(this);
-                            }
+                            TTWindowClosed?.Invoke(this);
                         }
 
                         if (TTWindowHandle == IntPtr.Zero && _borderWnd.Visible)
@@ -86,23 +97,8 @@ namespace TTMulti
                         }
                         else if (TTWindowHandle != IntPtr.Zero)
                         {
-                            IntPtr activeWnd = Win32.GetForegroundWindow();
-
-                            if (!ttWindowActive && activeWnd == TTWindowHandle)
-                            {
-                                ttWindowActive = true;
-
-                                var evt = TTWindowActivated;
-                                if (evt != null)
-                                {
-                                    evt(this, TTWindowHandle);
-                                }
-                            }
-                            else if (ttWindowActive && activeWnd != TTWindowHandle)
-                            {
-                                ttWindowActive = false;
-                            }
-
+                            TTWindowActive = (Win32.GetForegroundWindow() == TTWindowHandle);
+                            
                             Win32.RECT lpRect;
                             Win32.GetClientRect(TTWindowHandle, out lpRect);
 
