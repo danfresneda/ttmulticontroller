@@ -322,5 +322,17 @@ namespace TTMulti.Properties {
                 this["rightKeys"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool controlAllGroupsAtOnce {
+            get {
+                return ((bool)(this["controlAllGroupsAtOnce"]));
+            }
+            set {
+                this["controlAllGroupsAtOnce"] = value;
+            }
+        }
     }
 }

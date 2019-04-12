@@ -226,7 +226,8 @@ namespace TTMulti
             {
                 if (currentMode == ControllerMode.Multi)
                 {
-                    if (ControllerGroups.Count > 1
+                    if (!Properties.Settings.Default.controlAllGroupsAtOnce 
+                        && ControllerGroups.Count > 1
                         && (key >= Keys.D0 && key <= Keys.D9
                         || key >= Keys.NumPad0 && key <= Keys.NumPad9))
                     {
@@ -253,25 +254,20 @@ namespace TTMulti
                     {
                         if (leftKeys.ContainsKey(key))
                         {
+                            var affectedControllers = Properties.Settings.Default.controlAllGroupsAtOnce ?
+                                ControllerGroups.Select(c => c.LeftController) : new[] { LeftController };
+
                             foreach (Keys actualKey in leftKeys[key])
-                                LeftController.PostMessage(msg, (IntPtr)actualKey, lParam);
+                                affectedControllers.ToList().ForEach(c => c.PostMessage(msg, (IntPtr)actualKey, lParam));
                         }
 
                         if (rightKeys.ContainsKey(key))
                         {
+                            var affectedControllers = Properties.Settings.Default.controlAllGroupsAtOnce ?
+                                ControllerGroups.Select(c => c.RightController) : new[] { RightController };
+
                             foreach (Keys actualKey in rightKeys[key])
-                                RightController.PostMessage(msg, (IntPtr)actualKey, lParam);
-                        }
-                        
-                        if (key == Keys.F1 && msg == (uint)Win32.WM.KEYDOWN)
-                        {
-                            LeftController.PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Keys.ControlKey, lParam);
-                            LeftController.PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Keys.ControlKey, lParam);
-                        }
-                        else if (key == Keys.F2 && msg == (uint)Win32.WM.KEYDOWN)
-                        {
-                            RightController.PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Keys.ControlKey, lParam);
-                            RightController.PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Keys.ControlKey, lParam);
+                                affectedControllers.ToList().ForEach(c => c.PostMessage(msg, (IntPtr)actualKey, lParam));
                         }
                     }
                 }
