@@ -158,6 +158,7 @@ namespace TTMulti
         {
             ControllerGroup group = new ControllerGroup();
 
+            group.LeftController.GroupNumber = group.RightController.GroupNumber = ControllerGroups.Count + 1;
             group.LeftController.TTWindowActivated += Controller_TTWindowActivated;
             group.RightController.TTWindowActivated += Controller_TTWindowActivated;
             group.LeftController.TTWindowDeactivated += Controller_TTWindowDeactivated;
@@ -166,6 +167,8 @@ namespace TTMulti
             group.RightController.TTWindowClosed += Controller_TTWindowClosed;
             ControllerGroups.Add(group);
             GroupsChanged?.Invoke(this, EventArgs.Empty);
+
+            updateControllerBorders();
 
             return group;
         }
@@ -193,6 +196,9 @@ namespace TTMulti
                     
                     group.LeftController.ShowBorder = group.RightController.ShowBorder =
                         showAllBorders || affectedGroups.Contains(group);
+
+                    group.LeftController.ShowGroupNumber = group.RightController.ShowGroupNumber =
+                        ShowAllBorders || ControllerGroups.Count > 1;
                 }
             }
             else
@@ -201,6 +207,7 @@ namespace TTMulti
                 {
                     g.LeftController.BorderColor = g.RightController.BorderColor = Color.Violet;
                     g.LeftController.ShowBorder = g.RightController.ShowBorder = isActive;
+                    g.LeftController.ShowGroupNumber = g.RightController.ShowGroupNumber = ControllerGroups.Count > 1;
                 });
             }
         }

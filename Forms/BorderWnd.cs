@@ -35,6 +35,37 @@ namespace TTMulti.Forms
         public int BorderWidth { get; set; } = 5;
 
         /// <summary>
+        /// Displayed on the top left of the window as an identifier for the group
+        /// </summary>
+        private int groupNumber;
+        public int GroupNumber
+        {
+            get => groupNumber;
+            set
+            {
+                if (groupNumber != value)
+                {
+                    groupNumber = value;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        private bool showGroupNumber = false;
+        public bool ShowGroupNumber
+        {
+            get => showGroupNumber;
+            set
+            {
+                if (showGroupNumber != value)
+                {
+                    showGroupNumber = value;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        /// <summary>
         /// Overrides the default style so that the window is transparent and borderless.
         /// </summary>
         protected override CreateParams CreateParams
@@ -74,6 +105,12 @@ namespace TTMulti.Forms
                 BorderColor, BorderWidth, ButtonBorderStyle.Solid,
                 BorderColor, BorderWidth, ButtonBorderStyle.Solid,
                 BorderColor, BorderWidth, ButtonBorderStyle.Solid);
+
+            if (ShowGroupNumber)
+            {
+                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
+                e.Graphics.DrawString(GroupNumber.ToString(), new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular), Brushes.White, 5, 5);
+            }
         }
     }
 }

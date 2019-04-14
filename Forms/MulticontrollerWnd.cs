@@ -314,7 +314,10 @@ namespace TTMulti.Forms
 
         private void Controller_TTWindowActivated(object sender, EventArgs e)
         {
-            this.InvokeIfRequired(() => RegisterHotkey());
+            if (!this.IsDisposed && !this.Disposing)
+            {
+                this.InvokeIfRequired(() => RegisterHotkey());
+            }
         }
 
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)

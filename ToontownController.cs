@@ -47,6 +47,10 @@ namespace TTMulti
             }
         }
 
+        public int GroupNumber { get; set; } = 0;
+
+        public bool ShowGroupNumber { get; set; } = false;
+
         private bool ttWindowActive = false;
         public bool TTWindowActive
         {
@@ -81,6 +85,16 @@ namespace TTMulti
                     if (_borderWnd.BorderColor != BorderColor)
                     {
                         _borderWnd.BorderColor = BorderColor;
+                    }
+
+                    if (_borderWnd.GroupNumber != GroupNumber)
+                    {
+                        _borderWnd.GroupNumber = GroupNumber;
+                    }
+
+                    if (_borderWnd.ShowGroupNumber != ShowGroupNumber)
+                    {
+                        _borderWnd.ShowGroupNumber = ShowGroupNumber;
                     }
 
                     try
