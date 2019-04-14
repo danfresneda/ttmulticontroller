@@ -406,7 +406,10 @@ namespace TTMulti.Forms
 
         private void MulticontrollerWnd_Deactivate(object sender, EventArgs e)
         {
-            controller.IsActive = false;
+            if (!ignoreMessages)
+            {
+                controller.IsActive = false;
+            }
         }
     }
 }
