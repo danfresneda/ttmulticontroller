@@ -306,18 +306,20 @@ namespace TTMulti.Forms
         // are potentially fired by different threads at the same time
         private void Controller_AllTTWindowsInactive(object sender, EventArgs e)
         {
-            if (!this.IsDisposed && !this.Disposing)
+            try
             {
                 this.InvokeIfRequired(() => UnregisterHotkey());
             }
+            catch { }
         }
 
         private void Controller_TTWindowActivated(object sender, EventArgs e)
         {
-            if (!this.IsDisposed && !this.Disposing)
+            try
             {
                 this.InvokeIfRequired(() => RegisterHotkey());
             }
+            catch { }
         }
 
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
