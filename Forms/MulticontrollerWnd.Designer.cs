@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.mirrorModeRadio = new System.Windows.Forms.RadioButton();
             this.multiModeRadio = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -41,6 +42,7 @@
             this.rightToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
             this.leftToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -58,6 +60,7 @@
             this.mirrorModeRadio.TabIndex = 3;
             this.mirrorModeRadio.Text = "Mirror Mode";
             this.mirrorModeRadio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip1.SetToolTip(this.mirrorModeRadio, "Control all toons at the same time");
             this.mirrorModeRadio.UseVisualStyleBackColor = true;
             this.mirrorModeRadio.Click += new System.EventHandler(this.mirrorModeRadio_Clicked);
             // 
@@ -76,6 +79,7 @@
             this.multiModeRadio.TabStop = true;
             this.multiModeRadio.Text = "Multi-Mode";
             this.multiModeRadio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip1.SetToolTip(this.multiModeRadio, "Control left and right toon independently");
             this.multiModeRadio.UseVisualStyleBackColor = true;
             this.multiModeRadio.Click += new System.EventHandler(this.multiModeRadio_Click);
             // 
@@ -230,6 +234,7 @@
         private System.Windows.Forms.RadioButton mirrorModeRadio;
         private System.Windows.Forms.RadioButton multiModeRadio;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
