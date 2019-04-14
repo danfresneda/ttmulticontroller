@@ -146,14 +146,14 @@ namespace TTMulti.Forms
                 {
                     MessageBox.Show("Please enter a name for the binding.");
                 }
-                else if (addKeyMappingDlg.LeftToonKey != Keys.None && keyBindings.Any(t => t.LeftToonKey == addKeyMappingDlg.LeftToonKey))
+                /*else if (addKeyMappingDlg.LeftToonKey != Keys.None && keyBindings.Any(t => t.LeftToonKey == addKeyMappingDlg.LeftToonKey))
                 {
                     MessageBox.Show("Sorry, the key you picked for the left toon is already being used for another binding on the left toon.");
                 }
                 else if (addKeyMappingDlg.RightToonKey != Keys.None && keyBindings.Any(t => t.RightToonKey == addKeyMappingDlg.RightToonKey))
                 {
                     MessageBox.Show("Sorry, the key you picked for the right toon is already being used for another binding on the right toon.");
-                }
+                }*/
                 else
                 {
                     if (addKeyMappingDlg.LeftToonKey >= Keys.D0 && addKeyMappingDlg.LeftToonKey <= Keys.D9

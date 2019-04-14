@@ -93,8 +93,8 @@ namespace TTMulti
             }
         }
 
-        Dictionary<Keys, Keys> leftKeys = new Dictionary<Keys, Keys>(),
-            rightKeys = new Dictionary<Keys, Keys>();
+        Dictionary<Keys, List<Keys>> leftKeys = new Dictionary<Keys, List<Keys>>(),
+            rightKeys = new Dictionary<Keys, List<Keys>>();
 
         internal Multicontroller()
         {
@@ -118,14 +118,24 @@ namespace TTMulti
 
             for (int i = 0; i < keyBindings.Count; i++)
             {
+                if (!leftKeys.ContainsKey(keyBindings[i].LeftToonKey))
+                {
+                    leftKeys.Add(keyBindings[i].LeftToonKey, new List<Keys>());
+                }
+
+                if (!rightKeys.ContainsKey(keyBindings[i].RightToonKey))
+                {
+                    rightKeys.Add(keyBindings[i].RightToonKey, new List<Keys>());
+                }
+
                 if (keyBindings[i].Key != Keys.None && keyBindings[i].LeftToonKey != Keys.None)
                 {
-                    leftKeys.Add(keyBindings[i].Key, keyBindings[i].LeftToonKey);
+                    leftKeys[keyBindings[i].LeftToonKey].Add(keyBindings[i].Key);
                 }
 
                 if (keyBindings[i].Key != Keys.None && keyBindings[i].RightToonKey != Keys.None)
                 {
-                    rightKeys.Add(keyBindings[i].Key, keyBindings[i].RightToonKey);
+                    rightKeys[keyBindings[i].RightToonKey].Add(keyBindings[i].Key);
                 }
             }
         }
@@ -241,15 +251,15 @@ namespace TTMulti
                     }
                     else
                     {
-                        if (leftKeys.ContainsValue(key))
+                        if (leftKeys.ContainsKey(key))
                         {
-                            foreach (Keys actualKey in leftKeys.Where(t => t.Value == key).Select(t => t.Key))
+                            foreach (Keys actualKey in leftKeys[key])
                                 LeftController.PostMessage(msg, (IntPtr)actualKey, lParam);
                         }
 
-                        if (rightKeys.ContainsValue(key))
+                        if (rightKeys.ContainsKey(key))
                         {
-                            foreach (Keys actualKey in rightKeys.Where(t => t.Value == key).Select(t => t.Key))
+                            foreach (Keys actualKey in rightKeys[key])
                                 RightController.PostMessage(msg, (IntPtr)actualKey, lParam);
                         }
                         

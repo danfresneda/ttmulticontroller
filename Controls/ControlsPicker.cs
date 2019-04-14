@@ -94,6 +94,9 @@ namespace TTMulti.Controls
 
             bindingKeyPicker.KeyChosen += KeyChooser_KeyChosen;
             removeBtn.Click += RemoveBtn_Click;
+
+            leftToonKeyPicker.KeyChosen += LeftToonKeyPicker_KeyChosen;
+            rightToonKeyPicker.KeyChosen += RightToonKeyPicker_KeyChosen;
             
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -111,7 +114,7 @@ namespace TTMulti.Controls
 
             return rowNum;
         }
-
+        
         private void removeRow(int rowNum)
         {
             Point scrollPosition = this.AutoScrollPosition;
@@ -171,6 +174,20 @@ namespace TTMulti.Controls
             KeyMappingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        private void LeftToonKeyPicker_KeyChosen(KeyPicker keyChooser, Keys keyChosen)
+        {
+            int rowNum = tableLayoutPanel1.GetRow(keyChooser);
+            keyMappings[rowNum - 1].LeftToonKey = keyChosen;
+            KeyMappingsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RightToonKeyPicker_KeyChosen(KeyPicker keyChooser, Keys keyChosen)
+        {
+            int rowNum = tableLayoutPanel1.GetRow(keyChooser);
+            keyMappings[rowNum - 1].RightToonKey = keyChosen;
+            KeyMappingsChanged?.Invoke(this, EventArgs.Empty);
+        }
+        
         private void BindingTitle_TextChanged(object sender, EventArgs e)
         {
             int rowNum = tableLayoutPanel1.GetRow((Control)sender);
