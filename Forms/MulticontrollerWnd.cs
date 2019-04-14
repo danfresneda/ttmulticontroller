@@ -372,9 +372,11 @@ namespace TTMulti.Forms
 
         private void windowGroupsBtn_Click(object sender, EventArgs e)
         {
+            controller.ShowAllBorders = true;
             ignoreMessages = true;
             new WindowGroupsForm().ShowDialog(this);
             ignoreMessages = false;
+            controller.ShowAllBorders = false;
 
             UpdateWindowStatus();
         }

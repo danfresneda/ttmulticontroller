@@ -66,6 +66,20 @@ namespace TTMulti
             Mirror
         }
 
+        private bool showAllBorders = false;
+        public bool ShowAllBorders
+        {
+            get => showAllBorders;
+            set
+            {
+                if (showAllBorders != value)
+                {
+                    showAllBorders = value;
+                    updateControllerBorders();
+                }
+            }
+        }
+
         private bool isActive = true;
         internal bool IsActive
         {
@@ -172,17 +186,14 @@ namespace TTMulti
                 IEnumerable<ControllerGroup> affectedGroups = Properties.Settings.Default.controlAllGroupsAtOnce 
                     ? (IEnumerable<ControllerGroup>)ControllerGroups : new[] { ControllerGroups[CurrentGroupIndex] };
                 
-                foreach (var group in affectedGroups)
+                foreach (var group in ControllerGroups)
                 {
                     group.LeftController.BorderColor = Color.LimeGreen;
                     group.RightController.BorderColor = Color.Green;
-                    group.LeftController.ShowBorder = group.RightController.ShowBorder = isActive;
+                    
+                    group.LeftController.ShowBorder = group.RightController.ShowBorder =
+                        showAllBorders || affectedGroups.Contains(group);
                 }
-                
-                ControllerGroups.Except(affectedGroups).ToList().ForEach(g =>
-                {
-                    g.LeftController.ShowBorder = g.RightController.ShowBorder = false;
-                });
             }
             else
             {
