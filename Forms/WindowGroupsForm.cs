@@ -90,7 +90,8 @@ namespace TTMulti.Forms
             SelectWindowCrosshair crosshair1 = new SelectWindowCrosshair() {
                 Location = leftToonCrosshair.Location,
                 Size = leftToonCrosshair.Size,
-                Tag = leftToonCrosshair.Tag
+                Tag = leftToonCrosshair.Tag,
+                SelectedBorderColor = leftToonCrosshair.SelectedBorderColor
             };
 
             crosshair1.WindowSelected += crosshair_WindowSelected;
@@ -98,7 +99,8 @@ namespace TTMulti.Forms
             SelectWindowCrosshair crosshair2 = new SelectWindowCrosshair() {
                 Location = rightToonCrosshair.Location,
                 Size = rightToonCrosshair.Size,
-                Tag = rightToonCrosshair.Tag
+                Tag = rightToonCrosshair.Tag,
+                SelectedBorderColor = rightToonCrosshair.SelectedBorderColor
             };
 
             crosshair2.WindowSelected += crosshair_WindowSelected;

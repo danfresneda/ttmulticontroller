@@ -49,8 +49,10 @@
             // 
             // SelectWindowCrosshair
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.pictureBox1);
             this.Name = "SelectWindowCrosshair";
+            this.Padding = new System.Windows.Forms.Padding(2);
             this.Size = new System.Drawing.Size(36, 36);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectWindowCrosshair_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SelectWindowCrosshair_MouseUp);

@@ -169,12 +169,17 @@ namespace TTMulti
         {
             if (CurrentMode == ControllerMode.Multi)
             {
-                LeftController.BorderColor = RightController.BorderColor = Color.LimeGreen;
-                LeftController.ShowBorder = RightController.ShowBorder = isActive;
-
-                var otherGroups = ControllerGroups.Except(new[] { ControllerGroups[CurrentGroupIndex] }).ToList();
-
-                otherGroups.ForEach(g =>
+                IEnumerable<ControllerGroup> affectedGroups = Properties.Settings.Default.controlAllGroupsAtOnce 
+                    ? (IEnumerable<ControllerGroup>)ControllerGroups : new[] { ControllerGroups[CurrentGroupIndex] };
+                
+                foreach (var group in affectedGroups)
+                {
+                    group.LeftController.BorderColor = Color.LimeGreen;
+                    group.RightController.BorderColor = Color.Green;
+                    group.LeftController.ShowBorder = group.RightController.ShowBorder = isActive;
+                }
+                
+                ControllerGroups.Except(affectedGroups).ToList().ForEach(g =>
                 {
                     g.LeftController.ShowBorder = g.RightController.ShowBorder = false;
                 });

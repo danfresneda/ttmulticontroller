@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.mirrorModeRadio = new System.Windows.Forms.RadioButton();
-            this.wndGroup = new System.Windows.Forms.GroupBox();
             this.multiModeRadio = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
@@ -41,8 +40,9 @@
             this.rightStatusLbl = new System.Windows.Forms.ToolStripStatusLabel();
             this.rightToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
             this.leftToonCrosshair = new TTMulti.Controls.SelectWindowCrosshair();
-            this.wndGroup.SuspendLayout();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // mirrorModeRadio
@@ -52,28 +52,14 @@
             this.mirrorModeRadio.FlatAppearance.BorderSize = 3;
             this.mirrorModeRadio.FlatAppearance.CheckedBackColor = System.Drawing.Color.Violet;
             this.mirrorModeRadio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mirrorModeRadio.Location = new System.Drawing.Point(111, 18);
+            this.mirrorModeRadio.Location = new System.Drawing.Point(109, 0);
             this.mirrorModeRadio.Name = "mirrorModeRadio";
-            this.mirrorModeRadio.Size = new System.Drawing.Size(98, 27);
+            this.mirrorModeRadio.Size = new System.Drawing.Size(104, 27);
             this.mirrorModeRadio.TabIndex = 3;
             this.mirrorModeRadio.Text = "Mirror Mode";
             this.mirrorModeRadio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.mirrorModeRadio.UseVisualStyleBackColor = true;
             this.mirrorModeRadio.Click += new System.EventHandler(this.mirrorModeRadio_Clicked);
-            // 
-            // wndGroup
-            // 
-            this.wndGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.wndGroup.Controls.Add(this.mirrorModeRadio);
-            this.wndGroup.Controls.Add(this.multiModeRadio);
-            this.wndGroup.Location = new System.Drawing.Point(6, 54);
-            this.wndGroup.Name = "wndGroup";
-            this.wndGroup.Padding = new System.Windows.Forms.Padding(0);
-            this.wndGroup.Size = new System.Drawing.Size(215, 53);
-            this.wndGroup.TabIndex = 7;
-            this.wndGroup.TabStop = false;
-            this.wndGroup.Text = "Mode";
             // 
             // multiModeRadio
             // 
@@ -83,9 +69,9 @@
             this.multiModeRadio.FlatAppearance.BorderSize = 3;
             this.multiModeRadio.FlatAppearance.CheckedBackColor = System.Drawing.Color.LimeGreen;
             this.multiModeRadio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.multiModeRadio.Location = new System.Drawing.Point(6, 18);
+            this.multiModeRadio.Location = new System.Drawing.Point(0, 0);
             this.multiModeRadio.Name = "multiModeRadio";
-            this.multiModeRadio.Size = new System.Drawing.Size(98, 27);
+            this.multiModeRadio.Size = new System.Drawing.Size(104, 27);
             this.multiModeRadio.TabIndex = 6;
             this.multiModeRadio.TabStop = true;
             this.multiModeRadio.Text = "Multi-Mode";
@@ -141,7 +127,7 @@
             this.leftStatusLbl,
             this.toolStripStatusLabel2,
             this.rightStatusLbl});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 116);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 90);
             this.statusStrip1.Margin = new System.Windows.Forms.Padding(0, 25, 0, 0);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 15, 0);
@@ -171,22 +157,33 @@
             // 
             this.rightToonCrosshair.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.rightToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
-            this.rightToonCrosshair.Location = new System.Drawing.Point(183, 10);
+            this.rightToonCrosshair.Location = new System.Drawing.Point(186, 10);
             this.rightToonCrosshair.Name = "rightToonCrosshair";
-// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.rightToonCrosshair.Size = new System.Drawing.Size(38, 35);
+            this.rightToonCrosshair.Padding = new System.Windows.Forms.Padding(2);
+            this.rightToonCrosshair.SelectedBorderColor = System.Drawing.Color.DarkGreen;
+            this.rightToonCrosshair.Size = new System.Drawing.Size(36, 36);
             this.rightToonCrosshair.TabIndex = 14;
             this.rightToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.rightToonCrosshair_WindowSelected);
             // 
             // leftToonCrosshair
             // 
             this.leftToonCrosshair.BackColor = System.Drawing.SystemColors.Control;
-            this.leftToonCrosshair.Location = new System.Drawing.Point(6, 10);
+            this.leftToonCrosshair.Location = new System.Drawing.Point(9, 10);
             this.leftToonCrosshair.Name = "leftToonCrosshair";
-// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.leftToonCrosshair.Size = new System.Drawing.Size(38, 35);
+            this.leftToonCrosshair.Padding = new System.Windows.Forms.Padding(2);
+            this.leftToonCrosshair.SelectedBorderColor = System.Drawing.Color.LimeGreen;
+            this.leftToonCrosshair.Size = new System.Drawing.Size(36, 36);
             this.leftToonCrosshair.TabIndex = 13;
             this.leftToonCrosshair.WindowSelected += new TTMulti.Controls.WindowSelectedHandler(this.leftToonCrosshair_WindowSelected);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.mirrorModeRadio);
+            this.panel1.Controls.Add(this.multiModeRadio);
+            this.panel1.Location = new System.Drawing.Point(9, 56);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(213, 27);
+            this.panel1.TabIndex = 7;
             // 
             // MulticontrollerWnd
             // 
@@ -194,13 +191,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(228, 138);
+            this.ClientSize = new System.Drawing.Size(228, 112);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.rightToonCrosshair);
             this.Controls.Add(this.leftToonCrosshair);
             this.Controls.Add(this.windowGroupsBtn);
             this.Controls.Add(this.optionsBtn);
-            this.Controls.Add(this.wndGroup);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
@@ -212,16 +209,14 @@
             this.Deactivate += new System.EventHandler(this.MulticontrollerWnd_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWnd_FormClosing);
             this.Load += new System.EventHandler(this.MulticontrollerWnd_Load);
-            this.wndGroup.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox wndGroup;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button optionsBtn;
@@ -234,6 +229,7 @@
         private System.Windows.Forms.ToolStripStatusLabel rightStatusLbl;
         private System.Windows.Forms.RadioButton mirrorModeRadio;
         private System.Windows.Forms.RadioButton multiModeRadio;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

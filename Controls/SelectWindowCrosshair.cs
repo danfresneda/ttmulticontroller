@@ -17,24 +17,32 @@ namespace TTMulti.Controls
         public event WindowSelectedHandler WindowSelected;
 
         IntPtr selectedWindowHandle = IntPtr.Zero;
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IntPtr SelectedWindowHandle
         {
-            get
-            {
-                return selectedWindowHandle;
-            }
+            get => selectedWindowHandle;
             set
             {
-                selectedWindowHandle = value;
-
-                try
+                if (selectedWindowHandle != value)
                 {
-                    this.InvokeIfRequired(() =>
-                    {
-                        this.BackColor = value != IntPtr.Zero ? Color.LimeGreen : SystemColors.Control;
-                    });
+                    selectedWindowHandle = value;
+                    UpdateBorder();
                 }
-                catch { }
+            }
+        }
+
+        private Color selectedBorderColor = Color.LimeGreen;
+        public Color SelectedBorderColor
+        {
+            get => selectedBorderColor;
+            set
+            {
+                if (selectedBorderColor != value)
+                {
+                    selectedBorderColor = value;
+                    UpdateBorder();
+                }
             }
         }
 
@@ -43,6 +51,18 @@ namespace TTMulti.Controls
         public SelectWindowCrosshair()
         {
             InitializeComponent();
+        }
+
+        private void UpdateBorder()
+        {
+            try
+            {
+                this.InvokeIfRequired(() =>
+                {
+                    this.BackColor = selectedWindowHandle != IntPtr.Zero ? SelectedBorderColor : SystemColors.Control;
+                });
+            }
+            catch { }
         }
 
         private void SelectWindowCrosshair_MouseDown(object sender, MouseEventArgs e)

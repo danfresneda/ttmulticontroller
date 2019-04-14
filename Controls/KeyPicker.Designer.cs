@@ -42,13 +42,13 @@
             this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
-            // KeyChooser
+            // KeyPicker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.textBox1);
             this.MinimumSize = new System.Drawing.Size(38, 20);
-            this.Name = "KeyChooser";
+            this.Name = "KeyPicker";
             this.Size = new System.Drawing.Size(68, 20);
             this.ResumeLayout(false);
             this.PerformLayout();

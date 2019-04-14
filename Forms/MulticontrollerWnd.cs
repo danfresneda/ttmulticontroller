@@ -150,12 +150,12 @@ namespace TTMulti.Forms
             leftStatusLbl.Text = "Group " + (controller.CurrentGroupIndex + 1) + " active.";
             rightStatusLbl.Text = controller.ControllerGroups.Count + " groups.";
 
-            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1)
+            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1 && !Properties.Settings.Default.controlAllGroupsAtOnce)
             {
                 statusStrip1.Visible = true;
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom + statusStrip1.Height);
             }
-            else if (statusStrip1.Visible && controller.ControllerGroups.Count == 1)
+            else if (statusStrip1.Visible && (controller.ControllerGroups.Count == 1 || Properties.Settings.Default.controlAllGroupsAtOnce))
             {
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom - statusStrip1.Height);
                 statusStrip1.Visible = false;
@@ -236,7 +236,7 @@ namespace TTMulti.Forms
         private void ReloadOptions()
         {
             this.TopMost = Properties.Settings.Default.onTopWhenInactive;
-            wndGroup.Visible = !Properties.Settings.Default.compactUI;
+            panel1.Visible = !Properties.Settings.Default.compactUI;
             controller.UpdateKeys();
             UnregisterHotkey();
         }
@@ -366,6 +366,8 @@ namespace TTMulti.Forms
             }
 
             ignoreMessages = false;
+
+            UpdateWindowStatus();
         }
 
         private void windowGroupsBtn_Click(object sender, EventArgs e)
