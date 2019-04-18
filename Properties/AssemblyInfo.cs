@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DF Software")]
 [assembly: AssemblyProduct("TT Multicontroller")]
-[assembly: AssemblyCopyright("Copyright DF Software © 2015-2019")]
+[assembly: AssemblyCopyright("Copyright © 2015-2019 Daniel Fresneda")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
