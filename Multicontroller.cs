@@ -323,12 +323,10 @@ namespace TTMulti
         private void Controller_TTWindowActivated(object sender, IntPtr hWnd)
         {
             TTWindowActivated?.Invoke(this, EventArgs.Empty);
-            Console.WriteLine("multicontroller - {0} activate", hWnd);
         }
 
         private void Controller_TTWindowDeactivated(object sender, IntPtr hWnd)
         {
-            Console.WriteLine("multicontroller - {0} deactivate", hWnd);
             if (ControllerGroups.All(g => !g.LeftController.TTWindowActive && !g.RightController.TTWindowActive))
             {
                 AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);

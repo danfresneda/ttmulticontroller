@@ -61,8 +61,14 @@ namespace TTMulti
                 {
                     ttWindowActive = value;
 
-                    if (ttWindowActive) { Console.WriteLine("{0} activate", _ttWindowHandle); TTWindowActivated?.Invoke(this, _ttWindowHandle); }
-                    else { Console.WriteLine("{0} deactivate", _ttWindowHandle); TTWindowDeactivated?.Invoke(this, _ttWindowHandle); }
+                    if (ttWindowActive)
+                    {
+                        TTWindowActivated?.Invoke(this, _ttWindowHandle);
+                    }
+                    else
+                    {
+                        TTWindowDeactivated?.Invoke(this, _ttWindowHandle);
+                    }
                 }
             }
         }
