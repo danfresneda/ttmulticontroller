@@ -25,14 +25,15 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://danfresneda.com/tt/multicontroller/</InstallUrl>
     <UpdateUrl>https://danfresneda.com/tt/multicontroller/</UpdateUrl>
+    <SupportUrl>https://danfresneda.com/tt/multicontroller</SupportUrl>
     <TargetCulture>en-US</TargetCulture>
     <ProductName>Toontown Multicontroller</ProductName>
     <PublisherName>DF Software</PublisherName>
     <MinimumRequiredVersion>1.0.1.0</MinimumRequiredVersion>
     <WebPage>publish.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.1.0.3</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.2.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
