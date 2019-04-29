@@ -73,6 +73,8 @@ namespace TTMulti
             }
         }
 
+        public bool ErrorOccurredPostingMessage { get; private set; } = false;
+
         BorderWnd _borderWnd;
 
         Thread bgThread;
@@ -206,7 +208,10 @@ namespace TTMulti
         {
             if (TTWindowHandle != IntPtr.Zero)
             {
-                Win32.PostMessage(TTWindowHandle, msg, wParam, lParam);
+                if (!Win32.PostMessage(TTWindowHandle, msg, wParam, lParam))
+                {
+                    ErrorOccurredPostingMessage = true;
+                }
             }
         }
 

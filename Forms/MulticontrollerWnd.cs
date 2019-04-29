@@ -34,7 +34,7 @@ namespace TTMulti.Forms
         Multicontroller controller;
 
         bool hotkeyRegistered = false;
-
+        bool userPromptedForAdminRights = false;
         internal MulticontrollerWnd()
         {
             InitializeComponent();
@@ -214,6 +214,8 @@ namespace TTMulti.Forms
                 ret = controller.ProcessKey(key, (uint)m.Msg, m.LParam);
             }
 
+            CheckControllerErrors();
+
             return ret;
         }
 
@@ -222,9 +224,36 @@ namespace TTMulti.Forms
             if (m.Msg == (int)Win32.WM.HOTKEY)
             {
                 controller.ProcessKey((Keys)Properties.Settings.Default.modeKeyCode, (uint)m.Msg);
+                CheckControllerErrors();
             }
 
             base.WndProc(ref m);
+        }
+
+        internal void CheckControllerErrors()
+        {
+            if (!userPromptedForAdminRights && controller.ErrorOccurredPostingMessage)
+            {
+                userPromptedForAdminRights = true;
+
+                if (MessageBox.Show(
+                    "There was an error controlling a Toontown window. You may need to run the multicontroller as administrator.\n\nDo you want to re-launch as administrator?",
+                    "Error",
+                    MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Properties.Settings.Default.runAsAdministrator = true;
+                    Properties.Settings.Default.Save();
+
+                    if (Program.TryRunAsAdmin())
+                    {
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to re-launch as administrator.", "Error");
+                    }
+                }
+            }
         }
 
         internal void SaveWindowPosition()

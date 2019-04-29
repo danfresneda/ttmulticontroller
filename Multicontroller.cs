@@ -66,6 +66,11 @@ namespace TTMulti
             Mirror
         }
 
+        public bool ErrorOccurredPostingMessage
+        {
+            get => ControllerGroups.Any(g => g.LeftController.ErrorOccurredPostingMessage || g.RightController.ErrorOccurredPostingMessage);
+        }
+
         private bool showAllBorders = false;
         public bool ShowAllBorders
         {

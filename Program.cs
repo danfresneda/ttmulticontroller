@@ -19,7 +19,7 @@ namespace TTMulti
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             if (Environment.OSVersion.Version.Major >= 6)
                 SetProcessDPIAware();
@@ -33,8 +33,39 @@ namespace TTMulti
                 Properties.Settings.Default.UpgradeRequired = false;
                 Properties.Settings.Default.Save();
             }
-            
+
+            if (Properties.Settings.Default.runAsAdministrator)
+            {
+                if (args.Length == 0 || args[0] != "--runasadmin")
+                {
+                    if (TryRunAsAdmin())
+                    {
+                        return;
+                    }
+                }
+            }
+
             Application.Run(new MulticontrollerWnd());
+        }
+
+        internal static bool TryRunAsAdmin()
+        {
+            ProcessStartInfo processInfo = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            processInfo.Arguments = "--runasadmin";
+            processInfo.UseShellExecute = true;
+            processInfo.Verb = "runas";
+
+            try
+            {
+                Process.Start(processInfo);
+                return true;
+            }
+            catch
+            {
+                Properties.Settings.Default.runAsAdministrator = false;
+                Properties.Settings.Default.Save();
+                return false;
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
