@@ -9,6 +9,11 @@ using System.Windows.Forms;
 using System.Deployment;
 using System.Deployment.Application;
 using TTMulti.Controls;
+using System.Net;
+using System.Threading;
+using System.Diagnostics;
+using System.Reflection;
+using System.IO;
 
 namespace TTMulti.Forms
 {
@@ -23,11 +28,134 @@ namespace TTMulti.Forms
 
             toolTip1.SetToolTip(checkBox2, "If checked, the Multicontroller window will stay on top of everything else. Otherwise, it will go to the background when it's deactivated by clicking on another window.");
             toolTip1.SetToolTip(checkBox3, "If checked, some of the UI elements will be hidden to make the Multicontroller window smaller.");
+        }
 
-            if (!ApplicationDeployment.IsNetworkDeployed)
+        // https://docs.microsoft.com/en-us/visualstudio/deployment/how-to-check-for-application-updates-programmatically-using-the-clickonce-deployment-api?view=vs-2015
+        private void checkUpdates_ClickOnce()
+        {
+            UpdateCheckInfo info = null;
+            ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+
+            try
             {
-                checkUpdateBtn.Visible = false;
+                info = ad.CheckForDetailedUpdate();
             }
+            catch (DeploymentDownloadException dde)
+            {
+                MessageBox.Show("The new version of the application cannot be downloaded at this time. \n\nPlease check your network connection, or try again later. Error: " + dde.Message);
+                return;
+            }
+            catch (InvalidDeploymentException ide)
+            {
+                MessageBox.Show("Cannot check for a new version of the application. The ClickOnce deployment is corrupt. Please redeploy the application and try again. Error: " + ide.Message);
+                return;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                MessageBox.Show("This application cannot be updated. It is likely not a ClickOnce application. Error: " + ioe.Message);
+                return;
+            }
+
+            if (info.UpdateAvailable)
+            {
+                Boolean doUpdate = true;
+
+                if (!info.IsUpdateRequired)
+                {
+                    DialogResult dr = MessageBox.Show("An update is available. Would you like to update the application now?", "Update Available", MessageBoxButtons.OKCancel);
+                    if (!(DialogResult.OK == dr))
+                    {
+                        doUpdate = false;
+                    }
+                }
+                else
+                {
+                    // Display a message that the app MUST reboot. Display the minimum required version.
+                    MessageBox.Show("This application has detected a mandatory update from your current " +
+                        "version to version " + info.MinimumRequiredVersion.ToString() +
+                        ". The application will now install the update and restart.",
+                        "Update Available", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+
+                if (doUpdate)
+                {
+                    try
+                    {
+                        ad.Update();
+                        MessageBox.Show("The application has been upgraded, and will now restart.");
+                        Application.Restart();
+                    }
+                    catch (DeploymentDownloadException dde)
+                    {
+                        MessageBox.Show("Cannot install the latest version of the application. \n\nPlease check your network connection, or try again later. Error: " + dde);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("There are no updates available at the moment.", "No Update Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void checkUpdates_Standalone()
+        {
+            string latestVersion = null;
+
+            Thread fetchVersionThread = new Thread(() =>
+            {
+                try
+                {
+                    HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(Properties.Settings.Default.homepageUrl + "/version.txt");
+
+                    using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse())
+                    using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                    {
+                        latestVersion = sr.ReadToEnd();
+                    }
+                }
+                catch { }
+            })
+            { IsBackground = true };
+
+            fetchVersionThread.Start();
+
+            this.Enabled = false;
+            this.UseWaitCursor = true;
+
+            Stopwatch sw = Stopwatch.StartNew();
+            
+            while (fetchVersionThread.IsAlive && sw.ElapsedMilliseconds < 5000)
+            {
+                Application.DoEvents();
+                Thread.Sleep(10);
+            }
+
+            if (fetchVersionThread.IsAlive)
+            {
+                fetchVersionThread.Abort();
+                latestVersion = null;
+            }
+
+            if (!string.IsNullOrEmpty(latestVersion))
+            {
+                if (Application.ProductVersion != latestVersion)
+                {
+                    MessageBox.Show(string.Format("An update is available to version {0}. Click the About button to view the homepage.", latestVersion), "Update available");
+                }
+                else
+                {
+                    MessageBox.Show("No updates available.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not check for a new version of the application.", "Error");
+            }
+
+            this.UseWaitCursor = false;
+            this.Enabled = true;
         }
 
         private void OptionsDlg_Load(object sender, EventArgs e)
@@ -57,80 +185,15 @@ namespace TTMulti.Forms
             new AboutWnd().ShowDialog(this);
         }
 
-        // https://docs.microsoft.com/en-us/visualstudio/deployment/how-to-check-for-application-updates-programmatically-using-the-clickonce-deployment-api?view=vs-2015
         private void checkUpdateBtn_Click(object sender, EventArgs e)
         {
-            UpdateCheckInfo info = null;
-
             if (ApplicationDeployment.IsNetworkDeployed)
             {
-                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-
-                try
-                {
-                    info = ad.CheckForDetailedUpdate();
-                }
-                catch (DeploymentDownloadException dde)
-                {
-                    MessageBox.Show("The new version of the application cannot be downloaded at this time. \n\nPlease check your network connection, or try again later. Error: " + dde.Message);
-                    return;
-                }
-                catch (InvalidDeploymentException ide)
-                {
-                    MessageBox.Show("Cannot check for a new version of the application. The ClickOnce deployment is corrupt. Please redeploy the application and try again. Error: " + ide.Message);
-                    return;
-                }
-                catch (InvalidOperationException ioe)
-                {
-                    MessageBox.Show("This application cannot be updated. It is likely not a ClickOnce application. Error: " + ioe.Message);
-                    return;
-                }
-
-                if (info.UpdateAvailable)
-                {
-                    Boolean doUpdate = true;
-
-                    if (!info.IsUpdateRequired)
-                    {
-                        DialogResult dr = MessageBox.Show("An update is available. Would you like to update the application now?", "Update Available", MessageBoxButtons.OKCancel);
-                        if (!(DialogResult.OK == dr))
-                        {
-                            doUpdate = false;
-                        }
-                    }
-                    else
-                    {
-                        // Display a message that the app MUST reboot. Display the minimum required version.
-                        MessageBox.Show("This application has detected a mandatory update from your current " +
-                            "version to version " + info.MinimumRequiredVersion.ToString() +
-                            ". The application will now install the update and restart.",
-                            "Update Available", MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                    }
-
-                    if (doUpdate)
-                    {
-                        try
-                        {
-                            ad.Update();
-                            MessageBox.Show("The application has been upgraded, and will now restart.");
-                            Application.Restart();
-                        }
-                        catch (DeploymentDownloadException dde)
-                        {
-                            MessageBox.Show("Cannot install the latest version of the application. \n\nPlease check your network connection, or try again later. Error: " + dde);
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("There are no updates available at the moment.", "No Update Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                checkUpdates_ClickOnce();
             }
             else
             {
-                MessageBox.Show("This application can't be updated. Try re-installing it from the homepage.", "Cannot Be Updated", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                checkUpdates_Standalone();
             }
         }
         

@@ -20,7 +20,8 @@ namespace TTMulti.Forms
         
         private void AboutWnd_Load(object sender, EventArgs e)
         {
-            linkLabel1.Text += Application.ProductVersion;
+            label1.Text += Application.ProductVersion;
+            linkLabel1.Text += Properties.Settings.Default.homepageUrl;
         }
 
         private void button1_Click(object sender, EventArgs e)

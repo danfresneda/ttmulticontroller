@@ -370,5 +370,14 @@ namespace TTMulti.Properties {
                 this["controlAllGroupsKeyCode"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://danfresneda.com/tt/multicontroller")]
+        public string homepageUrl {
+            get {
+                return ((string)(this["homepageUrl"]));
+            }
+        }
     }
 }
