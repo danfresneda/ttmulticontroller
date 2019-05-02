@@ -57,6 +57,10 @@ namespace TTMulti.Forms
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.keyPicker3 = new TTMulti.Controls.KeyPicker();
             this.tabControl1.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -65,14 +69,17 @@ namespace TTMulti.Forms
             this.groupBox1.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // okBtn
             // 
             this.okBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okBtn.Location = new System.Drawing.Point(443, 395);
+            this.okBtn.Location = new System.Drawing.Point(554, 494);
+            this.okBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.okBtn.Name = "okBtn";
-            this.okBtn.Size = new System.Drawing.Size(80, 22);
+            this.okBtn.Size = new System.Drawing.Size(100, 28);
             this.okBtn.TabIndex = 0;
             this.okBtn.Text = "OK";
             this.okBtn.UseVisualStyleBackColor = true;
@@ -82,9 +89,10 @@ namespace TTMulti.Forms
             // 
             this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelBtn.Location = new System.Drawing.Point(532, 395);
+            this.cancelBtn.Location = new System.Drawing.Point(665, 494);
+            this.cancelBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(80, 22);
+            this.cancelBtn.Size = new System.Drawing.Size(100, 28);
             this.cancelBtn.TabIndex = 1;
             this.cancelBtn.Text = "Cancel";
             this.cancelBtn.UseVisualStyleBackColor = true;
@@ -93,9 +101,10 @@ namespace TTMulti.Forms
             // aboutBtn
             // 
             this.aboutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.aboutBtn.Location = new System.Drawing.Point(12, 395);
+            this.aboutBtn.Location = new System.Drawing.Point(15, 494);
+            this.aboutBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.aboutBtn.Name = "aboutBtn";
-            this.aboutBtn.Size = new System.Drawing.Size(80, 22);
+            this.aboutBtn.Size = new System.Drawing.Size(100, 28);
             this.aboutBtn.TabIndex = 12;
             this.aboutBtn.Text = "About...";
             this.aboutBtn.UseVisualStyleBackColor = true;
@@ -104,9 +113,10 @@ namespace TTMulti.Forms
             // checkUpdateBtn
             // 
             this.checkUpdateBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkUpdateBtn.Location = new System.Drawing.Point(98, 395);
+            this.checkUpdateBtn.Location = new System.Drawing.Point(122, 494);
+            this.checkUpdateBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkUpdateBtn.Name = "checkUpdateBtn";
-            this.checkUpdateBtn.Size = new System.Drawing.Size(111, 22);
+            this.checkUpdateBtn.Size = new System.Drawing.Size(139, 28);
             this.checkUpdateBtn.TabIndex = 13;
             this.checkUpdateBtn.Text = "Check for Updates";
             this.checkUpdateBtn.UseVisualStyleBackColor = true;
@@ -121,20 +131,21 @@ namespace TTMulti.Forms
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(13, 12);
+            this.tabControl1.Location = new System.Drawing.Point(16, 15);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(600, 378);
+            this.tabControl1.Size = new System.Drawing.Size(750, 472);
             this.tabControl1.TabIndex = 14;
             // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.tableLayoutPanel3);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage6.Location = new System.Drawing.Point(4, 25);
+            this.tabPage6.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tabPage6.Size = new System.Drawing.Size(592, 352);
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage6.Size = new System.Drawing.Size(742, 443);
             this.tabPage6.TabIndex = 6;
             this.tabPage6.Text = "Multi-Mode Key Bindings";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -148,22 +159,24 @@ namespace TTMulti.Forms
             this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel1, 0, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(2, 2);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 4;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(588, 348);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(738, 439);
             this.tableLayoutPanel3.TabIndex = 24;
             // 
             // label6
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.Location = new System.Drawing.Point(3, 289);
+            this.label6.Location = new System.Drawing.Point(4, 365);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(582, 59);
+            this.label6.Size = new System.Drawing.Size(730, 74);
             this.label6.TabIndex = 24;
             this.label6.Text = resources.GetString("label6.Text");
             // 
@@ -171,9 +184,10 @@ namespace TTMulti.Forms
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Location = new System.Drawing.Point(3, 0);
+            this.label3.Location = new System.Drawing.Point(4, 0);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(582, 30);
+            this.label3.Size = new System.Drawing.Size(730, 38);
             this.label3.TabIndex = 21;
             this.label3.Text = "These are the keys that the multicontroller will send to Toontown while in multi-" +
     "mode. Make sure the Toontown keys match your key bindings in your game options.";
@@ -185,12 +199,13 @@ namespace TTMulti.Forms
             this.tableLayoutPanel1.Controls.Add(this.controlsPicker, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.addBindingBtn, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 33);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 42);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(582, 253);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(730, 319);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // controlsPicker
@@ -199,17 +214,18 @@ namespace TTMulti.Forms
             this.controlsPicker.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.controlsPicker.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlsPicker.Location = new System.Drawing.Point(2, 2);
-            this.controlsPicker.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.controlsPicker.Margin = new System.Windows.Forms.Padding(2);
             this.controlsPicker.Name = "controlsPicker";
-            this.controlsPicker.Size = new System.Drawing.Size(578, 220);
+            this.controlsPicker.Size = new System.Drawing.Size(726, 278);
             this.controlsPicker.TabIndex = 20;
             // 
             // addBindingBtn
             // 
             this.addBindingBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.addBindingBtn.Location = new System.Drawing.Point(3, 227);
+            this.addBindingBtn.Location = new System.Drawing.Point(4, 286);
+            this.addBindingBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addBindingBtn.Name = "addBindingBtn";
-            this.addBindingBtn.Size = new System.Drawing.Size(576, 23);
+            this.addBindingBtn.Size = new System.Drawing.Size(722, 29);
             this.addBindingBtn.TabIndex = 22;
             this.addBindingBtn.Text = "+ Add Custom Key Binding";
             this.toolTip1.SetToolTip(this.addBindingBtn, "Add a custom binding for any extra controls you want in multi-mode");
@@ -218,11 +234,12 @@ namespace TTMulti.Forms
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.groupBox1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Controls.Add(this.tableLayoutPanel2);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage3.Size = new System.Drawing.Size(592, 352);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Size = new System.Drawing.Size(742, 443);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Hotkeys";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -232,9 +249,11 @@ namespace TTMulti.Forms
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.keyPicker1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Location = new System.Drawing.Point(4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(586, 75);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(726, 94);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Mode/Activate Hotkey:";
@@ -243,9 +262,10 @@ namespace TTMulti.Forms
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.Location = new System.Drawing.Point(6, 16);
+            this.label4.Location = new System.Drawing.Point(8, 20);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(574, 28);
+            this.label4.Size = new System.Drawing.Size(712, 35);
             this.label4.TabIndex = 13;
             this.label4.Text = "This key is used to change from multi-mode to mirror-mode and back. It also activ" +
     "ates the multicontroller when you have a Toontown window active. ";
@@ -255,11 +275,11 @@ namespace TTMulti.Forms
             this.keyPicker1.ChosenKey = System.Windows.Forms.Keys.Oemtilde;
             this.keyPicker1.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.modeKeyCode;
             this.keyPicker1.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "modeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keyPicker1.Location = new System.Drawing.Point(7, 48);
-            this.keyPicker1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.keyPicker1.MinimumSize = new System.Drawing.Size(40, 20);
+            this.keyPicker1.Location = new System.Drawing.Point(9, 60);
+            this.keyPicker1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.keyPicker1.MinimumSize = new System.Drawing.Size(50, 25);
             this.keyPicker1.Name = "keyPicker1";
-            this.keyPicker1.Size = new System.Drawing.Size(150, 20);
+            this.keyPicker1.Size = new System.Drawing.Size(188, 25);
             this.keyPicker1.TabIndex = 12;
             // 
             // tabPage5
@@ -267,11 +287,11 @@ namespace TTMulti.Forms
             this.tabPage5.Controls.Add(this.label2);
             this.tabPage5.Controls.Add(this.checkBox4);
             this.tabPage5.Controls.Add(this.keyPicker2);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage5.Location = new System.Drawing.Point(4, 25);
+            this.tabPage5.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage5.Size = new System.Drawing.Size(592, 352);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage5.Size = new System.Drawing.Size(742, 443);
             this.tabPage5.TabIndex = 5;
             this.tabPage5.Text = "Keep-Alive";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -279,10 +299,10 @@ namespace TTMulti.Forms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 30);
+            this.label2.Location = new System.Drawing.Point(8, 38);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 13);
+            this.label2.Size = new System.Drawing.Size(108, 17);
             this.label2.TabIndex = 14;
             this.label2.Text = "Keep-Alive Key:";
             // 
@@ -291,9 +311,10 @@ namespace TTMulti.Forms
             this.checkBox4.AutoSize = true;
             this.checkBox4.Checked = global::TTMulti.Properties.Settings.Default.disableKeepAlive;
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "disableKeepAlive", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox4.Location = new System.Drawing.Point(6, 6);
+            this.checkBox4.Location = new System.Drawing.Point(8, 8);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(115, 17);
+            this.checkBox4.Size = new System.Drawing.Size(149, 21);
             this.checkBox4.TabIndex = 3;
             this.checkBox4.Text = "Disable Keep-Alive";
             this.toolTip1.SetToolTip(this.checkBox4, "If checked, your toons will no longer be kept awake automatically.");
@@ -304,11 +325,11 @@ namespace TTMulti.Forms
             this.keyPicker2.ChosenKey = System.Windows.Forms.Keys.Home;
             this.keyPicker2.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.keepAliveKeyCode;
             this.keyPicker2.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "keepAliveKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keyPicker2.Location = new System.Drawing.Point(99, 29);
-            this.keyPicker2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.keyPicker2.MinimumSize = new System.Drawing.Size(40, 20);
+            this.keyPicker2.Location = new System.Drawing.Point(124, 36);
+            this.keyPicker2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.keyPicker2.MinimumSize = new System.Drawing.Size(50, 25);
             this.keyPicker2.Name = "keyPicker2";
-            this.keyPicker2.Size = new System.Drawing.Size(150, 20);
+            this.keyPicker2.Size = new System.Drawing.Size(188, 25);
             this.keyPicker2.TabIndex = 13;
             this.toolTip1.SetToolTip(this.keyPicker2, "This is the key that will be pressed periodically to keep your toons awake.");
             // 
@@ -317,10 +338,11 @@ namespace TTMulti.Forms
             this.tabPage2.Controls.Add(this.controlAllGroupsChk);
             this.tabPage2.Controls.Add(this.checkBox3);
             this.tabPage2.Controls.Add(this.checkBox2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage2.Size = new System.Drawing.Size(592, 352);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Size = new System.Drawing.Size(742, 443);
             this.tabPage2.TabIndex = 3;
             this.tabPage2.Text = "Other";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -330,10 +352,10 @@ namespace TTMulti.Forms
             this.controlAllGroupsChk.AutoSize = true;
             this.controlAllGroupsChk.Checked = global::TTMulti.Properties.Settings.Default.controlAllGroupsAtOnce;
             this.controlAllGroupsChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "controlAllGroupsAtOnce", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.controlAllGroupsChk.Location = new System.Drawing.Point(6, 54);
-            this.controlAllGroupsChk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.controlAllGroupsChk.Location = new System.Drawing.Point(8, 68);
+            this.controlAllGroupsChk.Margin = new System.Windows.Forms.Padding(2);
             this.controlAllGroupsChk.Name = "controlAllGroupsChk";
-            this.controlAllGroupsChk.Size = new System.Drawing.Size(210, 17);
+            this.controlAllGroupsChk.Size = new System.Drawing.Size(280, 21);
             this.controlAllGroupsChk.TabIndex = 2;
             this.controlAllGroupsChk.Text = "Control all groups at once in multi-mode";
             this.toolTip1.SetToolTip(this.controlAllGroupsChk, "If checked, every left toon will move at once, and every right toon will move at " +
@@ -345,9 +367,10 @@ namespace TTMulti.Forms
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = global::TTMulti.Properties.Settings.Default.compactUI;
             this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "compactUI", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(6, 30);
+            this.checkBox3.Location = new System.Drawing.Point(8, 38);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(112, 17);
+            this.checkBox3.Size = new System.Drawing.Size(144, 21);
             this.checkBox3.TabIndex = 1;
             this.checkBox3.Text = "Compact interface";
             this.toolTip1.SetToolTip(this.checkBox3, "If checked, the size of the multicontroller window will be smaller.");
@@ -358,28 +381,83 @@ namespace TTMulti.Forms
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = global::TTMulti.Properties.Settings.Default.onTopWhenInactive;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "onTopWhenInactive", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(6, 6);
+            this.checkBox2.Location = new System.Drawing.Point(8, 8);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(153, 17);
+            this.checkBox2.Size = new System.Drawing.Size(196, 21);
             this.checkBox2.TabIndex = 0;
             this.checkBox2.Text = "Keep on top when inactive";
             this.toolTip1.SetToolTip(this.checkBox2, "If checked, the multicontroller window will always stay visible over everything e" +
         "lse on your screen.");
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.groupBox2, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.groupBox1, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(734, 435);
+            this.tableLayoutPanel2.TabIndex = 15;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.keyPicker3);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox2.Location = new System.Drawing.Point(4, 106);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Size = new System.Drawing.Size(726, 77);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Control All Groups Hotkey:";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Location = new System.Drawing.Point(8, 20);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(712, 22);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "This key will toggle the option to \'Control all groups at once in multi-mode\', fo" +
+    "und in the Other tab.";
+            // 
+            // keyPicker3
+            // 
+            this.keyPicker3.ChosenKey = System.Windows.Forms.Keys.None;
+            this.keyPicker3.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.controlAllGroupsKeyCode;
+            this.keyPicker3.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "controlAllGroupsKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker3.Location = new System.Drawing.Point(9, 44);
+            this.keyPicker3.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker3.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker3.Name = "keyPicker3";
+            this.keyPicker3.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker3.TabIndex = 12;
+            // 
             // OptionsDlg
             // 
             this.AcceptButton = this.okBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancelBtn;
-            this.ClientSize = new System.Drawing.Size(625, 430);
+            this.ClientSize = new System.Drawing.Size(781, 538);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.checkUpdateBtn);
             this.Controls.Add(this.aboutBtn);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsDlg";
@@ -396,6 +474,8 @@ namespace TTMulti.Forms
             this.tabPage5.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -427,5 +507,9 @@ namespace TTMulti.Forms
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox controlAllGroupsChk;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label1;
+        private KeyPicker keyPicker3;
     }
 }

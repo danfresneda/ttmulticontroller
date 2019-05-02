@@ -358,5 +358,17 @@ namespace TTMulti.Properties {
                 this["runAsAdministrator"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int controlAllGroupsKeyCode {
+            get {
+                return ((int)(this["controlAllGroupsKeyCode"]));
+            }
+            set {
+                this["controlAllGroupsKeyCode"] = value;
+            }
+        }
     }
 }

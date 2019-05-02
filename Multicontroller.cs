@@ -222,6 +222,11 @@ namespace TTMulti
         /// </summary>
         internal bool ProcessKey(Keys key, uint msg = 0, IntPtr lParam = new IntPtr()) 
         {
+            if (key == Keys.None)
+            {
+                return false;
+            }
+
             // The return value determines whether the input is discarded (doesn't reach its intended destination)
             var shouldDiscardInput = false;
             
@@ -248,6 +253,15 @@ namespace TTMulti
                     }
 
                     shouldDiscardInput = true;
+                }
+            }
+            else if (key == (Keys)Properties.Settings.Default.controlAllGroupsKeyCode)
+            {
+                if (msg == (uint)Win32.WM.KEYDOWN)
+                {
+                    Properties.Settings.Default.controlAllGroupsAtOnce = !Properties.Settings.Default.controlAllGroupsAtOnce;
+                    GroupsChanged?.Invoke(this, EventArgs.Empty);
+                    updateControllerBorders();
                 }
             }
             else if (isActive)
