@@ -189,30 +189,40 @@ namespace TTMulti
         
         private void updateControllerBorders()
         {
-            if (CurrentMode == ControllerMode.Multi)
+            if (isActive)
             {
-                IEnumerable<ControllerGroup> affectedGroups = Properties.Settings.Default.controlAllGroupsAtOnce 
-                    ? (IEnumerable<ControllerGroup>)ControllerGroups : new[] { ControllerGroups[CurrentGroupIndex] };
-                
-                foreach (var group in ControllerGroups)
+                if (CurrentMode == ControllerMode.Multi)
                 {
-                    group.LeftController.BorderColor = Color.LimeGreen;
-                    group.RightController.BorderColor = Color.Green;
-                    
-                    group.LeftController.ShowBorder = group.RightController.ShowBorder =
-                        showAllBorders || affectedGroups.Contains(group);
+                    IEnumerable<ControllerGroup> affectedGroups = Properties.Settings.Default.controlAllGroupsAtOnce
+                        ? (IEnumerable<ControllerGroup>)ControllerGroups : new[] { ControllerGroups[CurrentGroupIndex] };
 
-                    group.LeftController.ShowGroupNumber = group.RightController.ShowGroupNumber =
-                        ShowAllBorders || ControllerGroups.Count > 1;
+                    foreach (var group in ControllerGroups)
+                    {
+                        group.LeftController.BorderColor = Color.LimeGreen;
+                        group.RightController.BorderColor = Color.Green;
+
+                        group.LeftController.ShowBorder = group.RightController.ShowBorder =
+                            ShowAllBorders || affectedGroups.Contains(group);
+
+                        group.LeftController.ShowGroupNumber = group.RightController.ShowGroupNumber =
+                            ShowAllBorders || ControllerGroups.Count > 1;
+                    }
                 }
-            }
+                else
+                {
+                    ControllerGroups.ForEach(g =>
+                    {
+                        g.LeftController.BorderColor = g.RightController.BorderColor = Color.Violet;
+                        g.LeftController.ShowBorder = g.RightController.ShowBorder = true;
+                        g.LeftController.ShowGroupNumber = g.RightController.ShowGroupNumber = ControllerGroups.Count > 1;
+                    });
+                }
+            } 
             else
             {
                 ControllerGroups.ForEach(g =>
                 {
-                    g.LeftController.BorderColor = g.RightController.BorderColor = Color.Violet;
-                    g.LeftController.ShowBorder = g.RightController.ShowBorder = isActive;
-                    g.LeftController.ShowGroupNumber = g.RightController.ShowGroupNumber = ControllerGroups.Count > 1;
+                    g.LeftController.ShowBorder = g.RightController.ShowBorder = false;
                 });
             }
         }
