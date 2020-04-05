@@ -384,6 +384,10 @@ namespace TTMulti.Forms
                     case Multicontroller.ControllerMode.Mirror:
                         mirrorModeRadio.Checked = true;
                         break;
+                    case Multicontroller.ControllerMode.Individual:
+                        multiModeRadio.Checked = false;
+                        mirrorModeRadio.Checked = false;
+                        break;
                 }
             });
         }

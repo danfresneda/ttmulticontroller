@@ -44,6 +44,28 @@ namespace TTMulti
             }
         }
 
+        int currentIndividualControllerIndex = 0;
+
+        internal int CurrentInvididualControllerIndex
+        {
+            get
+            {
+                if (AllControllersWithWindows.Count() > 0 && currentIndividualControllerIndex >= AllControllersWithWindows.Count())
+                {
+                    currentIndividualControllerIndex = 0;
+                    updateControllerBorders();
+                }
+
+                return currentIndividualControllerIndex;
+            }
+            private set
+            {
+                currentIndividualControllerIndex = value;
+
+                updateControllerBorders();
+            }
+        }
+
         internal ToontownController LeftController
         {
             get
@@ -60,10 +82,40 @@ namespace TTMulti
             }
         }
 
+        internal ToontownController CurrentIndividualController
+        {
+            get
+            {
+                if (AllControllersWithWindows.Count() > 0)
+                {
+                    return AllControllersWithWindows.ElementAt(CurrentInvididualControllerIndex);
+                }
+
+                return null;
+            }
+        }
+
+        internal IEnumerable<ToontownController> AllControllers
+        {
+            get
+            {
+                return ControllerGroups.SelectMany(g => new[] { g.LeftController, g.RightController });
+            }
+        }
+
+        internal IEnumerable<ToontownController> AllControllersWithWindows
+        {
+            get
+            {
+                return AllControllers.Where(c => c.HasWindow);
+            }
+        }
+
         internal enum ControllerMode
         {
             Multi,
-            Mirror
+            Mirror,
+            Individual
         }
 
         public bool ErrorOccurredPostingMessage
@@ -208,7 +260,7 @@ namespace TTMulti
                             ShowAllBorders || ControllerGroups.Count > 1;
                     }
                 }
-                else
+                else if(CurrentMode == ControllerMode.Mirror)
                 {
                     ControllerGroups.ForEach(g =>
                     {
@@ -216,6 +268,17 @@ namespace TTMulti
                         g.LeftController.ShowBorder = g.RightController.ShowBorder = true;
                         g.LeftController.ShowGroupNumber = g.RightController.ShowGroupNumber = ControllerGroups.Count > 1;
                     });
+                }
+                else if (CurrentMode == ControllerMode.Individual)
+                {
+                    foreach (var group in ControllerGroups)
+                    {
+                        group.LeftController.BorderColor = Color.Turquoise;
+                        group.RightController.BorderColor = Color.Turquoise;
+
+                        group.LeftController.ShowBorder = CurrentIndividualController == group.LeftController;
+                        group.RightController.ShowBorder = CurrentIndividualController == group.RightController;
+                    }
                 }
             } 
             else
@@ -274,6 +337,25 @@ namespace TTMulti
                     updateControllerBorders();
                 }
             }
+            else if (key == (Keys)Properties.Settings.Default.individualControlKeyCode)
+            {
+                if (msg == (uint)Win32.WM.KEYDOWN)
+                {
+                    if (isActive)
+                    {
+                        if (currentMode == ControllerMode.Individual)
+                        {
+                            CurrentInvididualControllerIndex = (CurrentInvididualControllerIndex + 1) % AllControllers.Count();
+                        }
+                        else if (AllControllersWithWindows.Count() > 0)
+                        {
+                            CurrentMode = ControllerMode.Individual;
+                        }
+                    }
+
+                    shouldDiscardInput = true;
+                }
+            }
             else if (isActive)
             {
                 if (currentMode == ControllerMode.Multi)
@@ -323,16 +405,17 @@ namespace TTMulti
                         }
                     }
                 }
-                else
+                else if (CurrentMode == ControllerMode.Mirror)
                 {
-                    if (currentMode == ControllerMode.Mirror)
+                    foreach (var group in ControllerGroups)
                     {
-                        foreach (var group in ControllerGroups)
-                        {
-                            group.LeftController.PostMessage(msg, wParam, lParam);
-                            group.RightController.PostMessage(msg, wParam, lParam);
-                        }
+                        group.LeftController.PostMessage(msg, wParam, lParam);
+                        group.RightController.PostMessage(msg, wParam, lParam);
                     }
+                } 
+                else if (CurrentMode == ControllerMode.Individual)
+                {
+                    CurrentIndividualController?.PostMessage(msg, wParam, lParam);
                 }
 
                 shouldDiscardInput = true;

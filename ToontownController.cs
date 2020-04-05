@@ -32,6 +32,8 @@ namespace TTMulti
             }
         }
 
+        public bool HasWindow { get => TTWindowHandle != IntPtr.Zero; }
+
         public Color BorderColor { get; set; }
 
         bool _showBorder = true;
