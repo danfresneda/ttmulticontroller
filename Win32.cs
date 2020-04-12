@@ -14,6 +14,12 @@ namespace TTMulti
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern bool SendNotifyMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
         [DllImport("user32.dll")]
         internal static extern IntPtr WindowFromPoint(Point Point);
 
@@ -1228,7 +1234,14 @@ namespace TTMulti
 
         internal const int WS_EX_LAYERED = 0x00080000,
             WS_EX_TRANSPARENT = 0x00000020,
-            WS_EX_TOOLWINDOW = 0x80;
+            WS_EX_TOOLWINDOW = 0x80,
+            WS_EX_NOACTIVATE = 0x08000000;
+
+        internal const int CS_DBLCLKS = 0x8;
+
+        internal const int MK_LBUTTON = 0x1,
+            MK_MBUTTON = 0x10,
+            MK_RBUTTON = 0x2;
 
         internal const int WH_MOUSE_LL = 14,
             WH_KEYBOARD_LL = 13;

@@ -210,8 +210,7 @@ namespace TTMulti.Forms
             
             if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP || msg == Win32.WM.SYSKEYDOWN || msg == Win32.WM.SYSKEYUP || msg == Win32.WM.SYSCOMMAND || msg == Win32.WM.HOTKEY)
             {
-                var key = (Keys)m.WParam.ToInt32();
-                ret = controller.ProcessKey(key, (uint)m.Msg, m.LParam);
+                ret = controller.ProcessInput((uint)m.Msg, m.WParam, m.LParam);
             }
 
             CheckControllerErrors();
@@ -223,7 +222,7 @@ namespace TTMulti.Forms
         {
             if (m.Msg == (int)Win32.WM.HOTKEY)
             {
-                controller.ProcessKey((Keys)Properties.Settings.Default.modeKeyCode, (uint)m.Msg);
+                controller.ProcessInput((uint)m.Msg, m.WParam, m.LParam);
                 CheckControllerErrors();
             }
 
@@ -266,7 +265,7 @@ namespace TTMulti.Forms
         {
             this.TopMost = Properties.Settings.Default.onTopWhenInactive;
             panel1.Visible = !Properties.Settings.Default.compactUI;
-            controller.UpdateKeys();
+            controller.UpdateOptions();
             UnregisterHotkey();
         }
 
@@ -293,6 +292,7 @@ namespace TTMulti.Forms
 
             controller.ModeChanged += Controller_ModeChanged;
             controller.GroupsChanged += Controller_GroupsChanged;
+            controller.SettingChangedByHotkey += Controller_SettingChanged;
             controller.ShouldActivate += Controller_ShouldActivate;
             controller.TTWindowActivated += Controller_TTWindowActivated;
             controller.AllTTWindowsInactive += Controller_AllTTWindowsInactive;
@@ -329,6 +329,11 @@ namespace TTMulti.Forms
 
             // Multicontroller could have loaded groups
             UpdateWindowStatus();
+        }
+
+        private void Controller_SettingChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Save();
         }
 
         // There's probably a race condition somewhere in here since the activate/deactivate events
@@ -446,7 +451,13 @@ namespace TTMulti.Forms
 
         private void MulticontrollerWnd_Deactivate(object sender, EventArgs e)
         {
-            if (!ignoreMessages)
+            IntPtr activeWnd = Win32.GetForegroundWindow();
+
+            /*if (controller.AllControllersWithWindows.Select(c => c.BorderWndHandle).Contains(activeWnd))
+            {
+
+            } 
+            else */if (!ignoreMessages)
             {
                 controller.IsActive = false;
             }

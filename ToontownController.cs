@@ -13,11 +13,12 @@ namespace TTMulti
     delegate void TTWindowActivatedHandler(object sender, IntPtr hWnd);
     delegate void TTWindowClosedHandler(object sender);
 
-    class ToontownController : IMessageFilter
+    class ToontownController
     {
         public event TTWindowActivatedHandler TTWindowActivated;
         public event TTWindowActivatedHandler TTWindowDeactivated;
         public event TTWindowClosedHandler TTWindowClosed;
+        internal event MouseEventOverlay.MessageHandler MouseEvent;
 
         IntPtr _ttWindowHandle;
         public IntPtr TTWindowHandle
@@ -33,6 +34,14 @@ namespace TTMulti
         }
 
         public bool HasWindow { get => TTWindowHandle != IntPtr.Zero; }
+
+        public Size TTWindowSize { get; private set; }
+
+        public bool ShowFakeCursor { get; set; }
+
+        public Point FakeCursorPosition { get; set; }
+
+        public bool TTWindowSizeMismatched { get; set; }
 
         public Color BorderColor { get; set; }
 
@@ -53,12 +62,14 @@ namespace TTMulti
 
         public bool ShowGroupNumber { get; set; } = false;
 
+        public bool CaptureMouseEvents { get; set; } = false;
+
         private bool ttWindowActive = false;
         public bool TTWindowActive
         {
             get => ttWindowActive;
             private set
-            { 
+            {
                 if (ttWindowActive != value)
                 {
                     ttWindowActive = value;
@@ -78,6 +89,7 @@ namespace TTMulti
         public bool ErrorOccurredPostingMessage { get; private set; } = false;
 
         BorderWnd _borderWnd;
+        MouseEventOverlay _overlayWnd;
 
         Thread bgThread;
         
@@ -86,9 +98,11 @@ namespace TTMulti
             bgThread = new Thread(() =>
             {
                 _borderWnd = new BorderWnd();
-                DateTime lastWake = DateTime.MinValue;
+                _overlayWnd = new MouseEventOverlay();
 
-                Application.AddMessageFilter(this);
+                _overlayWnd.MouseEvent += _overlayWnd_MouseEvent;
+
+                DateTime lastWake = DateTime.MinValue;
 
                 while (true)
                 {
@@ -107,6 +121,21 @@ namespace TTMulti
                         _borderWnd.ShowGroupNumber = ShowGroupNumber;
                     }
 
+                    if (_borderWnd.FakeCursorPosition != FakeCursorPosition)
+                    {
+                        _borderWnd.FakeCursorPosition = FakeCursorPosition;
+                    }
+
+                    if (_borderWnd.ShowFakeCursor != ShowFakeCursor)
+                    {
+                        _borderWnd.ShowFakeCursor = ShowFakeCursor;
+                    }
+
+                    if (_borderWnd.FakeCursorIsInvalid != TTWindowSizeMismatched)
+                    {
+                        _borderWnd.FakeCursorIsInvalid = TTWindowSizeMismatched;
+                    }
+
                     try
                     {
                         if (TTWindowHandle != IntPtr.Zero && !Win32.IsWindow(TTWindowHandle))
@@ -115,11 +144,12 @@ namespace TTMulti
                             TTWindowClosed?.Invoke(this);
                         }
 
-                        if (TTWindowHandle == IntPtr.Zero && _borderWnd.Visible)
+                        if (!HasWindow && _borderWnd.Visible)
                         {
                             _borderWnd.Hide();
+                            _overlayWnd.Hide();
                         }
-                        else if (TTWindowHandle != IntPtr.Zero)
+                        else if (HasWindow)
                         {
                             TTWindowActive = (Win32.GetForegroundWindow() == TTWindowHandle);
                             
@@ -135,43 +165,79 @@ namespace TTMulti
                             Win32.ClientToScreen(TTWindowHandle, ref clientPoint);
 
                             _borderWnd.Location = clientPoint;
+                            _overlayWnd.Location = clientPoint;
 
                             switch (wndPlacement.ShowCmd)
                             {
                                 case Win32.ShowWindowCommands.ShowMinimized:
                                     _borderWnd.Hide();
+                                    _overlayWnd.Hide();
                                     break;
                                 default:
-                                    _borderWnd.Size = new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
-
-                                    if (!_borderWnd.Visible && ShowBorder)
+                                    _borderWnd.Size = _overlayWnd.Size = TTWindowSize = 
+                                        new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
+                                    
+                                    if (ShowBorder)
                                     {
-                                        _borderWnd.Show();
+                                        if (!_borderWnd.Visible)
+                                        {
+                                            _borderWnd.Show();
+                                        }
+
+                                        if (CaptureMouseEvents && !_overlayWnd.Visible)
+                                        {
+                                            _overlayWnd.Show();
+                                        } 
+                                        else if (!CaptureMouseEvents && _overlayWnd.Visible)
+                                        {
+                                            _overlayWnd.Hide();
+                                        }
                                     }
-                                    else if (_borderWnd.Visible && !ShowBorder)
+                                    else if (!ShowBorder && (_borderWnd.Visible || _overlayWnd.Visible))
                                     {
                                         _borderWnd.Hide();
+                                        _overlayWnd.Hide();
                                     }
 
                                     _borderWnd.WindowState = FormWindowState.Normal;
+                                    _overlayWnd.WindowState = FormWindowState.Normal;
 
-                                    bool borderWndIsAboveTT = false;
+                                    /*
+                                     * Order the windows in the following z-order:
+                                     * 1 - overlay window
+                                     * 2 - border window
+                                     * 3 - Toontown window
+                                     */
+
+                                    bool borderWndIsAboveTT = false,
+                                        overlayWndIsAboveTT = false;
+
                                     IntPtr hWndAbove = TTWindowHandle;
 
                                     do
                                     {
                                         hWndAbove = Win32.GetWindow(hWndAbove, Win32.GetWindow_Cmd.GW_HWNDPREV);
-
+                                        
                                         if (hWndAbove == _borderWnd.Handle)
                                         {
                                             borderWndIsAboveTT = true;
+                                        }
+                                        else if (hWndAbove == _overlayWnd.Handle)
+                                        {
+                                            overlayWndIsAboveTT = true;
+                                        }
+
+                                        if (overlayWndIsAboveTT && borderWndIsAboveTT)
+                                        {
                                             break;
                                         }
 
                                     } while (hWndAbove != IntPtr.Zero);
 
-                                    if (!borderWndIsAboveTT)
+                                    if (!borderWndIsAboveTT || !overlayWndIsAboveTT)
                                     {
+                                        // TODO: Check this logic
+                                        Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                                         Win32.SetWindowPos(_borderWnd.Handle, TTWindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                                         Win32.SetWindowPos(TTWindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                                     }
@@ -206,6 +272,14 @@ namespace TTMulti
             bgThread.Start();
         }
 
+        private void _overlayWnd_MouseEvent(object sender, Message m)
+        {
+            MouseEvent?.Invoke(this, m);
+        }
+
+        /// <summary>
+        /// Post a message asynchronously to the Toontown window
+        /// </summary>
         public void PostMessage(uint msg, IntPtr wParam, IntPtr lParam)
         {
             if (TTWindowHandle != IntPtr.Zero)
@@ -217,34 +291,23 @@ namespace TTMulti
             }
         }
 
-        public bool PreFilterMessage(ref Message m)
+        /// <summary>
+        /// Alternative to PostMessage to try to maintain the order of mouse events.
+        /// Returns immediately unlike SendMessage as long as the target window is in a different
+        /// thread.
+        /// </summary>
+        public void SendMessage(uint msg, IntPtr wParam, IntPtr lParam)
         {
-            if (m.HWnd != _borderWnd.Handle) return false;
-
-            switch ((Win32.WM)m.Msg)
+            if (TTWindowHandle != IntPtr.Zero)
             {
-                case Win32.WM.LBUTTONDOWN:
-                case Win32.WM.LBUTTONUP:
-                case Win32.WM.RBUTTONDOWN:
-                case Win32.WM.RBUTTONUP:
-                case Win32.WM.MOUSEMOVE:
-                case Win32.WM.KEYDOWN:
-                case Win32.WM.KEYUP:
-                    PostMessage((uint)m.Msg, m.WParam, m.LParam);
-                    break;
-                case Win32.WM.SETCURSOR:
-                    PostMessage((uint)m.Msg, TTWindowHandle, m.LParam);
-                    break;
-                default:
-                    return false;
+                Win32.SendNotifyMessage(TTWindowHandle, msg, wParam, lParam);
             }
-
-            return false;
         }
 
         public void Shutdown()
         {
             _borderWnd.InvokeIfRequired(() => _borderWnd.Close());
+            _overlayWnd.InvokeIfRequired(() => _overlayWnd.Close());
 
             bgThread.Interrupt();
             while (bgThread.IsAlive) Thread.Sleep(1);

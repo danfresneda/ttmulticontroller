@@ -65,7 +65,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6B73F51A01139C50ADE9C9CCD92A7B5BF40BC237</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>AB2A21F83771599EFD8969D7B29E0DEAD69C78C3</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>TTMulti_TemporaryKey.pfx</ManifestKeyFile>
@@ -86,6 +86,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -94,6 +95,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\ControlsPicker.cs">
@@ -127,6 +132,12 @@
     <Compile Include="Controls\KeyPicker.Designer.cs">
       <DependentUpon>KeyPicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MouseEventOverlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MouseEventOverlay.Designer.cs">
+      <DependentUpon>MouseEventOverlay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MulticontrollerWnd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +165,11 @@
     <Compile Include="Forms\WindowGroupsForm.Designer.cs">
       <DependentUpon>WindowGroupsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\SerializedSettings.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -177,6 +193,9 @@
     <EmbeddedResource Include="Controls\KeyPicker.resx">
       <DependentUpon>KeyPicker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MouseEventOverlay.resx">
+      <DependentUpon>MouseEventOverlay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MulticontrollerWnd.resx">
       <DependentUpon>MulticontrollerWnd.cs</DependentUpon>
     </EmbeddedResource>
@@ -185,14 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Controls\SelectWindowCrosshair.resx">
       <DependentUpon>SelectWindowCrosshair.cs</DependentUpon>
     </EmbeddedResource>
@@ -233,12 +247,21 @@
     <None Include="Resources\findere.bmp" />
     <None Include="Resources\finderf.bmp" />
     <None Include="Resources\icon.ico" />
-    <None Include="Resources\icon.png" />
+    <Resource Include="Resources\icon.png" />
     <None Include="Resources\searchw.cur" />
     <None Include="Resources\toonmono.cur" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dupcursor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dupcursorx.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

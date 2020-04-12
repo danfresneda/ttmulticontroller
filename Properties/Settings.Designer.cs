@@ -391,5 +391,29 @@ namespace TTMulti.Properties {
                 this["individualControlKeyCode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replicateMouse {
+            get {
+                return ((bool)(this["replicateMouse"]));
+            }
+            set {
+                this["replicateMouse"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int replicateMouseKeyCode {
+            get {
+                return ((int)(this["replicateMouseKeyCode"]));
+            }
+            set {
+                this["replicateMouseKeyCode"] = value;
+            }
+        }
     }
 }

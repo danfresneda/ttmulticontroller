@@ -14,16 +14,19 @@ namespace TTMulti.Forms
     /// <summary>
     /// This window is used to display a border around Toontown windows that are controlled 
     /// by the multicontroller. The border is drawn manually.
+    /// Displays the group number and an icon to indicate that the multicontroller is active.
+    /// Displays a fake cursor to signify that mouse events will be replicated as well.
     /// </summary>
     internal partial class BorderWnd : Form, IWin32Window
     {
-        Color _borderColor = Color.Black;
-        public Color BorderColor
+        private Color _borderColor = Color.Black;
+
+        /// <summary>
+        /// The color of the border displayed over a Toontown window.
+        /// </summary>
+        internal Color BorderColor
         {
-            get
-            {
-                return _borderColor;
-            }
+            get => _borderColor;
             set
             {
                 _borderColor = value;
@@ -31,13 +34,26 @@ namespace TTMulti.Forms
             }
         }
 
-        // TODO: Does this need to be settable? If yes, call Invalidate when setting it.
-        public int BorderWidth { get; set; } = 5;
+        private int _borderWidth = 5;
 
         /// <summary>
-        /// Displayed on the top left of the window as an identifier for the group
+        /// The width of the border displayed over a Toontown window.
         /// </summary>
+        public int BorderWidth
+        {
+            get => _borderWidth;
+            set
+            {
+                _borderWidth = value;
+                this.Invalidate();
+            }
+        }
+
         private int groupNumber;
+
+        /// <summary>
+        /// The window group number displayed on the top left of the window.
+        /// </summary>
         public int GroupNumber
         {
             get => groupNumber;
@@ -52,6 +68,10 @@ namespace TTMulti.Forms
         }
 
         private bool showGroupNumber = false;
+
+        /// <summary>
+        /// Whether to show the window group number or not.
+        /// </summary>
         public bool ShowGroupNumber
         {
             get => showGroupNumber;
@@ -66,7 +86,44 @@ namespace TTMulti.Forms
         }
 
         /// <summary>
-        /// Overrides the default style so that the window is transparent and borderless.
+        /// Enable showing a fake cursor to signify that mouse events are being replicated.
+        /// </summary>
+        internal bool ShowFakeCursor
+        {
+            get => fakeCursorImg.Visible;
+            set
+            {
+                fakeCursorImg.Visible = value;
+            }
+        }
+
+        /// <summary>
+        /// The position of the fake cursor.
+        /// </summary>
+        internal Point FakeCursorPosition
+        {
+            get => fakeCursorImg.Location;
+            set
+            {
+                fakeCursorImg.Location = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether to display an invalid fake cursor, signifying that the size of the 
+        /// window doesn't match the source of the mouse events.
+        /// </summary>
+        internal bool FakeCursorIsInvalid
+        {
+            get => fakeCursorImg.Image == fakeCursorImageInvalid;
+            set
+            {
+                fakeCursorImg.Image = value ? fakeCursorImageInvalid : fakeCursorImage;
+            }
+        }
+
+        /// <summary>
+        /// Overrides the default style so that the window is transparent to clicks and borderless.
         /// </summary>
         protected override CreateParams CreateParams
         {
@@ -83,19 +140,16 @@ namespace TTMulti.Forms
         /// Allows the window to be shown without activating it. By default, the window is activated
         /// when show which would disrupt operation of the multicontroller.
         /// </summary>
-        protected override bool ShowWithoutActivation
-        {
-            get { return true; }
-        }
+        protected override bool ShowWithoutActivation => true;
+
+        private Bitmap fakeCursorImage = Properties.Resources.dupcursor,
+            fakeCursorImageInvalid = Properties.Resources.dupcursorx;
 
         public BorderWnd()
         {
             InitializeComponent();
-            
-            // TODO: Remove this? I don't think it's needed.
-            this.Cursor = new Cursor(new MemoryStream(Properties.Resources.toonmono));
         }
-        
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -109,7 +163,7 @@ namespace TTMulti.Forms
             if (ShowGroupNumber)
             {
                 e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
-                e.Graphics.DrawString(GroupNumber.ToString(), new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular), Brushes.White, 5, 5);
+                e.Graphics.DrawString(GroupNumber.ToString(), new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular), Brushes.White, 12, 160);
             }
         }
     }
