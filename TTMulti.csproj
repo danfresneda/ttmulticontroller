@@ -65,7 +65,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>AB2A21F83771599EFD8969D7B29E0DEAD69C78C3</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>D8FEF50FBE13E08750790B44BBF39B9A1596CC6E</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>TTMulti_TemporaryKey.pfx</ManifestKeyFile>
