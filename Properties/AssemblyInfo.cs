@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TT Multicontroller")]
+[assembly: AssemblyTitle("Toontown Multicontroller")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DF Software")]
-[assembly: AssemblyProduct("TT Multicontroller")]
-[assembly: AssemblyCopyright("Copyright © 2015-2019 Daniel Fresneda")]
+[assembly: AssemblyProduct("Toontown Multicontroller")]
+[assembly: AssemblyCopyright("Copyright © 2015-2021 Daniel Fresneda-Rojas")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
