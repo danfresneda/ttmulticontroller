@@ -18,7 +18,7 @@ namespace TTMulti
         public event TTWindowActivatedHandler TTWindowActivated;
         public event TTWindowActivatedHandler TTWindowDeactivated;
         public event TTWindowClosedHandler TTWindowClosed;
-        internal event MouseEventOverlay.MessageHandler MouseEvent;
+        internal event OverlayMouseEventHandler MouseEvent;
 
         IntPtr _ttWindowHandle;
         public IntPtr TTWindowHandle
@@ -58,7 +58,7 @@ namespace TTMulti
             }
         }
 
-        public int GroupNumber { get; set; } = 0;
+        public int GroupNumber { get; }
 
         public bool ShowGroupNumber { get; set; } = false;
 
@@ -93,8 +93,10 @@ namespace TTMulti
 
         Thread bgThread;
         
-        public ToontownController()
+        public ToontownController(int groupNumber)
         {
+            GroupNumber = groupNumber;
+
             bgThread = new Thread(() =>
             {
                 _borderWnd = new BorderWnd();

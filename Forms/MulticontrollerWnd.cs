@@ -144,8 +144,8 @@ namespace TTMulti.Forms
         /// </summary>
         internal void UpdateWindowStatus()
         {
-            leftToonCrosshair.SelectedWindowHandle = controller.LeftController.TTWindowHandle;
-            rightToonCrosshair.SelectedWindowHandle = controller.RightController.TTWindowHandle;
+            leftToonCrosshair.SelectedWindowHandle = controller.LeftControllers.First().TTWindowHandle;
+            rightToonCrosshair.SelectedWindowHandle = controller.RightControllers.First().TTWindowHandle;
 
             leftStatusLbl.Text = "Group " + (controller.CurrentGroupIndex + 1) + " active.";
             rightStatusLbl.Text = controller.ControllerGroups.Count + " groups.";
@@ -426,12 +426,12 @@ namespace TTMulti.Forms
 
         private void leftToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            Multicontroller.Instance.LeftController.TTWindowHandle = handle;
+            Multicontroller.Instance.LeftControllers.First().TTWindowHandle = handle;
         }
 
         private void rightToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            Multicontroller.Instance.RightController.TTWindowHandle = handle;
+            Multicontroller.Instance.RightControllers.First().TTWindowHandle = handle;
         }
 
         private void multiModeRadio_Click(object sender, EventArgs e)

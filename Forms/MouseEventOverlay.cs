@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace TTMulti.Forms
 {
+    internal delegate void OverlayMouseEventHandler(object sender, Message m);
+
     /// <summary>
     /// This overlay window is displayed over the "border window" in order to capture mouse events
     /// while on top of a Toontown window. Without switching to WPF, the border window cannot
@@ -17,10 +19,7 @@ namespace TTMulti.Forms
     /// </summary>
     public partial class MouseEventOverlay : Form
     {
-        internal delegate void MessageHandler(object sender, Message m);
-        internal event MessageHandler MouseEvent;
-
-        private int lastMoveX, lastMoveY;
+        internal event OverlayMouseEventHandler MouseEvent;
 
         public MouseEventOverlay()
         {

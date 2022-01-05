@@ -100,11 +100,25 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerGroup.cs" />
+    <Compile Include="ControllerPair.cs" />
     <Compile Include="Controls\ControlsPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ControlsPicker.Designer.cs">
       <DependentUpon>ControlsPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControllerPairView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControllerPairView.Designer.cs">
+      <DependentUpon>ControllerPairView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControllerGroupView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControllerGroupView.Designer.cs">
+      <DependentUpon>ControllerGroupView.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AboutWnd.cs">
       <SubType>Form</SubType>
@@ -180,6 +194,12 @@
     <EmbeddedResource Include="Controls\ControlsPicker.resx">
       <DependentUpon>ControlsPicker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControllerPairView.resx">
+      <DependentUpon>ControllerPairView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControllerGroupView.resx">
+      <DependentUpon>ControllerGroupView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutWnd.resx">
       <DependentUpon>AboutWnd.cs</DependentUpon>
     </EmbeddedResource>
@@ -208,6 +228,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SelectWindowCrosshair.resx">
       <DependentUpon>SelectWindowCrosshair.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\WindowGroupsForm.resx">
       <DependentUpon>WindowGroupsForm.cs</DependentUpon>

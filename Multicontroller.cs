@@ -67,22 +67,31 @@ namespace TTMulti
             }
         }
 
-        internal ToontownController LeftController
+        /// <summary>
+        /// Left controllers of the current group
+        /// </summary>
+        internal IEnumerable<ToontownController> LeftControllers
         {
             get
             {
-                return ControllerGroups[CurrentGroupIndex].LeftController;
+                return ControllerGroups[CurrentGroupIndex].LeftControllers;
             }
         }
 
-        internal ToontownController RightController
+        /// <summary>
+        /// Right controllers of the current group
+        /// </summary>
+        internal IEnumerable<ToontownController> RightControllers
         {
             get
             {
-                return ControllerGroups[CurrentGroupIndex].RightController;
+                return ControllerGroups[CurrentGroupIndex].RightControllers;
             }
         }
 
+        /// <summary>
+        /// The current controller that is being controlled individually (if any)
+        /// </summary>
         internal ToontownController CurrentIndividualController
         {
             get
@@ -100,7 +109,7 @@ namespace TTMulti
         {
             get
             {
-                return ControllerGroups.SelectMany(g => new[] { g.LeftController, g.RightController });
+                return ControllerGroups.SelectMany(g => g.ControllerPairs.SelectMany(p => new[] { p.LeftController, p.RightController }));
             }
         }
 
@@ -119,9 +128,13 @@ namespace TTMulti
             Individual
         }
 
+        /// <summary>
+        /// Whether an error occurred when posting a message to a Toontown window.
+        /// This usually indicated that we don't have enough privileges and need to run as administrator.
+        /// </summary>
         public bool ErrorOccurredPostingMessage
         {
-            get => ControllerGroups.Any(g => g.LeftController.ErrorOccurredPostingMessage || g.RightController.ErrorOccurredPostingMessage);
+            get => ControllerGroups.Any(g => g.AllControllers.Any(c => c.ErrorOccurredPostingMessage));
         }
 
         private bool showAllBorders = false;
@@ -218,18 +231,13 @@ namespace TTMulti
 
         internal ControllerGroup AddControllerGroup()
         {
-            ControllerGroup group = new ControllerGroup();
+            ControllerGroup group = new ControllerGroup(ControllerGroups.Count + 1);
 
-            group.LeftController.GroupNumber = group.RightController.GroupNumber = ControllerGroups.Count + 1;
-
-            group.LeftController.TTWindowActivated += Controller_TTWindowActivated;
-            group.RightController.TTWindowActivated += Controller_TTWindowActivated;
-            group.LeftController.TTWindowDeactivated += Controller_TTWindowDeactivated;
-            group.RightController.TTWindowDeactivated += Controller_TTWindowDeactivated;
-            group.LeftController.TTWindowClosed += Controller_TTWindowClosed;
-            group.RightController.TTWindowClosed += Controller_TTWindowClosed;
-            group.LeftController.MouseEvent += Controller_MouseEvent;
-            group.RightController.MouseEvent += Controller_MouseEvent;
+            group.TTWindowActivated += Controller_TTWindowActivated;
+            group.TTWindowDeactivated += Controller_TTWindowDeactivated;
+            group.TTWindowClosed += Controller_TTWindowClosed;
+            group.MouseEvent += Controller_MouseEvent;
+            group.PairAddedRemoved += Group_PairAddedRemoved;
 
             ControllerGroups.Add(group);
             GroupsChanged?.Invoke(this, EventArgs.Empty);
@@ -237,6 +245,11 @@ namespace TTMulti
             updateControllerBorders();
 
             return group;
+        }
+
+        private void Group_PairAddedRemoved(object sender, EventArgs e)
+        {
+            updateControllerBorders();
         }
 
         private void Controller_MouseEvent(object sender, Message m)
@@ -247,8 +260,7 @@ namespace TTMulti
         internal void RemoveControllerGroup(int index)
         {
             ControllerGroup controllerGroup = ControllerGroups[index];
-            controllerGroup.LeftController.Shutdown();
-            controllerGroup.RightController.Shutdown();
+            controllerGroup.Dispose();
             ControllerGroups.Remove(controllerGroup);
             GroupsChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -264,42 +276,48 @@ namespace TTMulti
 
                     foreach (var group in ControllerGroups)
                     {
-                        group.LeftController.BorderColor = Color.LimeGreen;
-                        group.RightController.BorderColor = Color.Green;
+                        foreach (var controller in group.LeftControllers)
+                        {
+                            controller.BorderColor = Color.LimeGreen;
+                            
+                        }
 
-                        group.LeftController.ShowBorder = group.RightController.ShowBorder =
-                            ShowAllBorders || affectedGroups.Contains(group);
+                        foreach (var controller in group.RightControllers)
+                        {
+                            controller.BorderColor = Color.Green;
+                        }
 
-                        group.LeftController.ShowGroupNumber = group.RightController.ShowGroupNumber =
-                            ShowAllBorders || ControllerGroups.Count > 1;
-
-                        group.LeftController.CaptureMouseEvents = group.RightController.CaptureMouseEvents = 
-                            Properties.Settings.Default.replicateMouse;
+                        foreach (var controller in group.AllControllers)
+                        {
+                            controller.ShowBorder = ShowAllBorders || affectedGroups.Contains(group);
+                            controller.ShowGroupNumber = ShowAllBorders || ControllerGroups.Count > 1;
+                            controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                        }
                     }
                 }
                 else if(CurrentMode == ControllerMode.Mirror)
                 {
                     ControllerGroups.ForEach(g =>
                     {
-                        g.LeftController.BorderColor = g.RightController.BorderColor = Color.Violet;
-                        g.LeftController.ShowBorder = g.RightController.ShowBorder = true;
-                        g.LeftController.ShowGroupNumber = g.RightController.ShowGroupNumber = ControllerGroups.Count > 1;
-                        g.LeftController.CaptureMouseEvents = g.RightController.CaptureMouseEvents =
-                            Properties.Settings.Default.replicateMouse;
+                        foreach (var controller in g.AllControllers)
+                        {
+                            controller.BorderColor = Color.Violet;
+                            controller.ShowBorder = true;
+                            controller.ShowGroupNumber = ControllerGroups.Count > 1;
+                            controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                        }
                     });
                 }
                 else if (CurrentMode == ControllerMode.Individual)
                 {
                     foreach (var group in ControllerGroups)
                     {
-                        group.LeftController.BorderColor = Color.Turquoise;
-                        group.RightController.BorderColor = Color.Turquoise;
-
-                        group.LeftController.ShowBorder = CurrentIndividualController == group.LeftController;
-                        group.RightController.ShowBorder = CurrentIndividualController == group.RightController;
-
-                        group.LeftController.CaptureMouseEvents = CurrentIndividualController == group.LeftController;
-                        group.RightController.CaptureMouseEvents = CurrentIndividualController == group.RightController;
+                        foreach (var controller in group.AllControllers)
+                        {
+                            controller.BorderColor = Color.Turquoise;
+                            controller.ShowBorder = CurrentIndividualController == controller;
+                            controller.CaptureMouseEvents = CurrentIndividualController == controller;
+                        }
                     }
                 }
             } 
@@ -307,7 +325,10 @@ namespace TTMulti
             {
                 ControllerGroups.ForEach(g =>
                 {
-                    g.LeftController.ShowBorder = g.RightController.ShowBorder = false;
+                    foreach (var controller in g.AllControllers)
+                    {
+                        controller.ShowBorder = false;
+                    }
                 });
             }
         }
@@ -444,10 +465,10 @@ namespace TTMulti
                     else
                     {
                         if ((isKeyboardInput && leftKeys.ContainsKey(keysPressed))
-                            || (isMouseInput && sourceController == LeftController))
+                            || (isMouseInput && LeftControllers.Contains(sourceController)))
                         {
                             affectedControllers.AddRange(Properties.Settings.Default.controlAllGroupsAtOnce ?
-                                ControllerGroups.Select(c => c.LeftController) : new[] { LeftController });
+                                ControllerGroups.SelectMany(c => c.LeftControllers) : LeftControllers);
 
                             if (isKeyboardInput)
                             {
@@ -456,10 +477,10 @@ namespace TTMulti
                         }
 
                         if ((isKeyboardInput && rightKeys.ContainsKey(keysPressed))
-                            || (isMouseInput && sourceController == RightController))
+                            || (isMouseInput && RightControllers.Contains(sourceController)))
                         {
                             affectedControllers.AddRange(Properties.Settings.Default.controlAllGroupsAtOnce ?
-                                ControllerGroups.Select(c => c.RightController) : new[] { RightController });
+                                ControllerGroups.SelectMany(c => c.RightControllers) : RightControllers);
 
                             if (isKeyboardInput)
                             {
@@ -563,7 +584,7 @@ namespace TTMulti
 
         private void Controller_TTWindowClosed(object sender)
         {
-            if (sender == LeftController || sender == RightController)
+            if (LeftControllers.Contains(sender) || RightControllers.Contains(sender))
             {
                 GroupsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -576,16 +597,12 @@ namespace TTMulti
 
         private void Controller_TTWindowDeactivated(object sender, IntPtr hWnd)
         {
-            if (ControllerGroups.All(g => !g.LeftController.TTWindowActive && !g.RightController.TTWindowActive))
+            if (!AllControllersWithWindows.Any(c => c.TTWindowActive))
             {
                 AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);
             }
         }
     }
 
-    class ControllerGroup
-    {
-        internal ToontownController LeftController = new ToontownController();
-        internal ToontownController RightController = new ToontownController();
-    }
+    
 }
