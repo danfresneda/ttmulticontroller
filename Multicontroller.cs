@@ -68,24 +68,38 @@ namespace TTMulti
         }
 
         /// <summary>
-        /// Left controllers of the current group
+        /// Left controllers of the current group, or all groups if all groups are being controlled at once
         /// </summary>
         internal IEnumerable<ToontownController> LeftControllers
         {
             get
             {
-                return ControllerGroups[CurrentGroupIndex].LeftControllers;
+                if (Properties.Settings.Default.controlAllGroupsAtOnce)
+                {
+                    return ControllerGroups.SelectMany(g => g.LeftControllers);
+                }
+                else
+                {
+                    return ControllerGroups[CurrentGroupIndex].LeftControllers;
+                }
             }
         }
 
         /// <summary>
-        /// Right controllers of the current group
+        /// Right controllers of the current group, or all groups if all groups are being controlled at once
         /// </summary>
         internal IEnumerable<ToontownController> RightControllers
         {
             get
             {
-                return ControllerGroups[CurrentGroupIndex].RightControllers;
+                if (Properties.Settings.Default.controlAllGroupsAtOnce)
+                {
+                    return ControllerGroups.SelectMany(g => g.RightControllers);
+                }
+                else
+                {
+                    return ControllerGroups[CurrentGroupIndex].RightControllers;
+                }
             }
         }
 
