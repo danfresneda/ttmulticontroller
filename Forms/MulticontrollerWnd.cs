@@ -336,8 +336,6 @@ namespace TTMulti.Forms
             Properties.Settings.Default.Save();
         }
 
-        // There's probably a race condition somewhere in here since the activate/deactivate events
-        // are potentially fired by different threads at the same time
         private void Controller_AllTTWindowsInactive(object sender, EventArgs e)
         {
             try
