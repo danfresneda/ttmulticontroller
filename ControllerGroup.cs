@@ -13,17 +13,17 @@ namespace TTMulti
         /// <summary>
         /// The Toontown window of a controller in this group was activated
         /// </summary>
-        public event TTWindowActivatedHandler TTWindowActivated;
+        public event EventHandler ControllerWindowActivated;
 
         /// <summary>
         /// The Toontown window of a controller in this group was deactivated
         /// </summary>
-        public event TTWindowActivatedHandler TTWindowDeactivated;
+        public event EventHandler ControllerWindowDeactivated;
 
         /// <summary>
         /// The Toontown window of a controller in this group was closed
         /// </summary>
-        public event TTWindowClosedHandler TTWindowClosed;
+        public event EventHandler ControllerWindowClosed;
 
         /// <summary>
         /// A mouse event was captured from a controller in this group
@@ -63,12 +63,12 @@ namespace TTMulti
         {
             var pair = new ControllerPair(GroupNumber);
 
-            pair.LeftController.TTWindowActivated += Controller_TTWindowActivated;
-            pair.RightController.TTWindowActivated += Controller_TTWindowActivated;
-            pair.LeftController.TTWindowDeactivated += Controller_TTWindowDeactivated;
-            pair.RightController.TTWindowDeactivated += Controller_TTWindowDeactivated;
-            pair.LeftController.TTWindowClosed += Controller_TTWindowClosed; ;
-            pair.RightController.TTWindowClosed += Controller_TTWindowClosed;
+            pair.LeftController.WindowActivated += Controller_TTWindowActivated;
+            pair.RightController.WindowActivated += Controller_TTWindowActivated;
+            pair.LeftController.WindowDeactivated += Controller_TTWindowDeactivated;
+            pair.RightController.WindowDeactivated += Controller_TTWindowDeactivated;
+            pair.LeftController.WindowClosed += Controller_TTWindowClosed; ;
+            pair.RightController.WindowClosed += Controller_TTWindowClosed;
             pair.LeftController.MouseEvent += Controller_MouseEvent;
             pair.RightController.MouseEvent += Controller_MouseEvent;
 
@@ -96,19 +96,19 @@ namespace TTMulti
             }
         }
 
-        private void Controller_TTWindowClosed(object sender)
+        private void Controller_TTWindowClosed(object sender, EventArgs e)
         {
-            TTWindowClosed?.Invoke(sender);
+            ControllerWindowClosed?.Invoke(sender, e);
         }
 
-        private void Controller_TTWindowDeactivated(object sender, IntPtr hWnd)
+        private void Controller_TTWindowDeactivated(object sender, EventArgs e)
         {
-            TTWindowDeactivated?.Invoke(sender, hWnd);
+            ControllerWindowDeactivated?.Invoke(sender, e);
         }
 
-        private void Controller_TTWindowActivated(object sender, IntPtr hWnd)
+        private void Controller_TTWindowActivated(object sender, EventArgs e)
         {
-            TTWindowActivated?.Invoke(sender, hWnd);
+            ControllerWindowActivated?.Invoke(sender, e);
         }
 
         private void Controller_MouseEvent(object sender, System.Windows.Forms.Message m)

@@ -10,38 +10,52 @@ using TTMulti.Forms;
 
 namespace TTMulti
 {
-    delegate void TTWindowActivatedHandler(object sender, IntPtr hWnd);
-    delegate void TTWindowClosedHandler(object sender);
-
     class ToontownController
     {
-        public event TTWindowActivatedHandler TTWindowActivated;
-        public event TTWindowActivatedHandler TTWindowDeactivated;
-        public event TTWindowClosedHandler TTWindowClosed;
+        /// <summary>
+        /// The controlled window was activated
+        /// </summary>
+        public event EventHandler WindowActivated;
+
+        /// <summary>
+        /// The controlled window was deactivated
+        /// </summary>
+        public event EventHandler WindowDeactivated;
+
+        /// <summary>
+        /// The controlled window was closed
+        /// </summary>
+        public event EventHandler WindowClosed;
+
         internal event OverlayMouseEventHandler MouseEvent;
 
-        IntPtr _ttWindowHandle;
-        public IntPtr TTWindowHandle
+        IntPtr _windowHandle;
+        public IntPtr WindowHandle
         {
-            get
-            {
-                return _ttWindowHandle;
-            }
+            get => _windowHandle;
             set
             {
-                _ttWindowHandle = value;
+                if (_windowHandle != value)
+                {
+                    _windowHandle = value;
+
+                    WindowWatcher.Instance.WatchWindow(_windowHandle);
+                }
             }
         }
 
-        public bool HasWindow { get => TTWindowHandle != IntPtr.Zero; }
+        public bool HasWindow { get => WindowHandle != IntPtr.Zero; }
 
-        public Size TTWindowSize { get; private set; }
+        public Size WindowSize { get; private set; }
 
         public bool ShowFakeCursor { get; set; }
 
         public Point FakeCursorPosition { get; set; }
 
-        public bool TTWindowSizeMismatched { get; set; }
+        /// <summary>
+        /// Whether the controlled window's size is mismatched 
+        /// </summary>
+        public bool IsWindowSizeMismatched { get; set; }
 
         public Color BorderColor { get; set; }
 
@@ -64,23 +78,23 @@ namespace TTMulti
 
         public bool CaptureMouseEvents { get; set; } = false;
 
-        private bool ttWindowActive = false;
-        public bool TTWindowActive
+        private bool _isWindowActive = false;
+        public bool IsWindowActive
         {
-            get => ttWindowActive;
+            get => _isWindowActive;
             private set
             {
-                if (ttWindowActive != value)
+                if (_isWindowActive != value)
                 {
-                    ttWindowActive = value;
+                    _isWindowActive = value;
 
-                    if (ttWindowActive)
+                    if (_isWindowActive)
                     {
-                        TTWindowActivated?.Invoke(this, _ttWindowHandle);
+                        WindowActivated?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
-                        TTWindowDeactivated?.Invoke(this, _ttWindowHandle);
+                        WindowDeactivated?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
@@ -96,6 +110,9 @@ namespace TTMulti
         public ToontownController(int groupNumber)
         {
             GroupNumber = groupNumber;
+
+            WindowWatcher.Instance.ActiveWindowChanged += WindowWatcher_ActiveWindowChanged;
+            WindowWatcher.Instance.WindowClosed += WindowWatcher_WindowClosed;
 
             bgThread = new Thread(() =>
             {
@@ -133,19 +150,13 @@ namespace TTMulti
                         _borderWnd.ShowFakeCursor = ShowFakeCursor;
                     }
 
-                    if (_borderWnd.FakeCursorIsInvalid != TTWindowSizeMismatched)
+                    if (_borderWnd.FakeCursorIsInvalid != IsWindowSizeMismatched)
                     {
-                        _borderWnd.FakeCursorIsInvalid = TTWindowSizeMismatched;
+                        _borderWnd.FakeCursorIsInvalid = IsWindowSizeMismatched;
                     }
 
                     try
                     {
-                        if (TTWindowHandle != IntPtr.Zero && !Win32.IsWindow(TTWindowHandle))
-                        {
-                            TTWindowHandle = IntPtr.Zero;
-                            TTWindowClosed?.Invoke(this);
-                        }
-
                         if (!HasWindow && _borderWnd.Visible)
                         {
                             _borderWnd.Hide();
@@ -153,18 +164,16 @@ namespace TTMulti
                         }
                         else if (HasWindow)
                         {
-                            TTWindowActive = (Win32.GetForegroundWindow() == TTWindowHandle);
-                            
                             Win32.RECT lpRect;
-                            Win32.GetClientRect(TTWindowHandle, out lpRect);
+                            Win32.GetClientRect(WindowHandle, out lpRect);
 
                             Win32.WINDOWPLACEMENT wndPlacement = new Win32.WINDOWPLACEMENT();
                             wndPlacement.Length = Marshal.SizeOf(wndPlacement);
 
-                            Win32.GetWindowPlacement(TTWindowHandle, ref wndPlacement);
+                            Win32.GetWindowPlacement(WindowHandle, ref wndPlacement);
 
                             Point clientPoint = new Point(0, 0);
-                            Win32.ClientToScreen(TTWindowHandle, ref clientPoint);
+                            Win32.ClientToScreen(WindowHandle, ref clientPoint);
 
                             _borderWnd.Location = clientPoint;
                             _overlayWnd.Location = clientPoint;
@@ -176,7 +185,7 @@ namespace TTMulti
                                     _overlayWnd.Hide();
                                     break;
                                 default:
-                                    _borderWnd.Size = _overlayWnd.Size = TTWindowSize = 
+                                    _borderWnd.Size = _overlayWnd.Size = WindowSize = 
                                         new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
                                     
                                     if (ShowBorder)
@@ -214,7 +223,7 @@ namespace TTMulti
                                     bool borderWndIsAboveTT = false,
                                         overlayWndIsAboveTT = false;
 
-                                    IntPtr hWndAbove = TTWindowHandle;
+                                    IntPtr hWndAbove = WindowHandle;
 
                                     do
                                     {
@@ -240,8 +249,8 @@ namespace TTMulti
                                     {
                                         // TODO: Check this logic
                                         Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                                        Win32.SetWindowPos(_borderWnd.Handle, TTWindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                                        Win32.SetWindowPos(TTWindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                                        Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                                        Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                                     }
 
                                     break;
@@ -250,7 +259,7 @@ namespace TTMulti
 
                         if (!Properties.Settings.Default.disableKeepAlive 
                         && (DateTime.Now - lastWake).TotalMinutes >= 1 
-                        && TTWindowHandle != IntPtr.Zero
+                        && WindowHandle != IntPtr.Zero
                         && Properties.Settings.Default.keepAliveKeyCode != (int)Keys.None)
                         {
                             PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
@@ -274,6 +283,33 @@ namespace TTMulti
             bgThread.Start();
         }
 
+        private void WindowWatcher_WindowClosed(object sender, Events.WindowClosedEventArgs e)
+        {
+            if (e.ClosedWindowHandle == WindowHandle)
+            {
+                WindowClosed?.Invoke(this, EventArgs.Empty);
+
+                WindowHandle = IntPtr.Zero;
+            }
+        }
+
+        private void WindowWatcher_ActiveWindowChanged(object sender, Events.WindowActivatedEventArgs e)
+        {
+            if (!HasWindow)
+            {
+                return;
+            }
+
+            if (e.ActiveWindowHandle == WindowHandle)
+            {
+                IsWindowActive = true;
+            }
+            else if (e.PreviousActiveWindowHandle == WindowHandle)
+            {
+                IsWindowActive = false;
+            }
+        }
+
         private void _overlayWnd_MouseEvent(object sender, Message m)
         {
             MouseEvent?.Invoke(this, m);
@@ -284,9 +320,9 @@ namespace TTMulti
         /// </summary>
         public void PostMessage(uint msg, IntPtr wParam, IntPtr lParam)
         {
-            if (TTWindowHandle != IntPtr.Zero)
+            if (WindowHandle != IntPtr.Zero)
             {
-                if (!Win32.PostMessage(TTWindowHandle, msg, wParam, lParam))
+                if (!Win32.PostMessage(WindowHandle, msg, wParam, lParam))
                 {
                     ErrorOccurredPostingMessage = true;
                 }
@@ -300,9 +336,9 @@ namespace TTMulti
         /// </summary>
         public void SendMessage(uint msg, IntPtr wParam, IntPtr lParam)
         {
-            if (TTWindowHandle != IntPtr.Zero)
+            if (WindowHandle != IntPtr.Zero)
             {
-                Win32.SendNotifyMessage(TTWindowHandle, msg, wParam, lParam);
+                Win32.SendNotifyMessage(WindowHandle, msg, wParam, lParam);
             }
         }
 
@@ -318,10 +354,8 @@ namespace TTMulti
                 Application.DoEvents();
             });
 
-            if (TTWindowHandle != IntPtr.Zero)
-            {
-
-            }
+            WindowWatcher.Instance.ActiveWindowChanged -= WindowWatcher_ActiveWindowChanged;
+            WindowWatcher.Instance.WindowClosed -= WindowWatcher_WindowClosed;
         }
     }
 }

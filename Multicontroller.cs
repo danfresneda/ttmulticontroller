@@ -249,9 +249,9 @@ namespace TTMulti
         {
             ControllerGroup group = new ControllerGroup(ControllerGroups.Count + 1);
 
-            group.TTWindowActivated += Controller_TTWindowActivated;
-            group.TTWindowDeactivated += Controller_TTWindowDeactivated;
-            group.TTWindowClosed += Controller_TTWindowClosed;
+            group.ControllerWindowActivated += Controller_WindowActivated;
+            group.ControllerWindowDeactivated += Controller_WindowDeactivated;
+            group.ControllerWindowClosed += Controller_WindowClosed;
             group.MouseEvent += Controller_MouseEvent;
             group.PairAddedRemoved += Group_PairAddedRemoved;
 
@@ -573,12 +573,12 @@ namespace TTMulti
                         if ((Win32.WM)msg != Win32.WM.MOUSELEAVE && affectedControllers.Contains(c))
                         {
                             bool windowSizeDifferent =
-                                c.TTWindowSize.Width > sourceController.TTWindowSize.Width + 5
-                                || c.TTWindowSize.Width < sourceController.TTWindowSize.Width - 5
-                                || c.TTWindowSize.Height > sourceController.TTWindowSize.Height + 5
-                                || c.TTWindowSize.Height < sourceController.TTWindowSize.Height - 5;
+                                c.WindowSize.Width > sourceController.WindowSize.Width + 5
+                                || c.WindowSize.Width < sourceController.WindowSize.Width - 5
+                                || c.WindowSize.Height > sourceController.WindowSize.Height + 5
+                                || c.WindowSize.Height < sourceController.WindowSize.Height - 5;
 
-                            c.TTWindowSizeMismatched = windowSizeDifferent;
+                            c.IsWindowSizeMismatched = windowSizeDifferent;
 
                             if (!windowSizeDifferent && ((Win32.WM)msg != Win32.WM.MOUSEMOVE || forwardMove))
                             {
@@ -598,7 +598,7 @@ namespace TTMulti
             return shouldDiscardInput;
         }
 
-        private void Controller_TTWindowClosed(object sender)
+        private void Controller_WindowClosed(object sender, EventArgs e)
         {
             if (LeftControllers.Contains(sender) || RightControllers.Contains(sender))
             {
@@ -606,7 +606,7 @@ namespace TTMulti
             }
         }
 
-        private void Controller_TTWindowActivated(object sender, IntPtr hWnd)
+        private void Controller_WindowActivated(object sender, EventArgs e)
         {
             // Prevent race conditions involving windows activating/deactivating simultaneously
             lock (windowActivationLock)
@@ -615,12 +615,12 @@ namespace TTMulti
             }
         }
 
-        private void Controller_TTWindowDeactivated(object sender, IntPtr hWnd)
+        private void Controller_WindowDeactivated(object sender, EventArgs e)
         {
             // Prevent race conditions involving windows activating/deactivating simultaneously
             lock (windowActivationLock)
             {
-                if (!AllControllersWithWindows.Any(c => c.TTWindowActive))
+                if (!AllControllersWithWindows.Any(c => c.IsWindowActive))
                 {
                     AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);
                 }

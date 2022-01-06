@@ -24,19 +24,19 @@ namespace TTMulti.Controls
         {
             ControllerPair = controllerPair;
 
-            leftToonCrosshair.SelectedWindowHandle = ControllerPair.LeftController.TTWindowHandle;
-            rightToonCrosshair.SelectedWindowHandle = ControllerPair.RightController.TTWindowHandle;
+            leftToonCrosshair.SelectedWindowHandle = ControllerPair.LeftController.WindowHandle;
+            rightToonCrosshair.SelectedWindowHandle = ControllerPair.RightController.WindowHandle;
         }
 
         private void leftToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            ControllerPair.LeftController.TTWindowHandle = leftToonCrosshair.SelectedWindowHandle;
+            ControllerPair.LeftController.WindowHandle = leftToonCrosshair.SelectedWindowHandle;
             WindowSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void rightToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            ControllerPair.RightController.TTWindowHandle = rightToonCrosshair.SelectedWindowHandle;
+            ControllerPair.RightController.WindowHandle = rightToonCrosshair.SelectedWindowHandle;
             WindowSelected?.Invoke(this, EventArgs.Empty);
         }
     }
