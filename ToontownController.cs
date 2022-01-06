@@ -308,11 +308,15 @@ namespace TTMulti
 
         public void Shutdown()
         {
-            _borderWnd.InvokeIfRequired(() => _borderWnd.Close());
-            _overlayWnd.InvokeIfRequired(() => _overlayWnd.Close());
-
             bgThread.Interrupt();
             while (bgThread.IsAlive) Thread.Sleep(1);
+
+            _borderWnd.InvokeIfRequired(() =>
+            {
+                _borderWnd.Close();
+                _overlayWnd.Close();
+                Application.DoEvents();
+            });
 
             if (TTWindowHandle != IntPtr.Zero)
             {
