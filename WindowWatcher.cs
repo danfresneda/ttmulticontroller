@@ -129,9 +129,9 @@ namespace TTMulti
                     continue;
                 }
 
-                Size clientAreaSize = GetWindowClientAreaSize(windowHandle);
-                Point clientAreaLocation = GetWindowClientAreaLocation(windowHandle);
-                Win32.ShowWindowCommands showState = GetWindowShowState(windowHandle);
+                Size clientAreaSize = Win32.GetWindowClientAreaSize(windowHandle);
+                Point clientAreaLocation = Win32.GetWindowClientAreaLocation(windowHandle);
+                Win32.ShowWindowCommands showState = Win32.GetWindowShowState(windowHandle);
                 
                 if (lastWindowInfos.ContainsKey(windowHandle))
                 {
@@ -171,31 +171,6 @@ namespace TTMulti
             }
 
             watchTimer.Start();
-        }
-
-        private Size GetWindowClientAreaSize(IntPtr windowHandle)
-        {
-            Win32.GetClientRect(windowHandle, out Win32.RECT lpRect);
-
-            return new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
-        }
-
-        private Point GetWindowClientAreaLocation(IntPtr windowHandle)
-        {
-            Point screenLocation = new Point(0, 0);
-            Win32.ClientToScreen(windowHandle, ref screenLocation);
-
-            return screenLocation;
-        }
-
-        private Win32.ShowWindowCommands GetWindowShowState(IntPtr windowHandle)
-        {
-            Win32.WINDOWPLACEMENT wndPlacement = new Win32.WINDOWPLACEMENT();
-            wndPlacement.Length = Marshal.SizeOf(wndPlacement);
-
-            Win32.GetWindowPlacement(windowHandle, ref wndPlacement);
-
-            return wndPlacement.ShowCmd;
         }
     }
 }

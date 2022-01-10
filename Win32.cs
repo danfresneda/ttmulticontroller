@@ -8,8 +8,33 @@ using System.Windows.Forms;
 
 namespace TTMulti
 {
-    class Win32
+    static class Win32
     {
+        public static Size GetWindowClientAreaSize(IntPtr windowHandle)
+        {
+            GetClientRect(windowHandle, out Win32.RECT lpRect);
+
+            return new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
+        }
+
+        public static Point GetWindowClientAreaLocation(IntPtr windowHandle)
+        {
+            Point screenLocation = new Point(0, 0);
+            ClientToScreen(windowHandle, ref screenLocation);
+
+            return screenLocation;
+        }
+
+        public static ShowWindowCommands GetWindowShowState(IntPtr windowHandle)
+        {
+            WINDOWPLACEMENT wndPlacement = new Win32.WINDOWPLACEMENT();
+            wndPlacement.Length = Marshal.SizeOf(wndPlacement);
+
+            GetWindowPlacement(windowHandle, ref wndPlacement);
+
+            return wndPlacement.ShowCmd;
+        }
+
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
