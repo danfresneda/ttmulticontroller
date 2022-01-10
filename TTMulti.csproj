@@ -144,7 +144,6 @@
     <Compile Include="Forms\BorderWnd.Designer.cs">
       <DependentUpon>BorderWnd.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions.cs" />
     <Compile Include="Controls\KeyPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>

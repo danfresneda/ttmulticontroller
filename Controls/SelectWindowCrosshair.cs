@@ -57,10 +57,7 @@ namespace TTMulti.Controls
         {
             try
             {
-                this.InvokeIfRequired(() =>
-                {
-                    this.BackColor = selectedWindowHandle != IntPtr.Zero ? SelectedBorderColor : SystemColors.Control;
-                });
+                this.BackColor = selectedWindowHandle != IntPtr.Zero ? SelectedBorderColor : SystemColors.Control;
             }
             catch { }
         }

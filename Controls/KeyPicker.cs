@@ -73,30 +73,27 @@ namespace TTMulti.Controls
             {
                 _key = value;
 
-                this.InvokeIfRequired(() =>
+                string text = _key.ToString();
+
+                if (alternateKeyTexts.ContainsKey(_key))
                 {
-                    string text = _key.ToString();
+                    text = alternateKeyTexts[_key];
+                }
+                else if (_key == Keys.None)
+                {
+                    text = isActive ? DISABLED_FOCUSED_TEXT : DISABLED_UNFOCUSED_TEXT;
+                }
 
-                    if (alternateKeyTexts.ContainsKey(_key))
-                    {
-                        text = alternateKeyTexts[_key];
-                    }
-                    else if (_key == Keys.None)
-                    {
-                        text = isActive ? DISABLED_FOCUSED_TEXT : DISABLED_UNFOCUSED_TEXT;
-                    }
+                textBox1.Text = text;
 
-                    textBox1.Text = text;
-
-                    if (_key == Keys.None)
-                    {
-                        textBox1.Font = new Font(textBox1.Font, FontStyle.Italic);
-                    }
-                    else
-                    {
-                        textBox1.Font = new Font(textBox1.Font, FontStyle.Regular);
-                    }
-                });
+                if (_key == Keys.None)
+                {
+                    textBox1.Font = new Font(textBox1.Font, FontStyle.Italic);
+                }
+                else
+                {
+                    textBox1.Font = new Font(textBox1.Font, FontStyle.Regular);
+                }
             }
         }
 

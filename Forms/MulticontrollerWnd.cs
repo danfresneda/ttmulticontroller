@@ -58,7 +58,7 @@ namespace TTMulti.Forms
         private void activationThreadFunc()
         {
             IntPtr hWnd = IntPtr.Zero;
-            this.InvokeIfRequired(() => hWnd = this.Handle);
+            Invoke(new Action(() => hWnd = this.Handle));
 
             Stopwatch sw = Stopwatch.StartNew();
 
@@ -73,12 +73,12 @@ namespace TTMulti.Forms
                 // First try calling Activate() for some time
                 if (sw.ElapsedMilliseconds < 100)
                 {
-                    this.InvokeIfRequired(() => this.Activate());
+                    Invoke(new Action(() => this.Activate()));
                 }
                 // If that doesn't work, fake a mouse event to activate the window
                 else
                 {
-                    this.InvokeIfRequired(() => this.TopMost = true);
+                    Invoke(new Action(() => this.TopMost = true));
 
                     int x = this.DisplayRectangle.Width / 2 + this.Location.X;
                     int y = this.Location.Y + SystemInformation.CaptionHeight / 2;
@@ -130,7 +130,7 @@ namespace TTMulti.Forms
 
                 if (Win32.GetForegroundWindow() == hWnd)
                 {
-                    this.InvokeIfRequired(() => this.TopMost = Properties.Settings.Default.onTopWhenInactive);
+                    Invoke(new Action(() => this.TopMost = Properties.Settings.Default.onTopWhenInactive));
                     break;
                 }
             } while (sw.Elapsed.TotalSeconds < 5);
@@ -338,20 +338,12 @@ namespace TTMulti.Forms
 
         private void Controller_AllTTWindowsInactive(object sender, EventArgs e)
         {
-            try
-            {
-                this.InvokeIfRequired(() => UnregisterHotkey());
-            }
-            catch { }
+            UnregisterHotkey();
         }
 
         private void Controller_TTWindowActivated(object sender, EventArgs e)
         {
-            try
-            {
-                this.InvokeIfRequired(() => RegisterHotkey());
-            }
-            catch { }
+            RegisterHotkey();
         }
 
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
@@ -377,22 +369,19 @@ namespace TTMulti.Forms
 
         private void Controller_ModeChanged(object sender, EventArgs e)
         {
-            this.InvokeIfRequired(() =>
+            switch (controller.CurrentMode)
             {
-                switch (controller.CurrentMode)
-                {
-                    case Multicontroller.ControllerMode.Multi:
-                        multiModeRadio.Checked = true;
-                        break;
-                    case Multicontroller.ControllerMode.Mirror:
-                        mirrorModeRadio.Checked = true;
-                        break;
-                    case Multicontroller.ControllerMode.Individual:
-                        multiModeRadio.Checked = false;
-                        mirrorModeRadio.Checked = false;
-                        break;
-                }
-            });
+                case Multicontroller.ControllerMode.Multi:
+                    multiModeRadio.Checked = true;
+                    break;
+                case Multicontroller.ControllerMode.Mirror:
+                    mirrorModeRadio.Checked = true;
+                    break;
+                case Multicontroller.ControllerMode.Individual:
+                    multiModeRadio.Checked = false;
+                    mirrorModeRadio.Checked = false;
+                    break;
+            }
         }
 
         private void optionsBtn_Click(object sender, EventArgs e)

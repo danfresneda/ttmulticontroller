@@ -30,18 +30,15 @@ namespace TTMulti.Controls
             }
             set
             {
-                this.InvokeIfRequired(() =>
+                while (tableLayoutPanel1.RowCount > 1)
                 {
-                    while (tableLayoutPanel1.RowCount > 1)
-                    {
-                        removeRow(1);
-                    }
+                    removeRow(1);
+                }
 
-                    foreach (KeyMapping keyMapping in value)
-                    {
-                        AddMapping(keyMapping);
-                    }
-                });
+                foreach (KeyMapping keyMapping in value)
+                {
+                    AddMapping(keyMapping);
+                }
             }
         }
 
@@ -52,13 +49,11 @@ namespace TTMulti.Controls
 
         public void AddMapping(KeyMapping keyMapping)
         {
-            this.InvokeIfRequired(() => {
-                int rowNum = addRow(keyMapping);
-                keyMappings.Add(keyMapping);
-                KeyMappingAdded?.Invoke(this, keyMapping);
-                KeyMappingsChanged?.Invoke(this, EventArgs.Empty);
-                tableLayoutPanel1.ScrollControlIntoView(tableLayoutPanel1.Controls[tableLayoutPanel1.Controls.Count - 1]);
-            });
+            int rowNum = addRow(keyMapping);
+            keyMappings.Add(keyMapping);
+            KeyMappingAdded?.Invoke(this, keyMapping);
+            KeyMappingsChanged?.Invoke(this, EventArgs.Empty);
+            tableLayoutPanel1.ScrollControlIntoView(tableLayoutPanel1.Controls[tableLayoutPanel1.Controls.Count - 1]);
         }
 
         public void RemoveMapping(int index)
