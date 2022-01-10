@@ -197,8 +197,6 @@ namespace TTMulti
 
         int lastMoveX, lastMoveY;
 
-        object windowActivationLock = new object();
-
         internal Multicontroller()
         {
 
@@ -608,22 +606,14 @@ namespace TTMulti
 
         private void Controller_WindowActivated(object sender, EventArgs e)
         {
-            // Prevent race conditions involving windows activating/deactivating simultaneously
-            lock (windowActivationLock)
-            {
-                TTWindowActivated?.Invoke(this, EventArgs.Empty);
-            }
+            TTWindowActivated?.Invoke(this, EventArgs.Empty);
         }
 
         private void Controller_WindowDeactivated(object sender, EventArgs e)
         {
-            // Prevent race conditions involving windows activating/deactivating simultaneously
-            lock (windowActivationLock)
+            if (!AllControllersWithWindows.Any(c => c.IsWindowActive))
             {
-                if (!AllControllersWithWindows.Any(c => c.IsWindowActive))
-                {
-                    AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);
-                }
+                AllTTWindowsInactive?.Invoke(this, EventArgs.Empty);
             }
         }
     }
