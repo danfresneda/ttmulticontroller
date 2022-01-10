@@ -30,6 +30,11 @@ namespace TTMulti
         internal event OverlayMouseEventHandler MouseEvent;
 
         IntPtr _windowHandle;
+
+        /// <summary>
+        /// The handle of the window being controlled.
+        /// TODO: make sure the handle does not belong to a utility window of a controller.
+        /// </summary>
         public IntPtr WindowHandle
         {
             get => _windowHandle;
@@ -37,9 +42,24 @@ namespace TTMulti
             {
                 if (_windowHandle != value)
                 {
+                    if (_windowHandle != IntPtr.Zero)
+                    {
+                        WindowWatcher.Instance.StopWatchingWindow(_windowHandle);
+                    }
+                    
                     _windowHandle = value;
 
-                    WindowWatcher.Instance.WatchWindow(_windowHandle);
+                    if (_windowHandle == IntPtr.Zero)
+                    {
+                        WindowClosed?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        WindowWatcher.Instance.WatchWindow(_windowHandle);
+                    }
+
+                    RefreshOptions();
+                    RefreshUtilityWindows();
                 }
             }
         }
@@ -48,35 +68,77 @@ namespace TTMulti
 
         public Size WindowSize { get; private set; }
 
-        public bool ShowFakeCursor { get; set; }
+        public bool ShowFakeCursor
+        {
+            get => _borderWnd.ShowFakeCursor;
+            set
+            {
+                if (_borderWnd.ShowFakeCursor != value)
+                {
+                    _borderWnd.ShowFakeCursor = value;
+                }
+            }
+        }
 
-        public Point FakeCursorPosition { get; set; }
+        public Point FakeCursorPosition
+        {
+            get => _borderWnd.FakeCursorPosition;
+            set => _borderWnd.FakeCursorPosition = value;
+        }
 
         /// <summary>
         /// Whether the controlled window's size is mismatched 
         /// </summary>
-        public bool IsWindowSizeMismatched { get; set; }
+        public bool IsWindowSizeMismatched
+        {
+            get => _borderWnd.FakeCursorIsInvalid;
+            set => _borderWnd.FakeCursorIsInvalid = value;
+        }
 
-        public Color BorderColor { get; set; }
+        public Color BorderColor
+        {
+            get => _borderWnd.BorderColor;
+            set => _borderWnd.BorderColor = value;
+        }
 
         bool _showBorder = true;
         public bool ShowBorder
         {
-            get
-            {
-                return _showBorder;
-            }
+            get => _showBorder;
             set
             {
                 _showBorder = value;
+
+                RefreshUtilityWindows();
             }
         }
 
-        public int GroupNumber { get; }
+        public int GroupNumber
+        {
+            get => _borderWnd.GroupNumber;
+            set => _borderWnd.GroupNumber = value;
+        }
 
-        public bool ShowGroupNumber { get; set; } = false;
+        public bool ShowGroupNumber
+        {
+            get => _borderWnd.ShowGroupNumber;
+            set => _borderWnd.ShowGroupNumber = value;
+        }
 
-        public bool CaptureMouseEvents { get; set; } = false;
+
+        private bool _captureMouseEvents;
+        public bool CaptureMouseEvents
+        {
+            get => _captureMouseEvents;
+            set
+            {
+                if (_captureMouseEvents != value)
+                {
+                    _captureMouseEvents = value;
+                    RefreshUtilityWindows();
+                }
+            }
+        }
 
         private bool _isWindowActive = false;
         public bool IsWindowActive
@@ -102,10 +164,22 @@ namespace TTMulti
 
         public bool ErrorOccurredPostingMessage { get; private set; } = false;
 
-        BorderWnd _borderWnd;
-        MouseEventOverlay _overlayWnd;
+        BorderWnd _borderWnd = new BorderWnd();
+        MouseEventOverlay _overlayWnd = new MouseEventOverlay();
 
-        Thread bgThread;
+        // Timer to send keep-alive key presses
+        System.Timers.Timer keepAliveTimer = new System.Timers.Timer()
+        {
+            AutoReset = false,
+            Interval = 60000
+        };
+
+        // Timer to make sure utility windows are in the correct order on top of the controlled window
+        // TODO: this should not be necessary
+        System.Timers.Timer utilityWindowTimer = new System.Timers.Timer()
+        {
+            Interval = 100
+        };
         
         public ToontownController(int groupNumber)
         {
@@ -113,182 +187,86 @@ namespace TTMulti
 
             WindowWatcher.Instance.ActiveWindowChanged += WindowWatcher_ActiveWindowChanged;
             WindowWatcher.Instance.WindowClosed += WindowWatcher_WindowClosed;
+            WindowWatcher.Instance.WindowClientAreaLocationChanged += WindowWatcher_WindowClientAreaLocationChanged;
+            WindowWatcher.Instance.WindowClientAreaSizeChanged += WindowWatcher_WindowClientAreaSizeChanged;
+            WindowWatcher.Instance.WindowShowStateChanged += WindowWatcher_WindowShowStateChanged;
 
-            bgThread = new Thread(() =>
+            Properties.Settings.Default.PropertyChanged += Settings_PropertyChanged;
+
+            _overlayWnd.MouseEvent += _overlayWnd_MouseEvent;
+
+            keepAliveTimer.Elapsed += KeepAliveTimer_Elapsed;
+            utilityWindowTimer.Elapsed += UtilityWindowTimer_Elapsed;
+
+            utilityWindowTimer.SynchronizingObject = _borderWnd;
+            utilityWindowTimer.Start();
+        }
+
+        private void UtilityWindowTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            RefreshUtilityWindows();
+        }
+
+        private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RefreshOptions();
+        }
+
+        private void KeepAliveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (!Properties.Settings.Default.disableKeepAlive
+                && Properties.Settings.Default.keepAliveKeyCode != (int)Keys.None
+                && HasWindow)
             {
-                _borderWnd = new BorderWnd();
-                _overlayWnd = new MouseEventOverlay();
+                PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
+                Thread.Sleep(50);
+                PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
 
-                _overlayWnd.MouseEvent += _overlayWnd_MouseEvent;
+                keepAliveTimer.Start();
+            }
+        }
 
-                DateTime lastWake = DateTime.MinValue;
-
-                while (true)
+        private void WindowWatcher_WindowShowStateChanged(object sender, Events.WindowShowStateChangedEventArgs e)
+        {
+            if (HasWindow && WindowHandle == e.WindowHandle)
+            {
+                switch (e.ShowState)
                 {
-                    if (_borderWnd.BorderColor != BorderColor)
-                    {
-                        _borderWnd.BorderColor = BorderColor;
-                    }
-
-                    if (_borderWnd.GroupNumber != GroupNumber)
-                    {
-                        _borderWnd.GroupNumber = GroupNumber;
-                    }
-
-                    if (_borderWnd.ShowGroupNumber != ShowGroupNumber)
-                    {
-                        _borderWnd.ShowGroupNumber = ShowGroupNumber;
-                    }
-
-                    if (_borderWnd.FakeCursorPosition != FakeCursorPosition)
-                    {
-                        _borderWnd.FakeCursorPosition = FakeCursorPosition;
-                    }
-
-                    if (_borderWnd.ShowFakeCursor != ShowFakeCursor)
-                    {
-                        _borderWnd.ShowFakeCursor = ShowFakeCursor;
-                    }
-
-                    if (_borderWnd.FakeCursorIsInvalid != IsWindowSizeMismatched)
-                    {
-                        _borderWnd.FakeCursorIsInvalid = IsWindowSizeMismatched;
-                    }
-
-                    try
-                    {
-                        if (!HasWindow && _borderWnd.Visible)
-                        {
-                            _borderWnd.Hide();
-                            _overlayWnd.Hide();
-                        }
-                        else if (HasWindow)
-                        {
-                            Win32.RECT lpRect;
-                            Win32.GetClientRect(WindowHandle, out lpRect);
-
-                            Win32.WINDOWPLACEMENT wndPlacement = new Win32.WINDOWPLACEMENT();
-                            wndPlacement.Length = Marshal.SizeOf(wndPlacement);
-
-                            Win32.GetWindowPlacement(WindowHandle, ref wndPlacement);
-
-                            Point clientPoint = new Point(0, 0);
-                            Win32.ClientToScreen(WindowHandle, ref clientPoint);
-
-                            _borderWnd.Location = clientPoint;
-                            _overlayWnd.Location = clientPoint;
-
-                            switch (wndPlacement.ShowCmd)
-                            {
-                                case Win32.ShowWindowCommands.ShowMinimized:
-                                    _borderWnd.Hide();
-                                    _overlayWnd.Hide();
-                                    break;
-                                default:
-                                    _borderWnd.Size = _overlayWnd.Size = WindowSize = 
-                                        new Size(lpRect.Right - lpRect.Left, lpRect.Bottom - lpRect.Top);
-                                    
-                                    if (ShowBorder)
-                                    {
-                                        if (!_borderWnd.Visible)
-                                        {
-                                            _borderWnd.Show();
-                                        }
-
-                                        if (CaptureMouseEvents && !_overlayWnd.Visible)
-                                        {
-                                            _overlayWnd.Show();
-                                        } 
-                                        else if (!CaptureMouseEvents && _overlayWnd.Visible)
-                                        {
-                                            _overlayWnd.Hide();
-                                        }
-                                    }
-                                    else if (!ShowBorder && (_borderWnd.Visible || _overlayWnd.Visible))
-                                    {
-                                        _borderWnd.Hide();
-                                        _overlayWnd.Hide();
-                                    }
-
-                                    _borderWnd.WindowState = FormWindowState.Normal;
-                                    _overlayWnd.WindowState = FormWindowState.Normal;
-
-                                    /*
-                                     * Order the windows in the following z-order:
-                                     * 1 - overlay window
-                                     * 2 - border window
-                                     * 3 - Toontown window
-                                     */
-
-                                    bool borderWndIsAboveTT = false,
-                                        overlayWndIsAboveTT = false;
-
-                                    IntPtr hWndAbove = WindowHandle;
-
-                                    do
-                                    {
-                                        hWndAbove = Win32.GetWindow(hWndAbove, Win32.GetWindow_Cmd.GW_HWNDPREV);
-                                        
-                                        if (hWndAbove == _borderWnd.Handle)
-                                        {
-                                            borderWndIsAboveTT = true;
-                                        }
-                                        else if (hWndAbove == _overlayWnd.Handle)
-                                        {
-                                            overlayWndIsAboveTT = true;
-                                        }
-
-                                        if (overlayWndIsAboveTT && borderWndIsAboveTT)
-                                        {
-                                            break;
-                                        }
-
-                                    } while (hWndAbove != IntPtr.Zero);
-
-                                    if (!borderWndIsAboveTT || !overlayWndIsAboveTT)
-                                    {
-                                        // TODO: Check this logic
-                                        Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                                        Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                                        Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                                    }
-
-                                    break;
-                            }
-                        }
-
-                        if (!Properties.Settings.Default.disableKeepAlive 
-                        && (DateTime.Now - lastWake).TotalMinutes >= 1 
-                        && WindowHandle != IntPtr.Zero
-                        && Properties.Settings.Default.keepAliveKeyCode != (int)Keys.None)
-                        {
-                            PostMessage((uint)Win32.WM.KEYDOWN, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
-                            Thread.Sleep(50);
-                            PostMessage((uint)Win32.WM.KEYUP, (IntPtr)Properties.Settings.Default.keepAliveKeyCode, IntPtr.Zero);
-
-                            lastWake = DateTime.Now;
-                        }
-
-                        Application.DoEvents();
-
-                        Thread.Sleep(5);
-                    }
-                    catch (ThreadInterruptedException)
-                    {
-                        return;
-                    }
+                    case Win32.ShowWindowCommands.ShowMinimized:
+                        _borderWnd.Hide();
+                        _overlayWnd.Hide();
+                        break;
+                    default:
+                        // TODO: why is this needed?
+                        _borderWnd.WindowState = FormWindowState.Normal;
+                        _overlayWnd.WindowState = FormWindowState.Normal;
+                        break;
                 }
-            }) { IsBackground = true };
 
-            bgThread.Start();
+                RefreshUtilityWindows();
+            }
+        }
+
+        private void WindowWatcher_WindowClientAreaSizeChanged(object sender, Events.WindowClientAreaSizeChangedEventArgs e)
+        {
+            if (HasWindow && WindowHandle == e.WindowHandle)
+            {
+                _borderWnd.Size = _overlayWnd.Size = WindowSize = e.ClientAreaSize;
+            }
+        }
+
+        private void WindowWatcher_WindowClientAreaLocationChanged(object sender, Events.WindowClientAreaLocationChangedEventArgs e)
+        {
+            if (HasWindow && WindowHandle == e.WindowHandle)
+            {
+                _borderWnd.Location = _overlayWnd.Location = e.ClientAreaLocation;
+            }
         }
 
         private void WindowWatcher_WindowClosed(object sender, Events.WindowClosedEventArgs e)
         {
             if (e.ClosedWindowHandle == WindowHandle)
             {
-                WindowClosed?.Invoke(this, EventArgs.Empty);
-
                 WindowHandle = IntPtr.Zero;
             }
         }
@@ -307,6 +285,87 @@ namespace TTMulti
             else if (e.PreviousActiveWindowHandle == WindowHandle)
             {
                 IsWindowActive = false;
+            }
+        }
+
+        private void RefreshUtilityWindows()
+        {
+            if (ShowBorder && HasWindow)
+            {
+                if (!_borderWnd.Visible)
+                {
+                    _borderWnd.Show();
+                }
+
+                if (CaptureMouseEvents && !_overlayWnd.Visible)
+                {
+                    _overlayWnd.Show();
+                }
+                else if (!CaptureMouseEvents && _overlayWnd.Visible)
+                {
+                    _overlayWnd.Hide();
+                }
+
+                // TODO: why is this needed?
+                _borderWnd.WindowState = FormWindowState.Normal;
+                _overlayWnd.WindowState = FormWindowState.Normal;
+
+                /*
+                * Order the windows in the following z-order:
+                * 1 - overlay window
+                * 2 - border window
+                * 3 - Toontown window
+                */
+
+                bool borderWndIsAboveTT = false,
+                    overlayWndIsAboveTT = false;
+
+                IntPtr hWndAbove = WindowHandle;
+
+                do
+                {
+                    hWndAbove = Win32.GetWindow(hWndAbove, Win32.GetWindow_Cmd.GW_HWNDPREV);
+
+                    if (hWndAbove == _borderWnd.Handle)
+                    {
+                        borderWndIsAboveTT = true;
+                    }
+                    else if (hWndAbove == _overlayWnd.Handle)
+                    {
+                        overlayWndIsAboveTT = true;
+                    }
+
+                    if (overlayWndIsAboveTT && borderWndIsAboveTT)
+                    {
+                        break;
+                    }
+
+                } while (hWndAbove != IntPtr.Zero);
+
+                if (!borderWndIsAboveTT || !overlayWndIsAboveTT)
+                {
+                    // TODO: Check this logic
+                    Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                    Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                    Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                }
+            }
+            else if ((!ShowBorder || !HasWindow) && (_borderWnd.Visible || _overlayWnd.Visible))
+            {
+                _borderWnd.Hide();
+                _overlayWnd.Hide();
+            }
+        }
+
+        private void RefreshOptions()
+        {
+            if ((Properties.Settings.Default.disableKeepAlive || !HasWindow) && keepAliveTimer.Enabled)
+            {
+                keepAliveTimer.Stop();
+            }
+            else if (!Properties.Settings.Default.disableKeepAlive && HasWindow && !keepAliveTimer.Enabled)
+            {
+                keepAliveTimer.Start();
             }
         }
 
@@ -344,18 +403,16 @@ namespace TTMulti
 
         public void Shutdown()
         {
-            bgThread.Interrupt();
-            while (bgThread.IsAlive) Thread.Sleep(1);
-
-            _borderWnd.InvokeIfRequired(() =>
-            {
-                _borderWnd.Close();
-                _overlayWnd.Close();
-                Application.DoEvents();
-            });
+            _borderWnd.Close();
+            _overlayWnd.Close();
 
             WindowWatcher.Instance.ActiveWindowChanged -= WindowWatcher_ActiveWindowChanged;
             WindowWatcher.Instance.WindowClosed -= WindowWatcher_WindowClosed;
+            WindowWatcher.Instance.WindowClientAreaLocationChanged -= WindowWatcher_WindowClientAreaLocationChanged;
+            WindowWatcher.Instance.WindowClientAreaSizeChanged -= WindowWatcher_WindowClientAreaSizeChanged;
+            WindowWatcher.Instance.WindowShowStateChanged -= WindowWatcher_WindowShowStateChanged;
+
+            Properties.Settings.Default.PropertyChanged -= Settings_PropertyChanged;
         }
     }
 }

@@ -21,6 +21,8 @@ namespace TTMulti.Forms
     {
         internal event OverlayMouseEventHandler MouseEvent;
 
+        private short lastX = 0, lastY = 0;
+
         public MouseEventOverlay()
         {
             InitializeComponent();
@@ -50,9 +52,11 @@ namespace TTMulti.Forms
             switch ((Win32.WM)m.Msg)
             {
                 case Win32.WM.MOUSEACTIVATE:
-                    // Make the window not activate when clicked
+                    // Make the window not activate when clicked (return MA_NOACTIVATE)
                     m.Result = (IntPtr)3;
-                    break;
+
+                    // Returning immediately prevents activation when another window on the same thread is active
+                    return;
                 case Win32.WM.LBUTTONDOWN:
                 case Win32.WM.LBUTTONUP:
                 case Win32.WM.RBUTTONDOWN:
@@ -61,8 +65,21 @@ namespace TTMulti.Forms
                 case Win32.WM.MBUTTONUP:
                 case Win32.WM.MOUSEWHEEL:
                 case Win32.WM.MOUSELEAVE:
-                case Win32.WM.MOUSEMOVE:
                     MouseEvent?.Invoke(this, m);
+                    break;
+                case Win32.WM.MOUSEMOVE:
+                    // Optimization: check that the mouse has actually moved before forwarding event
+                    short x = (short)m.LParam,
+                        y = (short)(m.LParam.ToInt32() >> 16);
+
+                    if (x != lastX || y != lastY)
+                    {
+                        lastX = x;
+                        lastY = y;
+
+                        MouseEvent?.Invoke(this, m);
+                    }
+
                     break;
             }
 

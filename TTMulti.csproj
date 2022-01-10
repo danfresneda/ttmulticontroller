@@ -102,7 +102,10 @@
   <ItemGroup>
     <Compile Include="ControllerGroup.cs" />
     <Compile Include="ControllerPair.cs" />
+    <Compile Include="Events\WindowClientAreaLocationChangedEventArgs.cs" />
+    <Compile Include="Events\WindowClientAreaSizeChangedEventArgs.cs" />
     <Compile Include="Events\WindowClosedEventArgs.cs" />
+    <Compile Include="Events\WindowShowStateChangedEventArgs.cs" />
     <Compile Include="WindowWatcher.cs" />
     <Compile Include="Controls\ControlsPicker.cs">
       <SubType>UserControl</SubType>

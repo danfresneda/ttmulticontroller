@@ -45,7 +45,11 @@ namespace TTMulti
                 }
             }
 
-            Application.Run(new MulticontrollerWnd());
+            MulticontrollerWnd mainWindow = new MulticontrollerWnd();
+
+            WindowWatcher.Instance.SynchronizingObject = mainWindow;
+
+            Application.Run(mainWindow);
         }
 
         internal static bool TryRunAsAdmin()
