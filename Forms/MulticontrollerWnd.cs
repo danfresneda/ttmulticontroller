@@ -210,7 +210,7 @@ namespace TTMulti.Forms
             
             if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP || msg == Win32.WM.SYSKEYDOWN || msg == Win32.WM.SYSKEYUP || msg == Win32.WM.SYSCOMMAND || msg == Win32.WM.HOTKEY)
             {
-                ret = controller.ProcessInput((uint)m.Msg, m.WParam, m.LParam);
+                ret = controller.ProcessInput(m.Msg, m.WParam, m.LParam);
             }
 
             CheckControllerErrors();
@@ -222,7 +222,7 @@ namespace TTMulti.Forms
         {
             if (m.Msg == (int)Win32.WM.HOTKEY)
             {
-                controller.ProcessInput((uint)m.Msg, m.WParam, m.LParam);
+                controller.ProcessInput(m.Msg, m.WParam, m.LParam);
                 CheckControllerErrors();
             }
 

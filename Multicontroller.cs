@@ -317,7 +317,7 @@ namespace TTMulti
 
         private void Controller_MouseEvent(object sender, Message m)
         {
-            ProcessInput((uint)m.Msg, m.WParam, m.LParam, sender as ToontownController);
+            ProcessInput(m.Msg, m.WParam, m.LParam, sender as ToontownController);
         }
 
         internal void RemoveControllerGroup(int index)
@@ -399,15 +399,15 @@ namespace TTMulti
         /// <summary>
         /// The main input processor. All input to the multicontroller window ends up here.
         /// </summary>
-        internal bool ProcessInput(uint msg = 0, IntPtr wParam = new IntPtr(), IntPtr lParam = new IntPtr(), ToontownController sourceController = null) 
+        /// <returns>Whether the input is discarded (doesn't reach its intended destination)</returns>
+        internal bool ProcessInput(int msgCode, IntPtr wParam, IntPtr lParam, ToontownController sourceController = null) 
         {
-            // The return value determines whether the input is discarded (doesn't reach its intended destination)
-            var shouldDiscardInput = false;
+            Win32.WM msg = (Win32.WM)msgCode;
             bool isKeyboardInput = false;
             bool isMouseInput = false;
             Keys keysPressed = Keys.None;
 
-            switch ((Win32.WM)msg)
+            switch (msg)
             {
                 case Win32.WM.KEYDOWN:
                 case Win32.WM.KEYUP:
@@ -432,9 +432,28 @@ namespace TTMulti
                     break;
             }
 
-            if (isKeyboardInput && keysPressed == (Keys)Properties.Settings.Default.modeKeyCode)
+            if (isMouseInput)
             {
-                if (msg == (uint)Win32.WM.HOTKEY || msg == (uint)Win32.WM.KEYDOWN)
+                return ProcessMouseInput(msg, wParam, lParam, sourceController);
+            }
+            else if (isKeyboardInput)
+            {
+                return ProcessMetaKeyboardInput(msg, keysPressed)
+                    || ProcessKeyboardInput(msg, wParam, lParam);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Process keyboard input for meta actions (hotkeys, changing groups, etc.)
+        /// </summary>
+        /// <returns>True the input was handled as a meta input</returns>
+        private bool ProcessMetaKeyboardInput(Win32.WM msg, Keys keysPressed)
+        {
+            if (keysPressed == (Keys)Properties.Settings.Default.modeKeyCode)
+            {
+                if (msg == Win32.WM.HOTKEY || msg == Win32.WM.KEYDOWN)
                 {
                     if (isActive)
                     {
@@ -451,22 +470,20 @@ namespace TTMulti
                     {
                         ShouldActivate?.Invoke(this, EventArgs.Empty);
                     }
-
-                    shouldDiscardInput = true;
                 }
             }
-            else if (isKeyboardInput && keysPressed == (Keys)Properties.Settings.Default.replicateMouseKeyCode)
+            else if (keysPressed == (Keys)Properties.Settings.Default.replicateMouseKeyCode)
             {
-                if (msg == (uint)Win32.WM.KEYDOWN)
+                if (msg == Win32.WM.KEYDOWN)
                 {
                     Properties.Settings.Default.replicateMouse = !Properties.Settings.Default.replicateMouse;
                     SettingChangedByHotkey?.Invoke(this, EventArgs.Empty);
                     updateControllerBorders();
                 }
             }
-            else if (isKeyboardInput && currentMode == ControllerMode.Group && keysPressed == (Keys)Properties.Settings.Default.controlAllGroupsKeyCode)
+            else if (currentMode == ControllerMode.Group && keysPressed == (Keys)Properties.Settings.Default.controlAllGroupsKeyCode)
             {
-                if (msg == (uint)Win32.WM.KEYDOWN)
+                if (msg == Win32.WM.KEYDOWN)
                 {
                     Properties.Settings.Default.controlAllGroupsAtOnce = !Properties.Settings.Default.controlAllGroupsAtOnce;
                     SettingChangedByHotkey?.Invoke(this, EventArgs.Empty);
@@ -474,9 +491,9 @@ namespace TTMulti
                     updateControllerBorders();
                 }
             }
-            else if (isKeyboardInput && keysPressed == (Keys)Properties.Settings.Default.individualControlKeyCode)
+            else if (keysPressed == (Keys)Properties.Settings.Default.individualControlKeyCode)
             {
-                if (msg == (uint)Win32.WM.KEYDOWN)
+                if (msg == Win32.WM.KEYDOWN)
                 {
                     if (isActive)
                     {
@@ -489,67 +506,61 @@ namespace TTMulti
                             CurrentMode = ControllerMode.MirrorIndividual;
                         }
                     }
-
-                    shouldDiscardInput = true;
                 }
             }
-            else if (isActive)
+            else if (!Properties.Settings.Default.controlAllGroupsAtOnce
+                && ControllerGroups.Count > 1
+                && (keysPressed >= Keys.D0 && keysPressed <= Keys.D9
+                    || keysPressed >= Keys.NumPad0 && keysPressed <= Keys.NumPad9))
+            {
+                // Change groups while in group mode
+                int index;
+
+                if (keysPressed >= Keys.D0 && keysPressed <= Keys.D9)
+                {
+                    index = 9 - (Keys.D9 - keysPressed);
+                }
+                else
+                {
+                    index = 9 - (Keys.NumPad9 - keysPressed);
+                }
+
+                index = index == 0 ? 9 : index - 1;
+
+                if (ControllerGroups.Count > index)
+                {
+                    CurrentGroupIndex = index;
+                    GroupsChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Process mouse input
+        /// </summary>
+        /// <returns>True if the input was handled</returns>
+        private bool ProcessMouseInput(Win32.WM msg, IntPtr wParam, IntPtr lParam, ToontownController sourceController)
+        {
+            if (isActive)
             {
                 List<ToontownController> affectedControllers = new List<ToontownController>();
-                List<Keys> keysToPress = new List<Keys>();
-
+                
                 if (currentMode == ControllerMode.Group)
                 {
-                    if (isKeyboardInput
-                        && !Properties.Settings.Default.controlAllGroupsAtOnce
-                        && ControllerGroups.Count > 1
-                        && (keysPressed >= Keys.D0 && keysPressed <= Keys.D9
-                            || keysPressed >= Keys.NumPad0 && keysPressed <= Keys.NumPad9))
+                    if (LeftControllers.Contains(sourceController))
                     {
-                        int index = 0;
-
-                        if (keysPressed >= Keys.D0 && keysPressed <= Keys.D9)
-                        {
-                            index = 9 - (Keys.D9 - keysPressed);
-                        }
-                        else
-                        {
-                            index = 9 - (Keys.NumPad9 - keysPressed);
-                        }
-
-                        index = index == 0 ? 9 : index - 1;
-
-                        if (ControllerGroups.Count > index)
-                        {
-                            CurrentGroupIndex = index;
-                            GroupsChanged?.Invoke(this, EventArgs.Empty);
-                        }
+                        affectedControllers.AddRange(LeftControllers);
                     }
-                    else
+
+                    if (RightControllers.Contains(sourceController))
                     {
-                        if ((isKeyboardInput && leftKeys.ContainsKey(keysPressed))
-                            || (isMouseInput && LeftControllers.Contains(sourceController)))
-                        {
-                            affectedControllers.AddRange(Properties.Settings.Default.controlAllGroupsAtOnce ?
-                                ControllerGroups.SelectMany(c => c.LeftControllers) : LeftControllers);
-
-                            if (isKeyboardInput)
-                            {
-                                keysToPress.AddRange(leftKeys[keysPressed]);
-                            }
-                        }
-
-                        if ((isKeyboardInput && rightKeys.ContainsKey(keysPressed))
-                            || (isMouseInput && RightControllers.Contains(sourceController)))
-                        {
-                            affectedControllers.AddRange(Properties.Settings.Default.controlAllGroupsAtOnce ?
-                                ControllerGroups.SelectMany(c => c.RightControllers) : RightControllers);
-
-                            if (isKeyboardInput)
-                            {
-                                keysToPress.AddRange(rightKeys[keysPressed]);
-                            }
-                        }
+                        affectedControllers.AddRange(RightControllers);
                     }
                 }
                 else if (CurrentMode == ControllerMode.MirrorGroup)
@@ -568,11 +579,122 @@ namespace TTMulti
                     }
                 }
 
-                if (isKeyboardInput && (
-                        CurrentMode == ControllerMode.MirrorAll 
-                        || CurrentMode == ControllerMode.MirrorGroup 
-                        || CurrentMode == ControllerMode.MirrorIndividual
-                    ))
+                bool forwardMove = false;
+
+                if (msg == Win32.WM.MOUSEMOVE)
+                {
+                    /*
+                    * Filter out small mouse movements while holding down a button. If MOUSELEAVE is
+                    * fired between BUTTONDOWN & BUTTONUP events, this seems to cancel the click.
+                    * MOUSELEAVE is generated on every MOUSEMOVE since Toontown is not the active window.
+                    */
+
+                    int x = (short)lParam;
+                    int y = (short)(lParam.ToInt32() >> 16);
+
+                    int xDelta = Math.Abs(lastMoveX - x),
+                        yDelta = Math.Abs(lastMoveY - y);
+
+                    bool buttonDown =
+                        ((int)wParam & Win32.MK_LBUTTON) == Win32.MK_LBUTTON
+                        || ((int)wParam & Win32.MK_MBUTTON) == Win32.MK_MBUTTON
+                        || ((int)wParam & Win32.MK_RBUTTON) == Win32.MK_RBUTTON;
+
+                    if (!buttonDown || xDelta > 10 || yDelta > 10)
+                    {
+                        lastMoveX = x;
+                        lastMoveY = y;
+                    }
+
+                    if (buttonDown && (xDelta > 10 || yDelta > 10))
+                    {
+                        forwardMove = true;
+                    }
+
+                    foreach (ToontownController controller in AllControllers)
+                    {
+                        controller.FakeCursorPosition = new Point(x, y);
+                        controller.ShowFakeCursor = controller != sourceController;
+                    }
+                }
+
+                foreach (ToontownController controller in AllControllers)
+                {
+                    if (msg != Win32.WM.MOUSELEAVE && affectedControllers.Contains(controller))
+                    {
+                        bool windowSizeDifferent =
+                            controller.WindowSize.Width > sourceController.WindowSize.Width + 5
+                            || controller.WindowSize.Width < sourceController.WindowSize.Width - 5
+                            || controller.WindowSize.Height > sourceController.WindowSize.Height + 5
+                            || controller.WindowSize.Height < sourceController.WindowSize.Height - 5;
+
+                        controller.IsWindowSizeMismatched = windowSizeDifferent;
+
+                        if (!windowSizeDifferent && (msg != Win32.WM.MOUSEMOVE || forwardMove))
+                        {
+                            controller.SendMessage(msg, wParam, lParam);
+                        }
+                    }
+                    else
+                    {
+                        controller.ShowFakeCursor = false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Process keyboard input
+        /// </summary>
+        /// <returns>True if the input was handled</returns>
+        private bool ProcessKeyboardInput(Win32.WM msg, IntPtr wParam, IntPtr lParam)
+        {
+            if (isActive)
+            {
+                Keys keysPressed = (Keys)wParam;
+
+                List<ToontownController> affectedControllers = new List<ToontownController>();
+                List<Keys> keysToPress = new List<Keys>();
+
+                if (currentMode == ControllerMode.Group)
+                {
+                    if (leftKeys.ContainsKey(keysPressed))
+                    {
+                        affectedControllers.AddRange(LeftControllers);
+
+                        keysToPress.AddRange(leftKeys[keysPressed]);
+                    }
+
+                    if (rightKeys.ContainsKey(keysPressed))
+                    {
+                        affectedControllers.AddRange(RightControllers);
+
+                        keysToPress.AddRange(rightKeys[keysPressed]);
+                    }
+                }
+                else if (CurrentMode == ControllerMode.MirrorGroup)
+                {
+                    affectedControllers.AddRange(ControllerGroups[CurrentGroupIndex].AllControllers);
+                }
+                else if (CurrentMode == ControllerMode.MirrorAll)
+                {
+                    affectedControllers.AddRange(AllControllers);
+                }
+                else if (CurrentMode == ControllerMode.MirrorIndividual)
+                {
+                    if (CurrentIndividualController != null)
+                    {
+                        affectedControllers.Add(CurrentIndividualController);
+                    }
+                }
+
+                if (CurrentMode == ControllerMode.MirrorAll
+                    || CurrentMode == ControllerMode.MirrorGroup
+                    || CurrentMode == ControllerMode.MirrorIndividual)
                 {
                     affectedControllers.ForEach(c => c.PostMessage(msg, wParam, lParam));
                 }
@@ -582,75 +704,13 @@ namespace TTMulti
                         affectedControllers.ToList().ForEach(c => c.PostMessage(msg, (IntPtr)actualKey, lParam));
                 }
 
-                if (isMouseInput)
+                if (keysToPress.Count > 0)
                 {
-                    bool forwardMove = false;
-
-                    if ((Win32.WM)msg == Win32.WM.MOUSEMOVE)
-                    {
-                        /*
-                         * Filter out small mouse movements while holding down a button. If MOUSELEAVE is
-                         * fired between BUTTONDOWN & BUTTONUP events, this seems to cancel the click.
-                         * MOUSELEAVE is generated on every MOUSEMOVE since Toontown is not the active window.
-                         */
-
-                        int x = (Int16)lParam;
-                        int y = (Int16)(lParam.ToInt32() >> 16);
-
-                        int xDelta = Math.Abs(lastMoveX - x),
-                            yDelta = Math.Abs(lastMoveY - y);
-
-                        bool buttonDown =
-                            ((int)wParam & Win32.MK_LBUTTON) == Win32.MK_LBUTTON
-                            || ((int)wParam & Win32.MK_MBUTTON) == Win32.MK_MBUTTON
-                            || ((int)wParam & Win32.MK_RBUTTON) == Win32.MK_RBUTTON;
-
-                        if (!buttonDown || xDelta > 10 || yDelta > 10)
-                        {
-                            lastMoveX = x;
-                            lastMoveY = y;
-                        }
-
-                        if (buttonDown && (xDelta > 10 || yDelta > 10))
-                        {
-                            forwardMove = true;
-                        }
-
-                        foreach (ToontownController c in AllControllers)
-                        {
-                            c.FakeCursorPosition = new Point(x, y);
-                            c.ShowFakeCursor = c != sourceController;
-                        }
-                    }
-
-                    foreach (ToontownController c in AllControllers)
-                    {
-                        if ((Win32.WM)msg != Win32.WM.MOUSELEAVE && affectedControllers.Contains(c))
-                        {
-                            bool windowSizeDifferent =
-                                c.WindowSize.Width > sourceController.WindowSize.Width + 5
-                                || c.WindowSize.Width < sourceController.WindowSize.Width - 5
-                                || c.WindowSize.Height > sourceController.WindowSize.Height + 5
-                                || c.WindowSize.Height < sourceController.WindowSize.Height - 5;
-
-                            c.IsWindowSizeMismatched = windowSizeDifferent;
-
-                            if (!windowSizeDifferent && ((Win32.WM)msg != Win32.WM.MOUSEMOVE || forwardMove))
-                            {
-                                c.SendMessage(msg, wParam, lParam);
-                            }
-                        }
-                        else
-                        {
-                            c.ShowFakeCursor = false;
-                        }
-                    }
+                    return true;
                 }
-
-                shouldDiscardInput = true;
             }
 
-            return shouldDiscardInput;
+            return false;
         }
 
         private void Controller_WindowClosed(object sender, EventArgs e)
