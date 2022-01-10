@@ -10,13 +10,17 @@ namespace TTMulti
     /// </summary>
     class ControllerPair
     {
+        public int PairNumber { get; }
+
         internal ToontownController LeftController { get; }
         internal ToontownController RightController { get; }
 
-        public ControllerPair(int groupNumber)
+        public ControllerPair(int groupNumber, int pairNumber)
         {
-            LeftController = new ToontownController(groupNumber);
-            RightController = new ToontownController(groupNumber);
+            PairNumber = pairNumber;
+
+            LeftController = new ToontownController(groupNumber, pairNumber);
+            RightController = new ToontownController(groupNumber, pairNumber);
         }
         
         /// <summary>

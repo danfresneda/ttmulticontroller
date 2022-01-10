@@ -119,6 +119,8 @@ namespace TTMulti
             set => _borderWnd.GroupNumber = value;
         }
 
+        public int PairNumber { get; set; }
+
         public bool ShowGroupNumber
         {
             get => _borderWnd.ShowGroupNumber;
@@ -181,9 +183,10 @@ namespace TTMulti
             Interval = 100
         };
         
-        public ToontownController(int groupNumber)
+        public ToontownController(int groupNumber, int pairNumber)
         {
             GroupNumber = groupNumber;
+            PairNumber = pairNumber;
 
             WindowWatcher.Instance.ActiveWindowChanged += WindowWatcher_ActiveWindowChanged;
             WindowWatcher.Instance.WindowClosed += WindowWatcher_WindowClosed;

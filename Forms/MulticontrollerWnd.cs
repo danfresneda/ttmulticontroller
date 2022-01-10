@@ -371,13 +371,13 @@ namespace TTMulti.Forms
         {
             switch (controller.CurrentMode)
             {
-                case Multicontroller.ControllerMode.Multi:
+                case Multicontroller.ControllerMode.Group:
                     multiModeRadio.Checked = true;
                     break;
-                case Multicontroller.ControllerMode.Mirror:
+                case Multicontroller.ControllerMode.MirrorAll:
                     mirrorModeRadio.Checked = true;
                     break;
-                case Multicontroller.ControllerMode.Individual:
+                case Multicontroller.ControllerMode.MirrorIndividual:
                     multiModeRadio.Checked = false;
                     mirrorModeRadio.Checked = false;
                     break;
@@ -423,12 +423,12 @@ namespace TTMulti.Forms
 
         private void multiModeRadio_Click(object sender, EventArgs e)
         {
-            controller.CurrentMode = Multicontroller.ControllerMode.Multi;
+            controller.CurrentMode = Multicontroller.ControllerMode.Group;
         }
 
         private void mirrorModeRadio_Clicked(object sender, EventArgs e)
         {
-            controller.CurrentMode = Multicontroller.ControllerMode.Mirror;
+            controller.CurrentMode = Multicontroller.ControllerMode.MirrorAll;
         }
 
         private void MulticontrollerWnd_Activated(object sender, EventArgs e)

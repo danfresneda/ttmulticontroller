@@ -61,7 +61,7 @@ namespace TTMulti
         /// <returns></returns>
         public ControllerPair AddPair()
         {
-            var pair = new ControllerPair(GroupNumber);
+            var pair = new ControllerPair(GroupNumber, ControllerPairs.Count + 1);
 
             pair.LeftController.WindowActivated += Controller_TTWindowActivated;
             pair.RightController.WindowActivated += Controller_TTWindowActivated;
