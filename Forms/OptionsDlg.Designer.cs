@@ -288,9 +288,9 @@ namespace TTMulti.Forms
             this.mirrorGroupModeGroupBox.Controls.Add(this.mirrorGroupModeHotkeyPicker);
             this.mirrorGroupModeGroupBox.Controls.Add(this.label14);
             this.mirrorGroupModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mirrorGroupModeGroupBox.Location = new System.Drawing.Point(3, 249);
+            this.mirrorGroupModeGroupBox.Location = new System.Drawing.Point(3, 213);
             this.mirrorGroupModeGroupBox.Name = "mirrorGroupModeGroupBox";
-            this.mirrorGroupModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.mirrorGroupModeGroupBox.Size = new System.Drawing.Size(736, 70);
             this.mirrorGroupModeGroupBox.TabIndex = 8;
             this.mirrorGroupModeGroupBox.TabStop = false;
             this.mirrorGroupModeGroupBox.Text = "Group Mirror Mode";
@@ -300,7 +300,7 @@ namespace TTMulti.Forms
             this.mirrorGroupModeCycleToggleChk.AutoSize = true;
             this.mirrorGroupModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.mirrorGroupModeCycleWithModeHotkey;
             this.mirrorGroupModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "mirrorGroupModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.mirrorGroupModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.mirrorGroupModeCycleToggleChk.Location = new System.Drawing.Point(482, 43);
             this.mirrorGroupModeCycleToggleChk.Name = "mirrorGroupModeCycleToggleChk";
             this.mirrorGroupModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
             this.mirrorGroupModeCycleToggleChk.TabIndex = 8;
@@ -311,7 +311,7 @@ namespace TTMulti.Forms
             // 
             this.mirrorGroupModeLabel.Location = new System.Drawing.Point(7, 22);
             this.mirrorGroupModeLabel.Name = "mirrorGroupModeLabel";
-            this.mirrorGroupModeLabel.Size = new System.Drawing.Size(466, 50);
+            this.mirrorGroupModeLabel.Size = new System.Drawing.Size(466, 40);
             this.mirrorGroupModeLabel.TabIndex = 5;
             this.mirrorGroupModeLabel.Text = "Mirror input to all toons in a group.\r\nThe number keys are reserved for switching" +
     " groups.";
@@ -322,7 +322,7 @@ namespace TTMulti.Forms
             this.mirrorGroupModeHotkeyPicker.ChosenKey = System.Windows.Forms.Keys.None;
             this.mirrorGroupModeHotkeyPicker.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.mirrorGroupModeKeyCode;
             this.mirrorGroupModeHotkeyPicker.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "mirrorGroupModeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.mirrorGroupModeHotkeyPicker.Location = new System.Drawing.Point(543, 18);
+            this.mirrorGroupModeHotkeyPicker.Location = new System.Drawing.Point(543, 14);
             this.mirrorGroupModeHotkeyPicker.Margin = new System.Windows.Forms.Padding(5);
             this.mirrorGroupModeHotkeyPicker.MinimumSize = new System.Drawing.Size(50, 25);
             this.mirrorGroupModeHotkeyPicker.Name = "mirrorGroupModeHotkeyPicker";
@@ -334,7 +334,7 @@ namespace TTMulti.Forms
             // 
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(479, 20);
+            this.label14.Location = new System.Drawing.Point(479, 16);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(56, 17);
             this.label14.TabIndex = 4;
@@ -347,9 +347,9 @@ namespace TTMulti.Forms
             this.allGroupModeGroupBox.Controls.Add(this.allGroupModeHotkeyPicker);
             this.allGroupModeGroupBox.Controls.Add(this.label12);
             this.allGroupModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.allGroupModeGroupBox.Location = new System.Drawing.Point(3, 167);
+            this.allGroupModeGroupBox.Location = new System.Drawing.Point(3, 143);
             this.allGroupModeGroupBox.Name = "allGroupModeGroupBox";
-            this.allGroupModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.allGroupModeGroupBox.Size = new System.Drawing.Size(736, 70);
             this.allGroupModeGroupBox.TabIndex = 7;
             this.allGroupModeGroupBox.TabStop = false;
             this.allGroupModeGroupBox.Text = "All Groups Mode";
@@ -359,7 +359,7 @@ namespace TTMulti.Forms
             this.allGroupModeCycleToggleChk.AutoSize = true;
             this.allGroupModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.allGroupModeCycleWithModeHotkey;
             this.allGroupModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "allGroupModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.allGroupModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.allGroupModeCycleToggleChk.Location = new System.Drawing.Point(482, 43);
             this.allGroupModeCycleToggleChk.Name = "allGroupModeCycleToggleChk";
             this.allGroupModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
             this.allGroupModeCycleToggleChk.TabIndex = 8;
@@ -370,7 +370,7 @@ namespace TTMulti.Forms
             // 
             this.allGroupModeLabel.Location = new System.Drawing.Point(7, 22);
             this.allGroupModeLabel.Name = "allGroupModeLabel";
-            this.allGroupModeLabel.Size = new System.Drawing.Size(466, 41);
+            this.allGroupModeLabel.Size = new System.Drawing.Size(466, 40);
             this.allGroupModeLabel.TabIndex = 5;
             this.allGroupModeLabel.Text = "Make every left toon move at once, and every right toon move at once in all group" +
     "s at once.";
@@ -381,7 +381,7 @@ namespace TTMulti.Forms
             this.allGroupModeHotkeyPicker.ChosenKey = System.Windows.Forms.Keys.None;
             this.allGroupModeHotkeyPicker.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.controlAllGroupsKeyCode;
             this.allGroupModeHotkeyPicker.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "controlAllGroupsKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.allGroupModeHotkeyPicker.Location = new System.Drawing.Point(543, 18);
+            this.allGroupModeHotkeyPicker.Location = new System.Drawing.Point(543, 14);
             this.allGroupModeHotkeyPicker.Margin = new System.Windows.Forms.Padding(5);
             this.allGroupModeHotkeyPicker.MinimumSize = new System.Drawing.Size(50, 25);
             this.allGroupModeHotkeyPicker.Name = "allGroupModeHotkeyPicker";
@@ -393,7 +393,7 @@ namespace TTMulti.Forms
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(479, 20);
+            this.label12.Location = new System.Drawing.Point(479, 16);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(56, 17);
             this.label12.TabIndex = 4;
@@ -406,9 +406,9 @@ namespace TTMulti.Forms
             this.mirrorModeGroupBox.Controls.Add(this.mirrorModeHotkeyPicker);
             this.mirrorModeGroupBox.Controls.Add(this.label10);
             this.mirrorModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mirrorModeGroupBox.Location = new System.Drawing.Point(3, 85);
+            this.mirrorModeGroupBox.Location = new System.Drawing.Point(3, 73);
             this.mirrorModeGroupBox.Name = "mirrorModeGroupBox";
-            this.mirrorModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.mirrorModeGroupBox.Size = new System.Drawing.Size(736, 70);
             this.mirrorModeGroupBox.TabIndex = 6;
             this.mirrorModeGroupBox.TabStop = false;
             this.mirrorModeGroupBox.Text = "Mirror Mode";
@@ -419,7 +419,7 @@ namespace TTMulti.Forms
             this.mirrorModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.mirrorModeCycleWithModeHotkey;
             this.mirrorModeCycleToggleChk.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mirrorModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "mirrorModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.mirrorModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.mirrorModeCycleToggleChk.Location = new System.Drawing.Point(482, 43);
             this.mirrorModeCycleToggleChk.Name = "mirrorModeCycleToggleChk";
             this.mirrorModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
             this.mirrorModeCycleToggleChk.TabIndex = 7;
@@ -430,7 +430,7 @@ namespace TTMulti.Forms
             // 
             this.mirrorModeLabel.Location = new System.Drawing.Point(7, 22);
             this.mirrorModeLabel.Name = "mirrorModeLabel";
-            this.mirrorModeLabel.Size = new System.Drawing.Size(466, 41);
+            this.mirrorModeLabel.Size = new System.Drawing.Size(466, 40);
             this.mirrorModeLabel.TabIndex = 5;
             this.mirrorModeLabel.Text = "Mirror input to all toons in all groups.";
             // 
@@ -440,7 +440,7 @@ namespace TTMulti.Forms
             this.mirrorModeHotkeyPicker.ChosenKey = System.Windows.Forms.Keys.None;
             this.mirrorModeHotkeyPicker.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.mirrorModeKeyCode;
             this.mirrorModeHotkeyPicker.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "mirrorModeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.mirrorModeHotkeyPicker.Location = new System.Drawing.Point(543, 18);
+            this.mirrorModeHotkeyPicker.Location = new System.Drawing.Point(543, 14);
             this.mirrorModeHotkeyPicker.Margin = new System.Windows.Forms.Padding(5);
             this.mirrorModeHotkeyPicker.MinimumSize = new System.Drawing.Size(50, 25);
             this.mirrorModeHotkeyPicker.Name = "mirrorModeHotkeyPicker";
@@ -452,7 +452,7 @@ namespace TTMulti.Forms
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(479, 20);
+            this.label10.Location = new System.Drawing.Point(479, 16);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(56, 17);
             this.label10.TabIndex = 4;
@@ -467,7 +467,7 @@ namespace TTMulti.Forms
             this.groupModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupModeGroupBox.Location = new System.Drawing.Point(3, 3);
             this.groupModeGroupBox.Name = "groupModeGroupBox";
-            this.groupModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.groupModeGroupBox.Size = new System.Drawing.Size(736, 70);
             this.groupModeGroupBox.TabIndex = 3;
             this.groupModeGroupBox.TabStop = false;
             this.groupModeGroupBox.Text = "Multi-Mode/Group Mode (Default Mode)";
@@ -478,7 +478,7 @@ namespace TTMulti.Forms
             this.groupModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.groupModeCycleWithModeHotkey;
             this.groupModeCycleToggleChk.CheckState = System.Windows.Forms.CheckState.Checked;
             this.groupModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "groupModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.groupModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.groupModeCycleToggleChk.Location = new System.Drawing.Point(482, 43);
             this.groupModeCycleToggleChk.Name = "groupModeCycleToggleChk";
             this.groupModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
             this.groupModeCycleToggleChk.TabIndex = 6;
@@ -489,7 +489,7 @@ namespace TTMulti.Forms
             // 
             this.groupModeLabel.Location = new System.Drawing.Point(7, 22);
             this.groupModeLabel.Name = "groupModeLabel";
-            this.groupModeLabel.Size = new System.Drawing.Size(466, 50);
+            this.groupModeLabel.Size = new System.Drawing.Size(466, 40);
             this.groupModeLabel.TabIndex = 5;
             this.groupModeLabel.Text = "Control all left and right toons in a group.\r\nThe number keys are reserved for sw" +
     "itching groups.";
@@ -500,7 +500,7 @@ namespace TTMulti.Forms
             this.groupModeHotkeyPicker.ChosenKey = System.Windows.Forms.Keys.None;
             this.groupModeHotkeyPicker.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.groupModeKeyCode;
             this.groupModeHotkeyPicker.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "groupModeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.groupModeHotkeyPicker.Location = new System.Drawing.Point(543, 18);
+            this.groupModeHotkeyPicker.Location = new System.Drawing.Point(543, 14);
             this.groupModeHotkeyPicker.Margin = new System.Windows.Forms.Padding(5);
             this.groupModeHotkeyPicker.MinimumSize = new System.Drawing.Size(50, 25);
             this.groupModeHotkeyPicker.Name = "groupModeHotkeyPicker";
@@ -512,7 +512,7 @@ namespace TTMulti.Forms
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(479, 20);
+            this.label8.Location = new System.Drawing.Point(479, 16);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 17);
             this.label8.TabIndex = 4;
