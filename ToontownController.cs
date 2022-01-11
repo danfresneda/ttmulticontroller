@@ -176,13 +176,6 @@ namespace TTMulti
             Interval = 60000
         };
 
-        // Timer to make sure utility windows are in the correct order on top of the controlled window
-        // TODO: this should not be necessary
-        System.Timers.Timer utilityWindowTimer = new System.Timers.Timer()
-        {
-            Interval = 100
-        };
-        
         public ToontownController(int groupNumber, int pairNumber)
         {
             GroupNumber = groupNumber;
@@ -199,15 +192,6 @@ namespace TTMulti
             _overlayWnd.MouseEvent += _overlayWnd_MouseEvent;
 
             keepAliveTimer.Elapsed += KeepAliveTimer_Elapsed;
-            utilityWindowTimer.Elapsed += UtilityWindowTimer_Elapsed;
-
-            utilityWindowTimer.SynchronizingObject = _borderWnd;
-            utilityWindowTimer.Start();
-        }
-
-        private void UtilityWindowTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            RefreshUtilityWindows();
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -313,50 +297,57 @@ namespace TTMulti
                 _borderWnd.WindowState = FormWindowState.Normal;
                 _overlayWnd.WindowState = FormWindowState.Normal;
 
-                /*
-                * Order the windows in the following z-order:
-                * 1 - overlay window
-                * 2 - border window
-                * 3 - Toontown window
-                */
-
-                bool borderWndIsAboveTT = false,
-                    overlayWndIsAboveTT = false;
-
-                IntPtr hWndAbove = WindowHandle;
-
-                do
-                {
-                    hWndAbove = Win32.GetWindow(hWndAbove, Win32.GetWindow_Cmd.GW_HWNDPREV);
-
-                    if (hWndAbove == _borderWnd.Handle)
-                    {
-                        borderWndIsAboveTT = true;
-                    }
-                    else if (hWndAbove == _overlayWnd.Handle)
-                    {
-                        overlayWndIsAboveTT = true;
-                    }
-
-                    if (overlayWndIsAboveTT && borderWndIsAboveTT)
-                    {
-                        break;
-                    }
-
-                } while (hWndAbove != IntPtr.Zero);
-
-                if (!borderWndIsAboveTT || !overlayWndIsAboveTT)
-                {
-                    // TODO: Check this logic
-                    Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                    Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                    Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-                }
+                // Running twice seems to get the mouse overlay to properly show up after activating using the hotkey
+                ReorderUtilityWindows();
+                ReorderUtilityWindows();
             }
             else if ((!ShowBorder || !HasWindow) && (_borderWnd.Visible || _overlayWnd.Visible))
             {
                 _borderWnd.Hide();
                 _overlayWnd.Hide();
+            }
+        }
+
+        private void ReorderUtilityWindows()
+        {
+            /*
+            * Order the windows in the following z-order:
+            * 1 - overlay window
+            * 2 - border window
+            * 3 - Toontown window
+            */
+
+            bool borderWndIsAboveTT = false,
+                overlayWndIsAboveTT = false;
+
+            IntPtr hWndAbove = WindowHandle;
+
+            do
+            {
+                hWndAbove = Win32.GetWindow(hWndAbove, Win32.GetWindow_Cmd.GW_HWNDPREV);
+
+                if (hWndAbove == _borderWnd.Handle)
+                {
+                    borderWndIsAboveTT = true;
+                }
+                else if (hWndAbove == _overlayWnd.Handle)
+                {
+                    overlayWndIsAboveTT = true;
+                }
+
+                if (overlayWndIsAboveTT && borderWndIsAboveTT)
+                {
+                    break;
+                }
+
+            } while (hWndAbove != IntPtr.Zero);
+
+            if (!borderWndIsAboveTT || !overlayWndIsAboveTT)
+            {
+                // TODO: Check this logic
+                Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
+                Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
             }
         }
 
