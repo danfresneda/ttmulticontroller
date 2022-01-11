@@ -85,29 +85,43 @@ namespace TTMulti.Forms
             }
         }
 
+        private bool _showFakeCursor;
+
         /// <summary>
         /// Enable showing a fake cursor to signify that mouse events are being replicated.
         /// </summary>
         internal bool ShowFakeCursor
         {
-            get => fakeCursorImg.Visible;
+            get => _showFakeCursor;
             set
             {
-                fakeCursorImg.Visible = value;
+                if (_showFakeCursor != value)
+                {
+                    _showFakeCursor = value;
+                    Invalidate(fakeCursorRect);
+                }
             }
         }
+
+        private Point _fakeCursorPosition;
 
         /// <summary>
         /// The position of the fake cursor.
         /// </summary>
         internal Point FakeCursorPosition
         {
-            get => fakeCursorImg.Location;
+            get => _fakeCursorPosition;
             set
             {
-                fakeCursorImg.Location = value;
+                if (_fakeCursorPosition != value)
+                {
+                    _fakeCursorPosition = value;
+                    Invalidate(fakeCursorRect);
+                }
             }
         }
+
+        private bool _fakeCursorIsInvalid;
 
         /// <summary>
         /// Whether to display an invalid fake cursor, signifying that the size of the 
@@ -115,10 +129,14 @@ namespace TTMulti.Forms
         /// </summary>
         internal bool FakeCursorIsInvalid
         {
-            get => fakeCursorImg.Image == fakeCursorImageInvalid;
+            get => _fakeCursorIsInvalid;
             set
             {
-                fakeCursorImg.Image = value ? fakeCursorImageInvalid : fakeCursorImage;
+                if (_fakeCursorIsInvalid != value)
+                {
+                    _fakeCursorIsInvalid = value;
+                    Invalidate(fakeCursorRect);
+                }
             }
         }
 
@@ -145,6 +163,11 @@ namespace TTMulti.Forms
         private Bitmap fakeCursorImage = Properties.Resources.dupcursor,
             fakeCursorImageInvalid = Properties.Resources.dupcursorx;
 
+        private Font textFont = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular);
+
+        // Keep track of the last region where the cursor was draw so it can be invalidated quicker
+        Rectangle fakeCursorRect;
+
         public BorderWnd()
         {
             InitializeComponent();
@@ -163,7 +186,24 @@ namespace TTMulti.Forms
             if (ShowGroupNumber)
             {
                 e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
-                e.Graphics.DrawString(GroupNumber.ToString(), new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular), Brushes.White, 12, 160);
+                e.Graphics.DrawString(GroupNumber.ToString(), textFont, Brushes.White, 12, 160);
+            }
+
+            if (ShowFakeCursor)
+            {
+                fakeCursorRect = new Rectangle(FakeCursorPosition.X, FakeCursorPosition.Y, 32, 32);
+
+                if (FakeCursorIsInvalid)
+                {
+                    e.Graphics.DrawImage(fakeCursorImageInvalid, fakeCursorRect);
+                }
+                else
+                {
+                    e.Graphics.DrawImage(fakeCursorImage, fakeCursorRect);
+                }
+
+                // Increase size to account for the next movement. Otherwise, clipping occurs.
+                fakeCursorRect.Inflate(10, 10);
             }
         }
     }

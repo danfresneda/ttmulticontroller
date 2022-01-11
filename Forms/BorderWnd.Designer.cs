@@ -28,19 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.fakeCursorImg = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.fakeCursorImg)).BeginInit();
             this.SuspendLayout();
-            // 
-            // fakeCursorImg
-            // 
-            this.fakeCursorImg.Image = global::TTMulti.Properties.Resources.dupcursor;
-            this.fakeCursorImg.Location = new System.Drawing.Point(157, 200);
-            this.fakeCursorImg.Name = "fakeCursorImg";
-            this.fakeCursorImg.Size = new System.Drawing.Size(32, 32);
-            this.fakeCursorImg.TabIndex = 1;
-            this.fakeCursorImg.TabStop = false;
-            this.fakeCursorImg.Visible = false;
             // 
             // BorderWnd
             // 
@@ -48,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.Fuchsia;
             this.ClientSize = new System.Drawing.Size(400, 400);
-            this.Controls.Add(this.fakeCursorImg);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "BorderWnd";
@@ -56,12 +44,10 @@
             this.ShowInTaskbar = false;
             this.Text = "BorderWnd";
             this.TransparencyKey = System.Drawing.Color.Fuchsia;
-            ((System.ComponentModel.ISupportInitialize)(this.fakeCursorImg)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox fakeCursorImg;
     }
 }
