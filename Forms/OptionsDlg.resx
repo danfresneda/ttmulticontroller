@@ -130,4 +130,7 @@ The number keys (0-9) and number pad are reserved for switching groups when ther
     <value>Lets you click on gags and other things on all toons at once, depending on the mode and whether you're controlling all groups at once in multi-mode.
 Note: Toontown windows have to be the same size for this to work.</value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

@@ -364,7 +364,20 @@ namespace TTMulti
                         }
                     }
                 }
-                else if(CurrentMode == ControllerMode.MirrorAll)
+                else if (CurrentMode == ControllerMode.MirrorGroup)
+                {
+                    for (int i = 0; i < ControllerGroups.Count; i++)
+                    {
+                        foreach (ToontownController controller in ControllerGroups[i].AllControllers)
+                        {
+                            controller.BorderColor = Color.Violet;
+                            controller.ShowBorder = i == CurrentGroupIndex;
+                            controller.ShowGroupNumber = ControllerGroups.Count > 1;
+                            controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                        }
+                    }
+                }
+                else if (CurrentMode == ControllerMode.MirrorAll)
                 {
                     ControllerGroups.ForEach(g =>
                     {
@@ -480,6 +493,11 @@ namespace TTMulti
                             availableModesToCycle.Add(ControllerMode.AllGroup);
                         }
 
+                        if (Properties.Settings.Default.mirrorGroupModeCycleWithModeHotkey)
+                        {
+                            availableModesToCycle.Add(ControllerMode.MirrorGroup);
+                        }
+
                         int currentModeIndex = availableModesToCycle.IndexOf(CurrentMode);
 
                         if (currentModeIndex >= 0)
@@ -510,6 +528,10 @@ namespace TTMulti
             else if (keysPressed == (Keys)Properties.Settings.Default.controlAllGroupsKeyCode)
             {
                 CurrentMode = ControllerMode.AllGroup;
+            }
+            else if (keysPressed == (Keys)Properties.Settings.Default.mirrorGroupModeKeyCode)
+            {
+                CurrentMode = ControllerMode.MirrorGroup;
             }
             else if (keysPressed == (Keys)Properties.Settings.Default.replicateMouseKeyCode)
             {
@@ -546,7 +568,7 @@ namespace TTMulti
                     }
                 }
             }
-            else if (CurrentMode == ControllerMode.Group
+            else if ((CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.MirrorGroup)
                 && ControllerGroups.Count > 1
                 && (keysPressed >= Keys.D0 && keysPressed <= Keys.D9
                     || keysPressed >= Keys.NumPad0 && keysPressed <= Keys.NumPad9))
