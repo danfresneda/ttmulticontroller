@@ -150,12 +150,12 @@ namespace TTMulti.Forms
             leftStatusLbl.Text = "Group " + (controller.CurrentGroupIndex + 1) + " active.";
             rightStatusLbl.Text = controller.ControllerGroups.Count + " groups.";
 
-            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1 && !Properties.Settings.Default.controlAllGroupsAtOnce)
+            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1 && controller.CurrentMode != Multicontroller.ControllerMode.AllGroup)
             {
                 statusStrip1.Visible = true;
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom + statusStrip1.Height);
             }
-            else if (statusStrip1.Visible && (controller.ControllerGroups.Count == 1 || Properties.Settings.Default.controlAllGroupsAtOnce))
+            else if (statusStrip1.Visible && (controller.ControllerGroups.Count == 1 || controller.CurrentMode == Multicontroller.ControllerMode.AllGroup))
             {
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom - statusStrip1.Height);
                 statusStrip1.Visible = false;
@@ -377,11 +377,13 @@ namespace TTMulti.Forms
                 case Multicontroller.ControllerMode.MirrorAll:
                     mirrorModeRadio.Checked = true;
                     break;
-                case Multicontroller.ControllerMode.MirrorIndividual:
+                default:
                     multiModeRadio.Checked = false;
                     mirrorModeRadio.Checked = false;
                     break;
             }
+
+            UpdateWindowStatus();
         }
 
         private void optionsBtn_Click(object sender, EventArgs e)

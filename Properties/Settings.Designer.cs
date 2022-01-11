@@ -325,18 +325,6 @@ namespace TTMulti.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool controlAllGroupsAtOnce {
-            get {
-                return ((bool)(this["controlAllGroupsAtOnce"]));
-            }
-            set {
-                this["controlAllGroupsAtOnce"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UpgradeRequired {
             get {
@@ -425,6 +413,66 @@ namespace TTMulti.Properties {
             }
             set {
                 this["lastGroupsFormSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int groupModeKeyCode {
+            get {
+                return ((int)(this["groupModeKeyCode"]));
+            }
+            set {
+                this["groupModeKeyCode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int mirrorModeKeyCode {
+            get {
+                return ((int)(this["mirrorModeKeyCode"]));
+            }
+            set {
+                this["mirrorModeKeyCode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool groupModeCycleWithModeHotkey {
+            get {
+                return ((bool)(this["groupModeCycleWithModeHotkey"]));
+            }
+            set {
+                this["groupModeCycleWithModeHotkey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool mirrorModeCycleWithModeHotkey {
+            get {
+                return ((bool)(this["mirrorModeCycleWithModeHotkey"]));
+            }
+            set {
+                this["mirrorModeCycleWithModeHotkey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool allGroupModeCycleWithModeHotkey {
+            get {
+                return ((bool)(this["allGroupModeCycleWithModeHotkey"]));
+            }
+            set {
+                this["allGroupModeCycleWithModeHotkey"] = value;
             }
         }
     }

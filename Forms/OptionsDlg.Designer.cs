@@ -48,28 +48,40 @@ namespace TTMulti.Forms
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.keyPicker4 = new TTMulti.Controls.KeyPicker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.keyPicker1 = new TTMulti.Controls.KeyPicker();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupModeGroupBox = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.mirrorModeGroupBox = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.allGroupModeGroupBox = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.groupModeCycleToggleChk = new System.Windows.Forms.CheckBox();
+            this.mirrorModeCycleToggleChk = new System.Windows.Forms.CheckBox();
+            this.allGroupModeCycleToggleChk = new System.Windows.Forms.CheckBox();
+            this.keyPicker7 = new TTMulti.Controls.KeyPicker();
+            this.keyPicker6 = new TTMulti.Controls.KeyPicker();
+            this.keyPicker3 = new TTMulti.Controls.KeyPicker();
+            this.keyPicker4 = new TTMulti.Controls.KeyPicker();
+            this.keyPicker1 = new TTMulti.Controls.KeyPicker();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.keyPicker2 = new TTMulti.Controls.KeyPicker();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label7 = new System.Windows.Forms.Label();
             this.keyPicker5 = new TTMulti.Controls.KeyPicker();
             this.mouseChk = new System.Windows.Forms.CheckBox();
-            this.controlAllGroupsChk = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.keyPicker3 = new TTMulti.Controls.KeyPicker();
-            this.label8 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -81,9 +93,12 @@ namespace TTMulti.Forms
             this.tabPage5.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            this.groupBox7.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.groupModeGroupBox.SuspendLayout();
+            this.mirrorModeGroupBox.SuspendLayout();
+            this.allGroupModeGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // okBtn
@@ -141,6 +156,7 @@ namespace TTMulti.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage2);
@@ -299,19 +315,6 @@ namespace TTMulti.Forms
             this.label5.Text = "This key will switch into talk mode. The highlighted window will receive all keys" +
     "trokes. Keep pressing it to switch windows.";
             // 
-            // keyPicker4
-            // 
-            this.keyPicker4.ChosenKey = System.Windows.Forms.Keys.None;
-            this.keyPicker4.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.individualControlKeyCode;
-            this.keyPicker4.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "individualControlKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keyPicker4.Location = new System.Drawing.Point(9, 62);
-            this.keyPicker4.Margin = new System.Windows.Forms.Padding(5);
-            this.keyPicker4.MinimumSize = new System.Drawing.Size(50, 25);
-            this.keyPicker4.Name = "keyPicker4";
-            this.keyPicker4.Size = new System.Drawing.Size(188, 25);
-            this.keyPicker4.TabIndex = 12;
-            this.keyPicker4.TabStop = false;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label4);
@@ -338,19 +341,6 @@ namespace TTMulti.Forms
             this.label4.Text = "This key is used to change from multi-mode to mirror-mode and back. It also activ" +
     "ates the multicontroller when you have a Toontown window active. ";
             // 
-            // keyPicker1
-            // 
-            this.keyPicker1.ChosenKey = System.Windows.Forms.Keys.Oemtilde;
-            this.keyPicker1.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.modeKeyCode;
-            this.keyPicker1.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "modeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keyPicker1.Location = new System.Drawing.Point(9, 60);
-            this.keyPicker1.Margin = new System.Windows.Forms.Padding(5);
-            this.keyPicker1.MinimumSize = new System.Drawing.Size(50, 25);
-            this.keyPicker1.Name = "keyPicker1";
-            this.keyPicker1.Size = new System.Drawing.Size(188, 25);
-            this.keyPicker1.TabIndex = 12;
-            this.keyPicker1.TabStop = false;
-            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.label2);
@@ -374,6 +364,281 @@ namespace TTMulti.Forms
             this.label2.Size = new System.Drawing.Size(108, 17);
             this.label2.TabIndex = 14;
             this.label2.Text = "Keep-Alive Key:";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.groupBox4);
+            this.tabPage2.Controls.Add(this.groupBox6);
+            this.tabPage2.Controls.Add(this.groupBox5);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(742, 443);
+            this.tabPage2.TabIndex = 3;
+            this.tabPage2.Text = "Other";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.keyPicker5);
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.mouseChk);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox4.Location = new System.Drawing.Point(4, 100);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(734, 97);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Mirror Mouse Clicks";
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(477, 24);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(56, 17);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Hotkey:";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.checkBox3);
+            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox6.Location = new System.Drawing.Point(4, 52);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(734, 48);
+            this.groupBox6.TabIndex = 1;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Compact Interface";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.checkBox2);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox5.Location = new System.Drawing.Point(4, 4);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(734, 48);
+            this.groupBox5.TabIndex = 0;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Keep On Top When Inactive";
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.allGroupModeGroupBox);
+            this.tabPage1.Controls.Add(this.mirrorModeGroupBox);
+            this.tabPage1.Controls.Add(this.groupModeGroupBox);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(742, 443);
+            this.tabPage1.TabIndex = 7;
+            this.tabPage1.Text = "Modes";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupModeGroupBox
+            // 
+            this.groupModeGroupBox.Controls.Add(this.groupModeCycleToggleChk);
+            this.groupModeGroupBox.Controls.Add(this.label1);
+            this.groupModeGroupBox.Controls.Add(this.keyPicker3);
+            this.groupModeGroupBox.Controls.Add(this.label8);
+            this.groupModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupModeGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.groupModeGroupBox.Name = "groupModeGroupBox";
+            this.groupModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.groupModeGroupBox.TabIndex = 3;
+            this.groupModeGroupBox.TabStop = false;
+            this.groupModeGroupBox.Text = "Multi-Mode (Group Mode)";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(479, 20);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 17);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "Hotkey:";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(7, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(466, 50);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Control all left and right toons in a group.\r\n(This is the default mode.)";
+            // 
+            // mirrorModeGroupBox
+            // 
+            this.mirrorModeGroupBox.Controls.Add(this.mirrorModeCycleToggleChk);
+            this.mirrorModeGroupBox.Controls.Add(this.label9);
+            this.mirrorModeGroupBox.Controls.Add(this.keyPicker6);
+            this.mirrorModeGroupBox.Controls.Add(this.label10);
+            this.mirrorModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mirrorModeGroupBox.Location = new System.Drawing.Point(3, 85);
+            this.mirrorModeGroupBox.Name = "mirrorModeGroupBox";
+            this.mirrorModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.mirrorModeGroupBox.TabIndex = 6;
+            this.mirrorModeGroupBox.TabStop = false;
+            this.mirrorModeGroupBox.Text = "Mirror Mode";
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(7, 22);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(466, 41);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Mirror input to all toons in all groups.";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(479, 20);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(56, 17);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Hotkey:";
+            // 
+            // allGroupModeGroupBox
+            // 
+            this.allGroupModeGroupBox.Controls.Add(this.allGroupModeCycleToggleChk);
+            this.allGroupModeGroupBox.Controls.Add(this.label11);
+            this.allGroupModeGroupBox.Controls.Add(this.keyPicker7);
+            this.allGroupModeGroupBox.Controls.Add(this.label12);
+            this.allGroupModeGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.allGroupModeGroupBox.Location = new System.Drawing.Point(3, 167);
+            this.allGroupModeGroupBox.Name = "allGroupModeGroupBox";
+            this.allGroupModeGroupBox.Size = new System.Drawing.Size(736, 82);
+            this.allGroupModeGroupBox.TabIndex = 7;
+            this.allGroupModeGroupBox.TabStop = false;
+            this.allGroupModeGroupBox.Text = "All Groups Mode";
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(7, 22);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(466, 41);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "Make every left toon move at once, and every right toon move at once in all group" +
+    "s at once.";
+            // 
+            // label12
+            // 
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(479, 20);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(56, 17);
+            this.label12.TabIndex = 4;
+            this.label12.Text = "Hotkey:";
+            // 
+            // groupModeCycleToggleChk
+            // 
+            this.groupModeCycleToggleChk.AutoSize = true;
+            this.groupModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.groupModeCycleWithModeHotkey;
+            this.groupModeCycleToggleChk.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.groupModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "groupModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.groupModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.groupModeCycleToggleChk.Name = "groupModeCycleToggleChk";
+            this.groupModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
+            this.groupModeCycleToggleChk.TabIndex = 6;
+            this.groupModeCycleToggleChk.Text = "Toggle with Mode/Activate Hotkey";
+            this.groupModeCycleToggleChk.UseVisualStyleBackColor = true;
+            // 
+            // mirrorModeCycleToggleChk
+            // 
+            this.mirrorModeCycleToggleChk.AutoSize = true;
+            this.mirrorModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.mirrorModeCycleWithModeHotkey;
+            this.mirrorModeCycleToggleChk.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mirrorModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "mirrorModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.mirrorModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.mirrorModeCycleToggleChk.Name = "mirrorModeCycleToggleChk";
+            this.mirrorModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
+            this.mirrorModeCycleToggleChk.TabIndex = 7;
+            this.mirrorModeCycleToggleChk.Text = "Toggle with Mode/Activate Hotkey";
+            this.mirrorModeCycleToggleChk.UseVisualStyleBackColor = true;
+            // 
+            // allGroupModeCycleToggleChk
+            // 
+            this.allGroupModeCycleToggleChk.AutoSize = true;
+            this.allGroupModeCycleToggleChk.Checked = global::TTMulti.Properties.Settings.Default.allGroupModeCycleWithModeHotkey;
+            this.allGroupModeCycleToggleChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "allGroupModeCycleWithModeHotkey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.allGroupModeCycleToggleChk.Location = new System.Drawing.Point(482, 51);
+            this.allGroupModeCycleToggleChk.Name = "allGroupModeCycleToggleChk";
+            this.allGroupModeCycleToggleChk.Size = new System.Drawing.Size(243, 21);
+            this.allGroupModeCycleToggleChk.TabIndex = 8;
+            this.allGroupModeCycleToggleChk.Text = "Toggle with Mode/Activate Hotkey";
+            this.allGroupModeCycleToggleChk.UseVisualStyleBackColor = true;
+            // 
+            // keyPicker7
+            // 
+            this.keyPicker7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyPicker7.ChosenKey = System.Windows.Forms.Keys.None;
+            this.keyPicker7.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.controlAllGroupsKeyCode;
+            this.keyPicker7.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "controlAllGroupsKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker7.Location = new System.Drawing.Point(543, 18);
+            this.keyPicker7.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker7.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker7.Name = "keyPicker7";
+            this.keyPicker7.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker7.TabIndex = 1;
+            this.keyPicker7.TabStop = false;
+            // 
+            // keyPicker6
+            // 
+            this.keyPicker6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyPicker6.ChosenKey = System.Windows.Forms.Keys.None;
+            this.keyPicker6.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.mirrorModeKeyCode;
+            this.keyPicker6.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "mirrorModeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker6.Location = new System.Drawing.Point(543, 18);
+            this.keyPicker6.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker6.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker6.Name = "keyPicker6";
+            this.keyPicker6.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker6.TabIndex = 1;
+            this.keyPicker6.TabStop = false;
+            // 
+            // keyPicker3
+            // 
+            this.keyPicker3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyPicker3.ChosenKey = System.Windows.Forms.Keys.None;
+            this.keyPicker3.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.groupModeKeyCode;
+            this.keyPicker3.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "groupModeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker3.Location = new System.Drawing.Point(543, 18);
+            this.keyPicker3.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker3.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker3.Name = "keyPicker3";
+            this.keyPicker3.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker3.TabIndex = 1;
+            this.keyPicker3.TabStop = false;
+            // 
+            // keyPicker4
+            // 
+            this.keyPicker4.ChosenKey = System.Windows.Forms.Keys.None;
+            this.keyPicker4.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.individualControlKeyCode;
+            this.keyPicker4.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "individualControlKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker4.Location = new System.Drawing.Point(9, 62);
+            this.keyPicker4.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker4.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker4.Name = "keyPicker4";
+            this.keyPicker4.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker4.TabIndex = 12;
+            this.keyPicker4.TabStop = false;
+            // 
+            // keyPicker1
+            // 
+            this.keyPicker1.ChosenKey = System.Windows.Forms.Keys.Oemtilde;
+            this.keyPicker1.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.modeKeyCode;
+            this.keyPicker1.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "modeKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keyPicker1.Location = new System.Drawing.Point(9, 60);
+            this.keyPicker1.Margin = new System.Windows.Forms.Padding(5);
+            this.keyPicker1.MinimumSize = new System.Drawing.Size(50, 25);
+            this.keyPicker1.Name = "keyPicker1";
+            this.keyPicker1.Size = new System.Drawing.Size(188, 25);
+            this.keyPicker1.TabIndex = 12;
+            this.keyPicker1.TabStop = false;
             // 
             // checkBox4
             // 
@@ -402,31 +667,6 @@ namespace TTMulti.Forms
             this.keyPicker2.TabIndex = 13;
             this.toolTip1.SetToolTip(this.keyPicker2, "This is the key that will be pressed periodically to keep your toons awake.");
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.groupBox4);
-            this.tabPage2.Controls.Add(this.groupBox7);
-            this.tabPage2.Controls.Add(this.groupBox6);
-            this.tabPage2.Controls.Add(this.groupBox5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(742, 443);
-            this.tabPage2.TabIndex = 3;
-            this.tabPage2.Text = "Other";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(477, 24);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 17);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Hotkey:";
-            // 
             // keyPicker5
             // 
             this.keyPicker5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -452,29 +692,11 @@ namespace TTMulti.Forms
             this.mouseChk.Location = new System.Drawing.Point(7, 20);
             this.mouseChk.Margin = new System.Windows.Forms.Padding(2);
             this.mouseChk.Name = "mouseChk";
-            this.mouseChk.Size = new System.Drawing.Size(465, 74);
+            this.mouseChk.Size = new System.Drawing.Size(550, 74);
             this.mouseChk.TabIndex = 0;
             this.mouseChk.Text = resources.GetString("mouseChk.Text");
             this.mouseChk.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.mouseChk.UseVisualStyleBackColor = true;
-            // 
-            // controlAllGroupsChk
-            // 
-            this.controlAllGroupsChk.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.controlAllGroupsChk.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.controlAllGroupsChk.Checked = global::TTMulti.Properties.Settings.Default.controlAllGroupsAtOnce;
-            this.controlAllGroupsChk.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::TTMulti.Properties.Settings.Default, "controlAllGroupsAtOnce", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.controlAllGroupsChk.Location = new System.Drawing.Point(7, 20);
-            this.controlAllGroupsChk.Margin = new System.Windows.Forms.Padding(2);
-            this.controlAllGroupsChk.Name = "controlAllGroupsChk";
-            this.controlAllGroupsChk.Size = new System.Drawing.Size(465, 57);
-            this.controlAllGroupsChk.TabIndex = 0;
-            this.controlAllGroupsChk.Text = "Make every left toon move at once, and every right toon move at once while in mul" +
-    "ti-mode. Normally you can only control one group at a time.";
-            this.controlAllGroupsChk.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.controlAllGroupsChk.UseVisualStyleBackColor = true;
             // 
             // checkBox3
             // 
@@ -502,78 +724,6 @@ namespace TTMulti.Forms
             this.checkBox2.Text = "The multicontroller window will always stay visible over everything else on your " +
     "screen.";
             this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.keyPicker5);
-            this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Controls.Add(this.mouseChk);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox4.Location = new System.Drawing.Point(4, 178);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(734, 97);
-            this.groupBox4.TabIndex = 3;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Mirror Mouse Clicks";
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.checkBox2);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(4, 4);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(734, 48);
-            this.groupBox5.TabIndex = 0;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Keep On Top When Inactive";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.checkBox3);
-            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox6.Location = new System.Drawing.Point(4, 52);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(734, 48);
-            this.groupBox6.TabIndex = 1;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Compact Interface";
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.keyPicker3);
-            this.groupBox7.Controls.Add(this.label8);
-            this.groupBox7.Controls.Add(this.controlAllGroupsChk);
-            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox7.Location = new System.Drawing.Point(4, 100);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(734, 78);
-            this.groupBox7.TabIndex = 2;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Control All Groups in Multi-Mode";
-            // 
-            // keyPicker3
-            // 
-            this.keyPicker3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.keyPicker3.ChosenKey = System.Windows.Forms.Keys.None;
-            this.keyPicker3.ChosenKeyCode = global::TTMulti.Properties.Settings.Default.controlAllGroupsKeyCode;
-            this.keyPicker3.DataBindings.Add(new System.Windows.Forms.Binding("ChosenKeyCode", global::TTMulti.Properties.Settings.Default, "controlAllGroupsKeyCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keyPicker3.Location = new System.Drawing.Point(541, 18);
-            this.keyPicker3.Margin = new System.Windows.Forms.Padding(5);
-            this.keyPicker3.MinimumSize = new System.Drawing.Size(50, 25);
-            this.keyPicker3.Name = "keyPicker3";
-            this.keyPicker3.Size = new System.Drawing.Size(188, 25);
-            this.keyPicker3.TabIndex = 1;
-            this.keyPicker3.TabStop = false;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(477, 20);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(56, 17);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "Hotkey:";
             // 
             // OptionsDlg
             // 
@@ -608,12 +758,17 @@ namespace TTMulti.Forms
             this.tabPage2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.groupModeGroupBox.ResumeLayout(false);
+            this.groupModeGroupBox.PerformLayout();
+            this.mirrorModeGroupBox.ResumeLayout(false);
+            this.mirrorModeGroupBox.PerformLayout();
+            this.allGroupModeGroupBox.ResumeLayout(false);
+            this.allGroupModeGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -644,7 +799,6 @@ namespace TTMulti.Forms
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox controlAllGroupsChk;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label5;
@@ -654,9 +808,22 @@ namespace TTMulti.Forms
         private KeyPicker keyPicker5;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.GroupBox groupModeGroupBox;
         private KeyPicker keyPicker3;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox mirrorModeGroupBox;
+        private System.Windows.Forms.Label label9;
+        private KeyPicker keyPicker6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.GroupBox allGroupModeGroupBox;
+        private System.Windows.Forms.Label label11;
+        private KeyPicker keyPicker7;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox groupModeCycleToggleChk;
+        private System.Windows.Forms.CheckBox mirrorModeCycleToggleChk;
+        private System.Windows.Forms.CheckBox allGroupModeCycleToggleChk;
     }
 }
