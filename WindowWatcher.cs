@@ -98,6 +98,7 @@ namespace TTMulti
         public void StopWatchingWindow(IntPtr windowHandle)
         {
             watchedWindowHandles.Remove(windowHandle);
+            lastWindowInfos.Remove(windowHandle);
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
