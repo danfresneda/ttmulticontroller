@@ -508,7 +508,8 @@ namespace TTMulti
                     }
                 }
             }
-            else if (!Properties.Settings.Default.controlAllGroupsAtOnce
+            else if (CurrentMode == ControllerMode.Group
+                && !Properties.Settings.Default.controlAllGroupsAtOnce
                 && ControllerGroups.Count > 1
                 && (keysPressed >= Keys.D0 && keysPressed <= Keys.D9
                     || keysPressed >= Keys.NumPad0 && keysPressed <= Keys.NumPad9))
