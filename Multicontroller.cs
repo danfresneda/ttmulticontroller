@@ -871,10 +871,7 @@ namespace TTMulti
                         affectedControllers.ToList().ForEach(c => c.PostMessage(msg, (IntPtr)actualKey, lParam));
                 }
 
-                if (keysToPress.Count > 0)
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;
