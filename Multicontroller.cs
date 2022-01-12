@@ -336,82 +336,102 @@ namespace TTMulti
         
         private void updateControllerBorders()
         {
-            if (isActive)
+            if (ShowAllBorders)
+            {
+                foreach (ToontownController controller in ControllerGroups.SelectMany(g => g.LeftControllers))
+                {
+                    controller.BorderColor = Color.LimeGreen;
+                }
+
+                foreach (ToontownController controller in ControllerGroups.SelectMany(g => g.RightControllers))
+                {
+                    controller.BorderColor = Color.Green;
+                }
+
+                foreach (ToontownController controller in AllControllers)
+                {
+                    controller.ShowBorder = true;
+                    controller.ShowGroupNumber = true;
+                    controller.ShowFakeCursor = false;
+                    controller.CaptureMouseEvents = false;
+                }
+            }
+            else if (isActive)
             {
                 if (CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.AllGroup)
                 {
                     IEnumerable<ControllerGroup> affectedGroups = CurrentMode == ControllerMode.AllGroup 
                         ? (IEnumerable<ControllerGroup>)ControllerGroups : new[] { ControllerGroups[CurrentGroupIndex] };
 
-                    foreach (var group in ControllerGroups)
+                    foreach (ControllerGroup group in affectedGroups)
                     {
-                        foreach (var controller in group.LeftControllers)
+                        foreach (ToontownController controller in group.LeftControllers)
                         {
                             controller.BorderColor = Color.LimeGreen;
-                            
                         }
 
-                        foreach (var controller in group.RightControllers)
+                        foreach (ToontownController controller in group.RightControllers)
                         {
                             controller.BorderColor = Color.Green;
                         }
 
-                        foreach (var controller in group.AllControllers)
+                        foreach (ToontownController controller in group.AllControllers)
                         {
-                            controller.ShowBorder = ShowAllBorders || affectedGroups.Contains(group);
-                            controller.ShowGroupNumber = ShowAllBorders || ControllerGroups.Count > 1;
-                            controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
-                        }
-                    }
-                }
-                else if (CurrentMode == ControllerMode.MirrorGroup)
-                {
-                    for (int i = 0; i < ControllerGroups.Count; i++)
-                    {
-                        foreach (ToontownController controller in ControllerGroups[i].AllControllers)
-                        {
-                            controller.BorderColor = Color.Violet;
-                            controller.ShowBorder = i == CurrentGroupIndex;
-                            controller.ShowGroupNumber = ControllerGroups.Count > 1;
-                            controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
-                        }
-                    }
-                }
-                else if (CurrentMode == ControllerMode.MirrorAll)
-                {
-                    ControllerGroups.ForEach(g =>
-                    {
-                        foreach (var controller in g.AllControllers)
-                        {
-                            controller.BorderColor = Color.Violet;
                             controller.ShowBorder = true;
                             controller.ShowGroupNumber = ControllerGroups.Count > 1;
                             controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
                         }
-                    });
+                    }
+
+                    foreach (ToontownController controller in ControllerGroups.Except(affectedGroups).SelectMany(g => g.AllControllers))
+                    {
+                        controller.ShowBorder = false;
+                    }
+                }
+                else if (CurrentMode == ControllerMode.MirrorGroup)
+                {
+                    ControllerGroup currentGroup = ControllerGroups[CurrentGroupIndex];
+
+                    foreach (ToontownController controller in currentGroup.AllControllers)
+                    {
+                        controller.BorderColor = Color.Violet;
+                        controller.ShowGroupNumber = ControllerGroups.Count > 1;
+                        controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                        controller.ShowBorder = true;
+                    }
+
+                    foreach (ToontownController controller in ControllerGroups.Except(new[] { currentGroup }).SelectMany(g => g.AllControllers))
+                    {
+                        controller.ShowBorder = false;
+                    }
+                }
+                else if (CurrentMode == ControllerMode.MirrorAll)
+                {
+                    foreach (ToontownController controller in AllControllers)
+                    {
+                        controller.BorderColor = Color.Violet;
+                        controller.ShowBorder = true;
+                        controller.ShowGroupNumber = ControllerGroups.Count > 1;
+                        controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                    }
                 }
                 else if (CurrentMode == ControllerMode.MirrorIndividual)
                 {
-                    foreach (var group in ControllerGroups)
+                    foreach (ToontownController controller in AllControllers)
                     {
-                        foreach (var controller in group.AllControllers)
-                        {
-                            controller.BorderColor = Color.Turquoise;
-                            controller.ShowBorder = CurrentIndividualController == controller;
-                            controller.CaptureMouseEvents = CurrentIndividualController == controller;
-                        }
+                        controller.BorderColor = Color.Turquoise;
+                        controller.ShowBorder = CurrentIndividualController == controller;
+                        controller.ShowGroupNumber = false;
+                        controller.CaptureMouseEvents = CurrentIndividualController == controller;
                     }
                 }
             } 
             else
             {
-                ControllerGroups.ForEach(g =>
+                foreach (ToontownController controller in AllControllers)
                 {
-                    foreach (var controller in g.AllControllers)
-                    {
-                        controller.ShowBorder = false;
-                    }
-                });
+                    controller.ShowBorder = false;
+                }
             }
         }
 

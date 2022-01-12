@@ -392,7 +392,7 @@ namespace TTMulti.Forms
 
             ignoreMessages = true;
 
-            if (optionsDlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            if (optionsDlg.ShowDialog(this) == DialogResult.OK)
             {
                 ReloadOptions();
             }
@@ -440,16 +440,7 @@ namespace TTMulti.Forms
 
         private void MulticontrollerWnd_Deactivate(object sender, EventArgs e)
         {
-            IntPtr activeWnd = Win32.GetForegroundWindow();
-
-            /*if (controller.AllControllersWithWindows.Select(c => c.BorderWndHandle).Contains(activeWnd))
-            {
-
-            } 
-            else */if (!ignoreMessages)
-            {
-                controller.IsActive = false;
-            }
+            controller.IsActive = false;
         }
     }
 }
