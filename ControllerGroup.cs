@@ -37,7 +37,7 @@ namespace TTMulti
 
         internal List<ControllerPair> ControllerPairs { get; } = new List<ControllerPair>();
 
-        internal IEnumerable<ToontownController> AllControllers { get => ControllerPairs.SelectMany(p => new[] { p.LeftController, p.RightController }); }
+        internal IEnumerable<ToontownController> AllControllers { get => ControllerPairs.SelectMany(p => p.AllControllers); }
         internal IEnumerable<ToontownController> LeftControllers { get => ControllerPairs.Select(p => p.LeftController); }
         internal IEnumerable<ToontownController> RightControllers { get => ControllerPairs.Select(p => p.RightController); }
 

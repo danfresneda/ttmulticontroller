@@ -51,13 +51,13 @@ namespace TTMulti
         int _currentPairIndex = 0;
 
         /// <summary>
-        /// The index of the current pair inside the current group that is being controlled, if applicable in the current mode
+        /// The index of the current pair that is being controlled (in pair mode)
         /// </summary>
         internal int CurrentPairIndex
         {
             get
             {
-                if (_currentPairIndex > ControllerGroups[CurrentGroupIndex].ControllerPairs.Count)
+                if (_currentPairIndex > AllControllerPairsWithWindows.Count())
                 {
                     _currentPairIndex = 0;
                     updateControllerBorders();
@@ -106,6 +106,17 @@ namespace TTMulti
                 {
                     return ControllerGroups.SelectMany(g => g.LeftControllers);
                 }
+                else if (CurrentMode == ControllerMode.Pair)
+                {
+                    if (CurrentControllerPair != null)
+                    {
+                        return new[] { CurrentControllerPair?.LeftController };
+                    } 
+                    else
+                    {
+                        return new ToontownController[] { };
+                    }
+                }
                 else
                 {
                     return ControllerGroups[CurrentGroupIndex].LeftControllers;
@@ -123,6 +134,17 @@ namespace TTMulti
                 if (CurrentMode == ControllerMode.AllGroup)
                 {
                     return ControllerGroups.SelectMany(g => g.RightControllers);
+                }
+                else if (CurrentMode == ControllerMode.Pair)
+                {
+                    if (CurrentControllerPair != null)
+                    {
+                        return new[] { CurrentControllerPair?.RightController };
+                    }
+                    else
+                    {
+                        return new ToontownController[] { };
+                    }
                 }
                 else
                 {
@@ -160,6 +182,35 @@ namespace TTMulti
             get
             {
                 return AllControllers.Where(c => c.HasWindow);
+            }
+        }
+
+        internal IEnumerable<ControllerPair> AllControllerPairs
+        {
+            get
+            {
+                return ControllerGroups.SelectMany(g => g.ControllerPairs);
+            }
+        }
+
+        internal IEnumerable<ControllerPair> AllControllerPairsWithWindows
+        {
+            get
+            {
+                return AllControllerPairs.Where(p => p.LeftController.HasWindow || p.RightController.HasWindow);
+            }
+        }
+
+        internal ControllerPair CurrentControllerPair
+        {
+            get
+            {
+                if (AllControllerPairsWithWindows.Count() > 0)
+                {
+                    return AllControllerPairsWithWindows.ElementAt(CurrentPairIndex);
+                }
+
+                return null;
             }
         }
 
@@ -388,6 +439,31 @@ namespace TTMulti
                         controller.ShowBorder = false;
                     }
                 }
+                else if (CurrentMode == ControllerMode.Pair)
+                {
+                    foreach (ControllerPair pair in AllControllerPairs)
+                    {
+                        if (pair == CurrentControllerPair)
+                        {
+                            pair.LeftController.BorderColor = Color.LimeGreen;
+                            pair.RightController.BorderColor = Color.Green;
+
+                            foreach (ToontownController controller in pair.AllControllers)
+                            {
+                                controller.ShowGroupNumber = false;
+                                controller.CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+                                controller.ShowBorder = true;
+                            }
+                        }
+                        else
+                        {
+                            foreach (ToontownController controller in pair.AllControllers)
+                            {
+                                controller.ShowBorder = false;
+                            }
+                        }
+                    }
+                }
                 else if (CurrentMode == ControllerMode.MirrorGroup)
                 {
                     ControllerGroup currentGroup = ControllerGroups[CurrentGroupIndex];
@@ -553,6 +629,20 @@ namespace TTMulti
             {
                 CurrentMode = ControllerMode.MirrorGroup;
             }
+            else if (keysPressed == (Keys)Properties.Settings.Default.pairModeKeyCode)
+            {
+                if (msg == Win32.WM.KEYDOWN && isActive && AllControllerPairsWithWindows.Count() > 0)
+                {
+                    if (CurrentMode == ControllerMode.Pair)
+                    {
+                        CurrentPairIndex = (CurrentPairIndex + 1) % AllControllerPairsWithWindows.Count();
+                    }
+                    else
+                    {
+                        CurrentMode = ControllerMode.Pair;
+                    }
+                }
+            }
             else if (keysPressed == (Keys)Properties.Settings.Default.replicateMouseKeyCode)
             {
                 if (msg == Win32.WM.KEYDOWN)
@@ -628,7 +718,7 @@ namespace TTMulti
             {
                 List<ToontownController> affectedControllers = new List<ToontownController>();
                 
-                if (CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.AllGroup)
+                if (CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.AllGroup || CurrentMode == ControllerMode.Pair)
                 {
                     if (LeftControllers.Contains(sourceController))
                     {
@@ -737,7 +827,7 @@ namespace TTMulti
                 List<ToontownController> affectedControllers = new List<ToontownController>();
                 List<Keys> keysToPress = new List<Keys>();
 
-                if (CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.AllGroup)
+                if (CurrentMode == ControllerMode.Group || CurrentMode == ControllerMode.AllGroup || CurrentMode == ControllerMode.Pair)
                 {
                     if (leftKeys.ContainsKey(keysPressed))
                     {

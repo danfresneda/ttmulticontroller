@@ -15,12 +15,16 @@ namespace TTMulti
         internal ToontownController LeftController { get; }
         internal ToontownController RightController { get; }
 
+        internal IEnumerable<ToontownController> AllControllers { get; }
+
         public ControllerPair(int groupNumber, int pairNumber)
         {
             PairNumber = pairNumber;
 
             LeftController = new ToontownController(groupNumber, pairNumber);
             RightController = new ToontownController(groupNumber, pairNumber);
+
+            AllControllers = new[] { LeftController, RightController };
         }
         
         /// <summary>

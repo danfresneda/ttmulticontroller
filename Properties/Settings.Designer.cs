@@ -499,5 +499,17 @@ namespace TTMulti.Properties {
                 this["mirrorGroupModeCycleWithModeHotkey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int pairModeKeyCode {
+            get {
+                return ((int)(this["pairModeKeyCode"]));
+            }
+            set {
+                this["pairModeKeyCode"] = value;
+            }
+        }
     }
 }
