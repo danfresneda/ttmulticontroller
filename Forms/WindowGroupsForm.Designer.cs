@@ -34,8 +34,8 @@
             this.addGroupBtn = new System.Windows.Forms.Button();
             this.removeGroupBtn = new System.Windows.Forms.Button();
             this.groupsFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.windowPairGroup1 = new TTMulti.Controls.ControllerGroupView();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupsFlowPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -126,6 +126,8 @@
             this.Name = "WindowGroupsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Window Groups";
+            this.Activated += new System.EventHandler(this.WindowGroupsForm_Activated);
+            this.Deactivate += new System.EventHandler(this.WindowGroupsForm_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowGroupsForm_FormClosing);
             this.groupsFlowPanel.ResumeLayout(false);
             this.groupsFlowPanel.PerformLayout();

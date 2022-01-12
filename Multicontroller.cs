@@ -387,7 +387,7 @@ namespace TTMulti
         
         private void updateControllerBorders()
         {
-            if (ShowAllBorders)
+            if (ShowAllBorders && isActive)
             {
                 foreach (ToontownController controller in ControllerGroups.SelectMany(g => g.LeftControllers))
                 {

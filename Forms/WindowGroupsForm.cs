@@ -79,5 +79,15 @@ namespace TTMulti.Forms
         {
             this.Close();
         }
+
+        private void WindowGroupsForm_Activated(object sender, EventArgs e)
+        {
+            Multicontroller.Instance.IsActive = true;
+        }
+
+        private void WindowGroupsForm_Deactivate(object sender, EventArgs e)
+        {
+            Multicontroller.Instance.IsActive = false;
+        }
     }
 }
