@@ -205,14 +205,21 @@ namespace TTMulti.Forms
             }
 
             bool ret = false;
-            
-            var msg = (Win32.WM)m.Msg;
-            
-            if (msg == Win32.WM.KEYDOWN || msg == Win32.WM.KEYUP || msg == Win32.WM.SYSKEYDOWN || msg == Win32.WM.SYSKEYUP || msg == Win32.WM.SYSCOMMAND || msg == Win32.WM.HOTKEY)
-            {
-                ret = controller.ProcessInput(m.Msg, m.WParam, m.LParam);
-            }
 
+            var msg = (Win32.WM)m.Msg;
+
+            switch (msg)
+            {
+                case Win32.WM.KEYDOWN:
+                case Win32.WM.KEYUP:
+                case Win32.WM.SYSKEYDOWN:
+                case Win32.WM.SYSKEYUP:
+                case Win32.WM.SYSCOMMAND:
+                case Win32.WM.HOTKEY:
+                    ret = controller.ProcessInput(m.Msg, m.WParam, m.LParam);
+                    break;
+            }
+            
             CheckControllerErrors();
 
             return ret;
