@@ -29,9 +29,9 @@ namespace TTMulti
         public event EventHandler WindowDeactivated;
 
         /// <summary>
-        /// The controlled window was closed
+        /// The controlled window handle was changed
         /// </summary>
-        public event EventHandler WindowClosed;
+        public event EventHandler WindowHandleChanged;
 
         internal event OverlayMouseEventHandler MouseEvent;
 
@@ -55,14 +55,12 @@ namespace TTMulti
                     
                     _windowHandle = value;
 
-                    if (_windowHandle == IntPtr.Zero)
-                    {
-                        WindowClosed?.Invoke(this, EventArgs.Empty);
-                    }
-                    else
+                    if (_windowHandle != IntPtr.Zero)
                     {
                         WindowWatcher.Instance.WatchWindow(_windowHandle);
                     }
+
+                    WindowHandleChanged?.Invoke(this, EventArgs.Empty);
 
                     RefreshOptions();
                     RefreshUtilityWindows();

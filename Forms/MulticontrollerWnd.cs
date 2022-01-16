@@ -303,8 +303,8 @@ namespace TTMulti.Forms
             controller.WindowActivated += Controller_WindowActivated;
             controller.AllWindowsInactive += Controller_AllWindowsInactive;
 
-            controller.ControllerGroups[0].ControllerPairs[0].LeftController.WindowClosed += LeftController_WindowClosed;
-            controller.ControllerGroups[0].ControllerPairs[0].RightController.WindowClosed += RightController_WindowClosed;
+            controller.ControllerGroups[0].ControllerPairs[0].LeftController.WindowHandleChanged += LeftController_WindowHandleChanged;
+            controller.ControllerGroups[0].ControllerPairs[0].RightController.WindowHandleChanged += RightController_WindowHandleChanged;
 
             // Removes the extra padding on the right side of the status strip.
             // Apparently this is "not relevant for this class" but still has an effect.
@@ -340,14 +340,14 @@ namespace TTMulti.Forms
             UpdateWindowStatus();
         }
 
-        private void RightController_WindowClosed(object sender, EventArgs e)
+        private void RightController_WindowHandleChanged(object sender, EventArgs e)
         {
-            leftToonCrosshair.SelectedWindowHandle = IntPtr.Zero;
+            leftToonCrosshair.SelectedWindowHandle = controller.ControllerGroups[0].ControllerPairs[0].LeftController.WindowHandle;
         }
 
-        private void LeftController_WindowClosed(object sender, EventArgs e)
+        private void LeftController_WindowHandleChanged(object sender, EventArgs e)
         {
-            rightToonCrosshair.SelectedWindowHandle = IntPtr.Zero;
+            rightToonCrosshair.SelectedWindowHandle = controller.ControllerGroups[0].ControllerPairs[0].RightController.WindowHandle;
         }
 
         private void Controller_AllWindowsInactive(object sender, EventArgs e)

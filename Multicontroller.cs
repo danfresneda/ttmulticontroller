@@ -436,7 +436,7 @@ namespace TTMulti
 
             group.ControllerWindowActivated += Controller_WindowActivated;
             group.ControllerWindowDeactivated += Controller_WindowDeactivated;
-            group.ControllerWindowClosed += Controller_WindowClosed;
+            group.ControllerWindowHandleChanged += Controller_WindowHandleChanged;
             group.MouseEvent += Controller_MouseEvent;
 
             ControllerGroups.Add(group);
@@ -799,7 +799,7 @@ namespace TTMulti
             return false;
         }
 
-        private void Controller_WindowClosed(object sender, EventArgs e)
+        private void Controller_WindowHandleChanged(object sender, EventArgs e)
         {
             if (!AllControllersWithWindows.Any(c => c.IsWindowActive))
             {

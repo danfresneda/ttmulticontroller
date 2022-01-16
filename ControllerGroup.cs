@@ -23,7 +23,7 @@ namespace TTMulti
         /// <summary>
         /// The Toontown window of a controller in this group was closed
         /// </summary>
-        public event EventHandler ControllerWindowClosed;
+        public event EventHandler ControllerWindowHandleChanged;
 
         /// <summary>
         /// A mouse event was captured from a controller in this group
@@ -63,12 +63,12 @@ namespace TTMulti
         {
             var pair = new ControllerPair(GroupNumber, ControllerPairs.Count + 1);
 
-            pair.LeftController.WindowActivated += Controller_TTWindowActivated;
-            pair.RightController.WindowActivated += Controller_TTWindowActivated;
-            pair.LeftController.WindowDeactivated += Controller_TTWindowDeactivated;
-            pair.RightController.WindowDeactivated += Controller_TTWindowDeactivated;
-            pair.LeftController.WindowClosed += Controller_TTWindowClosed; ;
-            pair.RightController.WindowClosed += Controller_TTWindowClosed;
+            pair.LeftController.WindowActivated += Controller_WindowActivated;
+            pair.RightController.WindowActivated += Controller_WindowActivated;
+            pair.LeftController.WindowDeactivated += Controller_WindowDeactivated;
+            pair.RightController.WindowDeactivated += Controller_WindowDeactivated;
+            pair.LeftController.WindowHandleChanged += Controller_WindowHandleChanged;
+            pair.RightController.WindowHandleChanged += Controller_WindowHandleChanged;
             pair.LeftController.MouseEvent += Controller_MouseEvent;
             pair.RightController.MouseEvent += Controller_MouseEvent;
 
@@ -96,17 +96,17 @@ namespace TTMulti
             }
         }
 
-        private void Controller_TTWindowClosed(object sender, EventArgs e)
+        private void Controller_WindowHandleChanged(object sender, EventArgs e)
         {
-            ControllerWindowClosed?.Invoke(sender, e);
+            ControllerWindowHandleChanged?.Invoke(sender, e);
         }
 
-        private void Controller_TTWindowDeactivated(object sender, EventArgs e)
+        private void Controller_WindowDeactivated(object sender, EventArgs e)
         {
             ControllerWindowDeactivated?.Invoke(sender, e);
         }
 
-        private void Controller_TTWindowActivated(object sender, EventArgs e)
+        private void Controller_WindowActivated(object sender, EventArgs e)
         {
             ControllerWindowActivated?.Invoke(sender, e);
         }
