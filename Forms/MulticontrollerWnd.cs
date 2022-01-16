@@ -150,12 +150,12 @@ namespace TTMulti.Forms
             leftStatusLbl.Text = "Group " + (controller.CurrentGroupIndex + 1) + " active.";
             rightStatusLbl.Text = controller.ControllerGroups.Count + " groups.";
 
-            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1 && controller.CurrentMode != Multicontroller.ControllerMode.AllGroup)
+            if (!statusStrip1.Visible && controller.ControllerGroups.Count > 1 && controller.CurrentMode != MulticontrollerMode.AllGroup)
             {
                 statusStrip1.Visible = true;
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom + statusStrip1.Height);
             }
-            else if (statusStrip1.Visible && (controller.ControllerGroups.Count == 1 || controller.CurrentMode == Multicontroller.ControllerMode.AllGroup))
+            else if (statusStrip1.Visible && (controller.ControllerGroups.Count == 1 || controller.CurrentMode == MulticontrollerMode.AllGroup))
             {
                 this.Padding = new Padding(this.Padding.Left, this.Padding.Top, this.Padding.Right, this.Padding.Bottom - statusStrip1.Height);
                 statusStrip1.Visible = false;
@@ -299,10 +299,12 @@ namespace TTMulti.Forms
 
             controller.ModeChanged += Controller_ModeChanged;
             controller.GroupsChanged += Controller_GroupsChanged;
-            controller.SettingChangedByHotkey += Controller_SettingChanged;
             controller.ShouldActivate += Controller_ShouldActivate;
-            controller.TTWindowActivated += Controller_TTWindowActivated;
-            controller.AllTTWindowsInactive += Controller_AllTTWindowsInactive;
+            controller.WindowActivated += Controller_WindowActivated;
+            controller.AllWindowsInactive += Controller_AllWindowsInactive;
+
+            controller.ControllerGroups[0].ControllerPairs[0].LeftController.WindowClosed += LeftController_WindowClosed;
+            controller.ControllerGroups[0].ControllerPairs[0].RightController.WindowClosed += RightController_WindowClosed;
 
             // Removes the extra padding on the right side of the status strip.
             // Apparently this is "not relevant for this class" but still has an effect.
@@ -338,17 +340,22 @@ namespace TTMulti.Forms
             UpdateWindowStatus();
         }
 
-        private void Controller_SettingChanged(object sender, EventArgs e)
+        private void RightController_WindowClosed(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
+            leftToonCrosshair.SelectedWindowHandle = IntPtr.Zero;
         }
 
-        private void Controller_AllTTWindowsInactive(object sender, EventArgs e)
+        private void LeftController_WindowClosed(object sender, EventArgs e)
+        {
+            rightToonCrosshair.SelectedWindowHandle = IntPtr.Zero;
+        }
+
+        private void Controller_AllWindowsInactive(object sender, EventArgs e)
         {
             UnregisterHotkey();
         }
 
-        private void Controller_TTWindowActivated(object sender, EventArgs e)
+        private void Controller_WindowActivated(object sender, EventArgs e)
         {
             RegisterHotkey();
         }
@@ -378,10 +385,10 @@ namespace TTMulti.Forms
         {
             switch (controller.CurrentMode)
             {
-                case Multicontroller.ControllerMode.Group:
+                case MulticontrollerMode.Group:
                     multiModeRadio.Checked = true;
                     break;
-                case Multicontroller.ControllerMode.MirrorAll:
+                case MulticontrollerMode.MirrorAll:
                     mirrorModeRadio.Checked = true;
                     break;
                 default:
@@ -422,22 +429,22 @@ namespace TTMulti.Forms
 
         private void leftToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            Multicontroller.Instance.LeftControllers.First().WindowHandle = handle;
+            controller.ControllerGroups[0].ControllerPairs[0].LeftController.WindowHandle = handle;
         }
 
         private void rightToonCrosshair_WindowSelected(object sender, IntPtr handle)
         {
-            Multicontroller.Instance.RightControllers.First().WindowHandle = handle;
+            controller.ControllerGroups[0].ControllerPairs[0].RightController.WindowHandle = handle;
         }
 
         private void multiModeRadio_Click(object sender, EventArgs e)
         {
-            controller.CurrentMode = Multicontroller.ControllerMode.Group;
+            controller.CurrentMode = MulticontrollerMode.Group;
         }
 
         private void mirrorModeRadio_Clicked(object sender, EventArgs e)
         {
-            controller.CurrentMode = Multicontroller.ControllerMode.MirrorAll;
+            controller.CurrentMode = MulticontrollerMode.MirrorAll;
         }
 
         private void MulticontrollerWnd_Activated(object sender, EventArgs e)

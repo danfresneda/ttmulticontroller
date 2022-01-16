@@ -21,8 +21,8 @@ namespace TTMulti
         {
             PairNumber = pairNumber;
 
-            LeftController = new ToontownController(groupNumber, pairNumber);
-            RightController = new ToontownController(groupNumber, pairNumber);
+            LeftController = new ToontownController(groupNumber, pairNumber, ControllerType.Left);
+            RightController = new ToontownController(groupNumber, pairNumber, ControllerType.Right);
 
             AllControllers = new[] { LeftController, RightController };
         }

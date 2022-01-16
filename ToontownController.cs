@@ -10,6 +10,12 @@ using TTMulti.Forms;
 
 namespace TTMulti
 {
+    enum ControllerType
+    {
+        Left,
+        Right
+    }
+
     class ToontownController
     {
         /// <summary>
@@ -98,20 +104,10 @@ namespace TTMulti
         public Color BorderColor
         {
             get => _borderWnd.BorderColor;
-            set => _borderWnd.BorderColor = value;
+            private set => _borderWnd.BorderColor = value;
         }
 
-        bool _showBorder = true;
-        public bool ShowBorder
-        {
-            get => _showBorder;
-            set
-            {
-                _showBorder = value;
-
-                RefreshUtilityWindows();
-            }
-        }
+        public bool ShowBorder { get; private set; }
 
         public int GroupNumber
         {
@@ -124,23 +120,10 @@ namespace TTMulti
         public bool ShowGroupNumber
         {
             get => _borderWnd.ShowGroupNumber;
-            set => _borderWnd.ShowGroupNumber = value;
+            private set => _borderWnd.ShowGroupNumber = value;
         }
 
-
-        private bool _captureMouseEvents;
-        public bool CaptureMouseEvents
-        {
-            get => _captureMouseEvents;
-            set
-            {
-                if (_captureMouseEvents != value)
-                {
-                    _captureMouseEvents = value;
-                    RefreshUtilityWindows();
-                }
-            }
-        }
+        public bool CaptureMouseEvents { get; private set; }
 
         private bool _isWindowActive = false;
         public bool IsWindowActive
@@ -164,6 +147,8 @@ namespace TTMulti
             }
         }
 
+        public ControllerType Type { get; }
+
         public bool ErrorOccurredPostingMessage { get; private set; } = false;
 
         BorderWnd _borderWnd = new BorderWnd();
@@ -176,10 +161,13 @@ namespace TTMulti
             Interval = 60000
         };
 
-        public ToontownController(int groupNumber, int pairNumber)
+        Multicontroller multicontroller = Multicontroller.Instance;
+
+        public ToontownController(int groupNumber, int pairNumber, ControllerType type)
         {
             GroupNumber = groupNumber;
             PairNumber = pairNumber;
+            Type = type;
 
             WindowWatcher.Instance.ActiveWindowChanged += WindowWatcher_ActiveWindowChanged;
             WindowWatcher.Instance.WindowClosed += WindowWatcher_WindowClosed;
@@ -187,11 +175,36 @@ namespace TTMulti
             WindowWatcher.Instance.WindowClientAreaSizeChanged += WindowWatcher_WindowClientAreaSizeChanged;
             WindowWatcher.Instance.WindowShowStateChanged += WindowWatcher_WindowShowStateChanged;
 
+            multicontroller.ModeChanged += Multicontroller_ModeChanged;
+            multicontroller.ActiveControllersChanged += Multicontroller_ActiveControllersChanged;
+            multicontroller.ActiveChanged += Multicontroller_ActiveChanged;
+            multicontroller.SettingChanged += Multicontroller_SettingChanged;
+
             Properties.Settings.Default.PropertyChanged += Settings_PropertyChanged;
 
             _overlayWnd.MouseEvent += _overlayWnd_MouseEvent;
 
             keepAliveTimer.Elapsed += KeepAliveTimer_Elapsed;
+        }
+
+        private void Multicontroller_SettingChanged(object sender, EventArgs e)
+        {
+            RefreshOptions();
+        }
+
+        private void Multicontroller_ActiveChanged(object sender, EventArgs e)
+        {
+            RefreshOptions();
+        }
+
+        private void Multicontroller_ActiveControllersChanged(object sender, EventArgs e)
+        {
+            RefreshOptions();
+        }
+
+        private void Multicontroller_ModeChanged(object sender, EventArgs e)
+        {
+            RefreshOptions();
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -353,6 +366,53 @@ namespace TTMulti
 
         private void RefreshOptions()
         {
+            if (multicontroller.ShowAllBorders && multicontroller.IsActive)
+            {
+                ShowBorder = true;
+                ShowGroupNumber = true;
+                CaptureMouseEvents = false;
+
+                BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
+            }
+            else if (multicontroller.IsActive)
+            {
+                switch (multicontroller.CurrentMode)
+                {
+                    case MulticontrollerMode.Group:
+                    case MulticontrollerMode.Pair:
+                    case MulticontrollerMode.AllGroup:
+                        BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
+                        break;
+                    case MulticontrollerMode.MirrorAll:
+                    case MulticontrollerMode.MirrorGroup:
+                        BorderColor = Color.Violet;
+                        break;
+                    case MulticontrollerMode.MirrorIndividual:
+                        BorderColor = Color.Turquoise;
+                        break;
+                }
+
+                ShowBorder = multicontroller.ActiveControllers.Contains(this);
+
+                if (multicontroller.CurrentMode == MulticontrollerMode.Pair
+                    || multicontroller.CurrentMode == MulticontrollerMode.MirrorIndividual)
+                {
+                    ShowGroupNumber = false;
+                }
+                else
+                {
+                    ShowGroupNumber = multicontroller.ControllerGroups.Count > 1;
+                }
+
+                CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
+            }
+            else
+            {
+                ShowBorder = false;
+            }
+
+            RefreshUtilityWindows();
+
             if ((Properties.Settings.Default.disableKeepAlive || !HasWindow) && keepAliveTimer.Enabled)
             {
                 keepAliveTimer.Stop();
@@ -405,6 +465,11 @@ namespace TTMulti
             WindowWatcher.Instance.WindowClientAreaLocationChanged -= WindowWatcher_WindowClientAreaLocationChanged;
             WindowWatcher.Instance.WindowClientAreaSizeChanged -= WindowWatcher_WindowClientAreaSizeChanged;
             WindowWatcher.Instance.WindowShowStateChanged -= WindowWatcher_WindowShowStateChanged;
+
+            multicontroller.ModeChanged -= Multicontroller_ModeChanged;
+            multicontroller.ActiveControllersChanged -= Multicontroller_ActiveControllersChanged;
+            multicontroller.ActiveChanged -= Multicontroller_ActiveChanged;
+            multicontroller.SettingChanged -= Multicontroller_SettingChanged;
 
             Properties.Settings.Default.PropertyChanged -= Settings_PropertyChanged;
         }
