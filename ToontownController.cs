@@ -70,7 +70,7 @@ namespace TTMulti
             }
         }
 
-        public bool HasWindow { get => WindowHandle != IntPtr.Zero; }
+        public bool HasWindow => WindowHandle != IntPtr.Zero;
 
         public Size WindowSize { get; private set; }
 
@@ -107,8 +107,6 @@ namespace TTMulti
             private set => _borderWnd.BorderColor = value;
         }
 
-        public bool ShowBorder { get; private set; }
-
         public int GroupNumber
         {
             get => _borderWnd.GroupNumber;
@@ -122,8 +120,6 @@ namespace TTMulti
             get => _borderWnd.ShowGroupNumber;
             private set => _borderWnd.ShowGroupNumber = value;
         }
-
-        public bool CaptureMouseEvents { get; private set; }
 
         private bool _isWindowActive = false;
         public bool IsWindowActive
@@ -290,22 +286,34 @@ namespace TTMulti
 
         private void RefreshUtilityWindows()
         {
-            if (ShowBorder && HasWindow)
+            bool isActiveController = multicontroller.ActiveControllers.Contains(this);
+
+            bool showBorderWindow = multicontroller.IsActive && HasWindow
+                && (isActiveController || multicontroller.ShowAllBorders);
+
+            bool showMouseOverlayWindow = multicontroller.IsActive && HasWindow && !multicontroller.ShowAllBorders
+                && isActiveController && Properties.Settings.Default.replicateMouse;
+
+            if (showBorderWindow && !_borderWnd.Visible)
             {
-                if (!_borderWnd.Visible)
-                {
-                    _borderWnd.Show();
-                }
+                _borderWnd.Show();
+            }
+            else if (!showBorderWindow && _borderWnd.Visible)
+            {
+                _borderWnd.Hide();
+            }
 
-                if (CaptureMouseEvents && !_overlayWnd.Visible)
-                {
-                    _overlayWnd.Show();
-                }
-                else if (!CaptureMouseEvents && _overlayWnd.Visible)
-                {
-                    _overlayWnd.Hide();
-                }
+            if (showMouseOverlayWindow && !_overlayWnd.Visible)
+            {
+                _overlayWnd.Show();
+            }
+            else if (!showMouseOverlayWindow && _overlayWnd.Visible)
+            {
+                _overlayWnd.Hide();
+            }
 
+            if (showBorderWindow || showMouseOverlayWindow)
+            {
                 // TODO: why is this needed?
                 _borderWnd.WindowState = FormWindowState.Normal;
                 _overlayWnd.WindowState = FormWindowState.Normal;
@@ -313,11 +321,6 @@ namespace TTMulti
                 // Running twice seems to get the mouse overlay to properly show up after activating using the hotkey
                 ReorderUtilityWindows();
                 ReorderUtilityWindows();
-            }
-            else if ((!ShowBorder || !HasWindow) && (_borderWnd.Visible || _overlayWnd.Visible))
-            {
-                _borderWnd.Hide();
-                _overlayWnd.Hide();
             }
         }
 
@@ -368,9 +371,7 @@ namespace TTMulti
         {
             if (multicontroller.ShowAllBorders && multicontroller.IsActive)
             {
-                ShowBorder = true;
                 ShowGroupNumber = true;
-                CaptureMouseEvents = false;
 
                 BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
             }
@@ -392,8 +393,6 @@ namespace TTMulti
                         break;
                 }
 
-                ShowBorder = multicontroller.ActiveControllers.Contains(this);
-
                 if (multicontroller.CurrentMode == MulticontrollerMode.Pair
                     || multicontroller.CurrentMode == MulticontrollerMode.MirrorIndividual)
                 {
@@ -403,12 +402,6 @@ namespace TTMulti
                 {
                     ShowGroupNumber = multicontroller.ControllerGroups.Count > 1;
                 }
-
-                CaptureMouseEvents = Properties.Settings.Default.replicateMouse;
-            }
-            else
-            {
-                ShowBorder = false;
             }
 
             RefreshUtilityWindows();
