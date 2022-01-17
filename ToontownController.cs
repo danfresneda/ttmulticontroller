@@ -62,8 +62,7 @@ namespace TTMulti
 
                     WindowHandleChanged?.Invoke(this, EventArgs.Empty);
 
-                    RefreshOptions();
-                    RefreshUtilityWindows();
+                    Refresh();
                 }
             }
         }
@@ -99,12 +98,6 @@ namespace TTMulti
             set => _borderWnd.FakeCursorIsInvalid = value;
         }
 
-        public Color BorderColor
-        {
-            get => _borderWnd.BorderColor;
-            private set => _borderWnd.BorderColor = value;
-        }
-
         public int GroupNumber
         {
             get => _borderWnd.GroupNumber;
@@ -112,12 +105,6 @@ namespace TTMulti
         }
 
         public int PairNumber { get; set; }
-
-        public bool ShowGroupNumber
-        {
-            get => _borderWnd.ShowGroupNumber;
-            private set => _borderWnd.ShowGroupNumber = value;
-        }
 
         private bool _isWindowActive = false;
         public bool IsWindowActive
@@ -183,27 +170,27 @@ namespace TTMulti
 
         private void Multicontroller_SettingChanged(object sender, EventArgs e)
         {
-            RefreshOptions();
+            Refresh();
         }
 
         private void Multicontroller_ActiveChanged(object sender, EventArgs e)
         {
-            RefreshOptions();
+            Refresh();
         }
 
         private void Multicontroller_ActiveControllersChanged(object sender, EventArgs e)
         {
-            RefreshOptions();
+            Refresh();
         }
 
         private void Multicontroller_ModeChanged(object sender, EventArgs e)
         {
-            RefreshOptions();
+            Refresh();
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            RefreshOptions();
+            Refresh();
         }
 
         private void KeepAliveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -237,7 +224,7 @@ namespace TTMulti
                         break;
                 }
 
-                RefreshUtilityWindows();
+                Refresh();
             }
         }
 
@@ -282,7 +269,10 @@ namespace TTMulti
             }
         }
 
-        private void RefreshUtilityWindows()
+        /// <summary>
+        /// Refresh settings of the controller and its utility windows
+        /// </summary>
+        private void Refresh()
         {
             bool isActiveController = multicontroller.ActiveControllers.Contains(this);
 
@@ -310,15 +300,58 @@ namespace TTMulti
                 _overlayWnd.Hide();
             }
 
-            if (showBorderWindow || showMouseOverlayWindow)
+            if (showBorderWindow)
             {
                 // TODO: why is this needed?
                 _borderWnd.WindowState = FormWindowState.Normal;
-                _overlayWnd.WindowState = FormWindowState.Normal;
 
+                _borderWnd.ShowGroupNumber = multicontroller.IsActive
+                    && (multicontroller.ShowAllBorders || multicontroller.ControllerGroups.Count > 1);
+
+                if (multicontroller.ShowAllBorders && multicontroller.IsActive)
+                {
+                    _borderWnd.BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
+                }
+                else if (multicontroller.IsActive)
+                {
+                    switch (multicontroller.CurrentMode)
+                    {
+                        case MulticontrollerMode.Group:
+                        case MulticontrollerMode.Pair:
+                        case MulticontrollerMode.AllGroup:
+                            _borderWnd.BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
+                            break;
+                        case MulticontrollerMode.MirrorAll:
+                        case MulticontrollerMode.MirrorGroup:
+                            _borderWnd.BorderColor = Color.Violet;
+                            break;
+                        case MulticontrollerMode.MirrorIndividual:
+                            _borderWnd.BorderColor = Color.Turquoise;
+                            break;
+                    }
+                }
+            }
+
+            if (showMouseOverlayWindow)
+            {
+                // TODO: why is this needed?
+                _overlayWnd.WindowState = FormWindowState.Normal;
+            }
+            
+            if (showBorderWindow || showMouseOverlayWindow)
+            {
                 // Running twice seems to get the mouse overlay to properly show up after activating using the hotkey
                 ReorderUtilityWindows();
                 ReorderUtilityWindows();
+            }
+
+            if ((Properties.Settings.Default.disableKeepAlive || !HasWindow) && keepAliveTimer.Enabled)
+            {
+                keepAliveTimer.Stop();
+            }
+            else if (!Properties.Settings.Default.disableKeepAlive && HasWindow && !keepAliveTimer.Enabled)
+            {
+                keepAliveTimer.Start();
             }
         }
 
@@ -362,55 +395,6 @@ namespace TTMulti
                 Win32.SetWindowPos(_overlayWnd.Handle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                 Win32.SetWindowPos(_borderWnd.Handle, WindowHandle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
                 Win32.SetWindowPos(WindowHandle, _borderWnd.Handle, 0, 0, 0, 0, Win32.SetWindowPosFlags.DoNotActivate | Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.IgnoreResize);
-            }
-        }
-
-        private void RefreshOptions()
-        {
-            if (multicontroller.ShowAllBorders && multicontroller.IsActive)
-            {
-                ShowGroupNumber = true;
-
-                BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
-            }
-            else if (multicontroller.IsActive)
-            {
-                switch (multicontroller.CurrentMode)
-                {
-                    case MulticontrollerMode.Group:
-                    case MulticontrollerMode.Pair:
-                    case MulticontrollerMode.AllGroup:
-                        BorderColor = Type == ControllerType.Left ? Color.LimeGreen : Color.Green;
-                        break;
-                    case MulticontrollerMode.MirrorAll:
-                    case MulticontrollerMode.MirrorGroup:
-                        BorderColor = Color.Violet;
-                        break;
-                    case MulticontrollerMode.MirrorIndividual:
-                        BorderColor = Color.Turquoise;
-                        break;
-                }
-
-                if (multicontroller.CurrentMode == MulticontrollerMode.Pair
-                    || multicontroller.CurrentMode == MulticontrollerMode.MirrorIndividual)
-                {
-                    ShowGroupNumber = false;
-                }
-                else
-                {
-                    ShowGroupNumber = multicontroller.ControllerGroups.Count > 1;
-                }
-            }
-
-            RefreshUtilityWindows();
-
-            if ((Properties.Settings.Default.disableKeepAlive || !HasWindow) && keepAliveTimer.Enabled)
-            {
-                keepAliveTimer.Stop();
-            }
-            else if (!Properties.Settings.Default.disableKeepAlive && HasWindow && !keepAliveTimer.Enabled)
-            {
-                keepAliveTimer.Start();
             }
         }
 
