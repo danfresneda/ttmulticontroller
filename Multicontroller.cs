@@ -437,12 +437,39 @@ namespace TTMulti
             group.ControllerWindowActivated += Controller_WindowActivated;
             group.ControllerWindowDeactivated += Controller_WindowDeactivated;
             group.ControllerWindowHandleChanged += Controller_WindowHandleChanged;
+            group.ControllerShouldActivate += Controller_ShouldActivate;
             group.MouseEvent += Controller_MouseEvent;
 
             ControllerGroups.Add(group);
             GroupsChanged?.Invoke(this, EventArgs.Empty);
 
             return group;
+        }
+
+        private void Controller_ShouldActivate(object sender, EventArgs e)
+        {
+            ToontownController controller = sender as ToontownController;
+
+            if (!ActiveControllers.Contains(controller))
+            {
+                switch (CurrentMode)
+                {
+                    case MulticontrollerMode.Group:
+                    case MulticontrollerMode.MirrorGroup:
+                        ControllerGroup group = ControllerGroups.First(g => g.AllControllers.Contains(controller));
+
+                        CurrentGroupIndex = ControllerGroups.IndexOf(group);
+                        break;
+                    case MulticontrollerMode.Pair:
+                        ControllerPair pair = AllControllerPairs.First(p => p.AllControllers.Contains(controller));
+
+                        CurrentPairIndex = AllControllerPairsWithWindows.ToList().IndexOf(pair);
+                        break;
+                    case MulticontrollerMode.MirrorIndividual:
+                        CurrentIndividualControllerIndex = AllControllersWithWindows.ToList().IndexOf(controller);
+                        break;
+                }
+            }
         }
 
         private void Controller_MouseEvent(object sender, Message m)

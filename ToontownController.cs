@@ -33,6 +33,11 @@ namespace TTMulti
         /// </summary>
         public event EventHandler WindowHandleChanged;
 
+        /// <summary>
+        /// This controller should be activated (due to a mouse click)
+        /// </summary>
+        public event EventHandler ShouldActivate;
+
         internal event OverlayMouseEventHandler MouseEvent;
 
         IntPtr _windowHandle;
@@ -280,7 +285,8 @@ namespace TTMulti
                 && (isActiveController || multicontroller.ShowAllBorders);
 
             bool showMouseOverlayWindow = multicontroller.IsActive && HasWindow && !multicontroller.ShowAllBorders
-                && isActiveController && Properties.Settings.Default.replicateMouse;
+                && ((isActiveController && Properties.Settings.Default.replicateMouse) 
+                    || Properties.Settings.Default.enableClickToChangeControllers);
 
             if (showBorderWindow && !_borderWnd.Visible)
             {
@@ -400,7 +406,25 @@ namespace TTMulti
 
         private void _overlayWnd_MouseEvent(object sender, Message m)
         {
-            MouseEvent?.Invoke(this, m);
+            if (multicontroller.ActiveControllers.Contains(this))
+            {
+                MouseEvent?.Invoke(this, m);
+            }
+            else if (Properties.Settings.Default.enableClickToChangeControllers)
+            {
+                switch ((Win32.WM)m.Msg)
+                {
+                    case Win32.WM.LBUTTONDOWN:
+                    case Win32.WM.RBUTTONDOWN:
+                    case Win32.WM.MBUTTONDOWN:
+                    case Win32.WM.LBUTTONUP:
+                    case Win32.WM.RBUTTONUP:
+                    case Win32.WM.MBUTTONUP:
+                        ShouldActivate?.Invoke(this, EventArgs.Empty);
+                        MouseEvent?.Invoke(this, m);
+                        break;
+                }
+            }
         }
 
         /// <summary>
