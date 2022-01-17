@@ -52,7 +52,7 @@ namespace TTMulti
             set => watchTimer.SynchronizingObject = value;
         }
 
-        private struct WindowInfo
+        private class WindowInfo
         {
             public Size ClientAreaSize { get; set; }
             public Point ClientAreaScreenLocation { get; set; }
